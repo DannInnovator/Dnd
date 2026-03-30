@@ -1,6 +1,74 @@
-Hola mundo
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D&D Latam Builder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white font-sans min-h-screen p-6">
 
-cambio
+    <header class="max-w-2xl mx-auto text-center mb-10">
+        <h1 class="text-4xl font-extrabold text-red-500 mb-2">🛡️ D&D Character Builder</h1>
+        <p class="text-slate-400">Crea tu leyenda en español</p>
+    </header>
 
+    <main class="max-w-2xl mx-auto space-y-8">
+        <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+            <h2 class="text-xl font-bold mb-4 text-blue-400">1. Selecciona tu Especie</h2>
+            <select id="select-especie" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </select>
+        </section>
 
-holaa de veeee
+        <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+            <h2 class="text-xl font-bold mb-4 text-red-400">2. Selecciona tu Clase</h2>
+            <select id="select-clase" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                </select>
+        </section>
+
+        <section id="resumen" class="bg-red-900/20 p-6 rounded-xl border border-red-500/30 hidden">
+            <h3 class="text-2xl font-bold text-red-500 mb-2">Tu Héroe Actual:</h3>
+            <p id="txt-resumen" class="text-lg"></p>
+        </section>
+    </main>
+
+    <script>
+        // Cargar datos del JSON
+        fetch('./data.json')
+            .then(response => response.json())
+            .then(data => {
+                const selEspecie = document.getElementById('select-especie');
+                const selClase = document.getElementById('select-clase');
+
+                // Llenar especies
+                data.especies.forEach(esp => {
+                    let opt = document.createElement('option');
+                    opt.value = esp.id;
+                    opt.innerText = esp.nombre;
+                    selEspecie.appendChild(opt);
+                });
+
+                // Llenar clases
+                data.clases.forEach(cl => {
+                    let opt = document.createElement('option');
+                    opt.value = cl.id;
+                    opt.innerText = cl.nombre;
+                    selClase.appendChild(opt);
+                });
+
+                // Evento para actualizar resumen
+                const actualizar = () => {
+                    const esp = data.especies.find(e => e.id === selEspecie.value);
+                    const cl = data.clases.find(c => c.id === selClase.value);
+                    document.getElementById('resumen').classList.remove('hidden');
+                    document.getElementById('txt-resumen').innerHTML = 
+                        `Eres un <strong>${esp.nombre} ${cl.nombre}</strong>.<br>` +
+                        `<span class="text-sm text-slate-400">${cl.descripcion} Vida base: ${cl.hp_base}</span>`;
+                };
+
+                selEspecie.addEventListener('change', actualizar);
+                selClase.addEventListener('change', actualizar);
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "especies": [
+    { "id": "humano", "nombre": "Humano", "rasgo": "Dote extra y versatilidad.", "stats": "+1 a todo o +2/+1" },
+    { "id": "elfo", "nombre": "Elfo", "rasgo": "Visión en la oscuridad y ancestro feérico.", "stats": "+2 Des, +1 Int/Sab" },
+    { "id": "enano", "nombre": "Enano", "rasgo": "Resistencia al veneno y más vida.", "stats": "+2 Con, +1 Fue" }
+  ],
+  "clases": [
+    { 
+      "id": "guerrero", 
+      "nombre": "Guerrero", 
+      "hp_base": 10, 
+      "descripcion": "Maestro de armas y armaduras.",
+      "habilidad_lvl1": "Recuperar Aliento (Acción adicional para curarte)."
+    },
+    { 
+      "id": "mago", 
+      "nombre": "Mago", 
+      "hp_base": 6, 
+      "descripcion": "Estudioso de la magia arcana.",
+      "habilidad_lvl1": "Recuperación Arcana (Recuperas espacios de hechizo)."
+    },
+    { 
+      "id": "picaro", 
+      "nombre": "Pícaro", 
+      "hp_base": 8, 
+      "descripcion": "Experto en sigilo y ataques furtivos.",
+      "habilidad_lvl1": "Ataque Furtivo (Daño extra si tienes ventaja)."
+    }
+  ]
+}
