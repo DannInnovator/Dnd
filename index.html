@@ -3,119 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D&D Latam Builder</title>
+    <title>D&D Hero Builder Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-900 text-white font-sans min-h-screen p-6">
+<body class="bg-slate-900 text-white font-sans min-h-screen p-4">
 
-    <header class="max-w-2xl mx-auto text-center mb-10">
-        <h1 class="text-4xl font-extrabold text-red-500 mb-2">🛡️ D&D Character Builder</h1>
-        <p class="text-slate-400">Crea tu leyenda en español</p>
+    <header class="max-w-3xl mx-auto text-center my-6">
+        <h1 class="text-4xl font-black text-red-600 drop-shadow-lg">⚔️ D&D LATAM BUILDER</h1>
+        <p class="text-slate-400 uppercase tracking-tighter text-sm">Forja tu destino en español</p>
     </header>
 
-    <main class="max-w-2xl mx-auto space-y-8 pb-20">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
-                <h2 class="text-xl font-bold mb-4 text-blue-400">1. Especie</h2>
-                <select id="select-especie" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
-            </section>
+    <main class="max-w-3xl mx-auto space-y-6 pb-20">
+        
+        <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-bold text-red-500 uppercase mb-1">Nombre del Héroe</label>
+                <input type="text" id="nombre" placeholder="Ej: Arathorn" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:border-red-500 outline-none" oninput="actualizar()">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-red-500 uppercase mb-1">Alineamiento</label>
+                <select id="alineamiento" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg outline-none" onchange="actualizar()">
+                    <option>Legal Bueno</option><option>Neutral Bueno</option><option>Caótico Bueno</option>
+                    <option>Legal Neutral</option><option>Neutral Auténtico</option><option>Caótico Neutral</option>
+                    <option>Legal Malvado</option><option>Neutral Malvado</option><option>Caótico Malvado</option>
+                </select>
+            </div>
+        </section>
 
-            <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
-                <h2 class="text-xl font-bold mb-4 text-red-400">2. Clase</h2>
-                <select id="select-clase" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 focus:outline-none focus:ring-2 focus:ring-red-500"></select>
-            </section>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                <label class="block text-xs font-bold text-blue-400 uppercase mb-2">Especie</label>
+                <select id="select-especie" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm" onchange="actualizar()"></select>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                <label class="block text-xs font-bold text-red-400 uppercase mb-2">Clase</label>
+                <select id="select-clase" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm" onchange="actualizar()"></select>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                <label class="block text-xs font-bold text-green-400 uppercase mb-2">Trasfondo</label>
+                <select id="select-trasfondo" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm" onchange="actualizar()"></select>
+            </div>
         </div>
 
-        <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
-            <h2 class="text-xl font-bold mb-6 text-yellow-500 text-center">3. Puntuaciones de Característica</h2>
-            <p class="text-xs text-slate-400 mb-4 text-center italic">Usa el conjunto estándar: 15, 14, 13, 12, 10, 8</p>
-            
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
-                <div class="stat-card text-center">
-                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Fuerza</label>
-                    <input type="number" id="score-str" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
-                    <div id="mod-str" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+        <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+            <h2 class="text-center text-yellow-500 font-bold mb-4 uppercase">Estadísticas Principales</h2>
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-4">
+                <div class="text-center">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">FUE</span>
+                    <input type="number" id="score-str" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
+                    <div id="mod-str" class="text-yellow-500 font-bold text-lg">+0</div>
                 </div>
-                <div class="stat-card text-center">
-                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Destreza</label>
-                    <input type="number" id="score-dex" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
-                    <div id="mod-dex" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                <div class="text-center">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">DES</span>
+                    <input type="number" id="score-dex" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
+                    <div id="mod-dex" class="text-yellow-500 font-bold text-lg">+0</div>
                 </div>
-                <div class="stat-card text-center">
-                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Constitución</label>
-                    <input type="number" id="score-con" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
-                    <div id="mod-con" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                <div class="text-center">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">CON</span>
+                    <input type="number" id="score-con" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
+                    <div id="mod-con" class="text-yellow-500 font-bold text-lg">+0</div>
                 </div>
-                <div class="stat-card text-center">
-                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Inteligencia</label>
-                    <input type="number" id="score-int" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
-                    <div id="mod-int" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                <div class="text-center">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">INT</span>
+                    <input type="number" id="score-int" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
+                    <div id="mod-int" class="text-yellow-500 font-bold text-lg">+0</div>
                 </div>
-                <div class="stat-card text-center">
-                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Sabiduría</label>
-                    <input type="number" id="score-wis" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
-                    <div id="mod-wis" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                <div class="text-center">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">SAB</span>
+                    <input type="number" id="score-wis" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
+                    <div id="mod-wis" class="text-yellow-500 font-bold text-lg">+0</div>
                 </div>
-                <div class="stat-card text-center">
-                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Carisma</label>
-                    <input type="number" id="score-cha" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
-                    <div id="mod-cha" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                <div class="text-center">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase">CAR</span>
+                    <input type="number" id="score-cha" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
+                    <div id="mod-cha" class="text-yellow-500 font-bold text-lg">+0</div>
                 </div>
             </div>
         </section>
 
-        <section id="resumen" class="bg-gradient-to-r from-red-900/40 to-slate-800 p-8 rounded-2xl border-2 border-red-500/50 hidden shadow-2xl">
-            <h3 id="nombre-heroe" class="text-3xl font-black text-red-500 uppercase tracking-widest mb-4">NOMBRE DEL HÉROE</h3>
-            <div class="grid grid-cols-2 gap-4 text-slate-200">
+        <section id="resumen" class="bg-white text-slate-900 p-8 rounded-sm shadow-2xl border-t-8 border-red-600 space-y-4">
+            <div class="flex justify-between items-start border-b-2 border-slate-200 pb-4">
                 <div>
-                    <p class="text-sm uppercase text-slate-500 font-bold">Concepto</p>
-                    <p id="txt-clase-especie" class="text-lg font-bold italic"></p>
+                    <h2 id="res-nombre" class="text-3xl font-black uppercase italic">NOMBRE</h2>
+                    <p id="res-clase-esp" class="text-slate-600 font-bold"></p>
                 </div>
-                <div>
-                    <p class="text-sm uppercase text-slate-500 font-bold">Puntos de Golpe (HP)</p>
-                    <p id="txt-hp" class="text-2xl font-black text-green-400"></p>
+                <div class="text-right">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase">Puntos de Golpe</p>
+                    <p id="res-hp" class="text-4xl font-black text-red-600">--</p>
                 </div>
             </div>
-            <div class="mt-6 p-4 bg-black/30 rounded-lg">
-                <p class="text-sm uppercase text-red-400 font-bold mb-1">Rasgo Especial</p>
-                <p id="txt-habilidad" class="text-sm italic"></p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-black text-xs border-b border-slate-300 mb-2 uppercase tracking-widest text-red-600">Rasgos y Habilidades</h4>
+                    <p id="res-habilidad" class="text-sm leading-tight mb-2"></p>
+                    <p id="res-especie-rasgo" class="text-sm italic text-slate-600"></p>
+                </div>
+                <div class="bg-slate-100 p-4 rounded-lg">
+                    <h4 class="font-black text-xs uppercase mb-1 text-slate-500">Dote de Trasfondo</h4>
+                    <p id="res-dote" class="text-lg font-bold text-blue-800"></p>
+                    <p id="res-trasfondo-desc" class="text-xs italic"></p>
+                </div>
             </div>
         </section>
+
     </main>
 
     <script>
         let dndData = {};
 
-        // Función matemática de D&D
         const getMod = (score) => Math.floor((score - 10) / 2);
 
         function actualizar() {
             if (!dndData.clases) return;
 
-            const selEspecie = document.getElementById('select-especie').value;
-            const selClase = document.getElementById('select-clase').value;
-            
-            const esp = dndData.especies.find(e => e.id === selEspecie);
-            const cl = dndData.clases.find(c => c.id === selClase);
+            const nombre = document.getElementById('nombre').value || "Héroe sin nombre";
+            const alineamiento = document.getElementById('alineamiento').value;
+            const espId = document.getElementById('select-especie').value;
+            const clId = document.getElementById('select-clase').value;
+            const trId = document.getElementById('select-trasfondo').value;
 
-            // 1. Actualizar Modificadores Visuales
+            const esp = dndData.especies.find(e => e.id === espId);
+            const cl = dndData.clases.find(c => c.id === clId);
+            const tr = dndData.trasfondos.find(t => t.id === trId);
+
+            // Actualizar Modificadores
             ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(stat => {
-                const score = document.getElementById(`score-${stat}`).value;
-                const mod = getMod(score);
-                const el = document.getElementById(`mod-${stat}`);
-                el.innerText = (mod >= 0 ? "+" : "") + mod;
+                const s = document.getElementById(`score-${stat}`).value;
+                document.getElementById(`mod-${stat}`).innerText = (getMod(s) >= 0 ? "+" : "") + getMod(s);
             });
 
-            // 2. Calcular Vida (HP)
-            // Vida Nivel 1 = Dado de Vida base + Modificador de Constitución
+            // Cálculos
             const modCon = getMod(document.getElementById('score-con').value);
-            const totalHP = cl.hp_base + modCon;
+            const hpTotal = cl.hp_base + modCon;
 
-            // 3. Mostrar Resumen
-            document.getElementById('resumen').classList.remove('hidden');
-            document.getElementById('txt-clase-especie').innerText = `${esp.nombre} ${cl.nombre}`;
-            document.getElementById('txt-hp').innerText = `${totalHP} PV`;
-            document.getElementById('txt-habilidad').innerText = `${cl.habilidad_lvl1}`;
+            // Llenar Hoja
+            document.getElementById('res-nombre').innerText = nombre;
+            document.getElementById('res-clase-esp').innerText = `${esp.nombre} ${cl.nombre} | ${alineamiento}`;
+            document.getElementById('res-hp').innerText = hpTotal;
+            document.getElementById('res-habilidad').innerText = cl.habilidad_lvl1;
+            document.getElementById('res-especie-rasgo').innerText = "Rasgo racial: " + esp.rasgo;
+            document.getElementById('res-dote').innerText = tr.dote;
+            document.getElementById('res-trasfondo-desc').innerText = tr.desc;
         }
 
         fetch('./data.json')
@@ -124,14 +153,13 @@
                 dndData = data;
                 const selEsp = document.getElementById('select-especie');
                 const selCl = document.getElementById('select-clase');
+                const selTr = document.getElementById('select-trasfondo');
 
                 data.especies.forEach(e => selEsp.innerHTML += `<option value="${e.id}">${e.nombre}</option>`);
                 data.clases.forEach(c => selCl.innerHTML += `<option value="${c.id}">${c.nombre}</option>`);
+                data.trasfondos.forEach(t => selTr.innerHTML += `<option value="${t.id}">${t.nombre}</option>`);
 
                 actualizar();
-                
-                selEsp.addEventListener('change', actualizar);
-                selCl.addEventListener('change', actualizar);
             });
     </script>
 </body>
