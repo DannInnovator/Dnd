@@ -13,61 +13,125 @@
         <p class="text-slate-400">Crea tu leyenda en español</p>
     </header>
 
-    <main class="max-w-2xl mx-auto space-y-8">
-        <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
-            <h2 class="text-xl font-bold mb-4 text-blue-400">1. Selecciona tu Especie</h2>
-            <select id="select-especie" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </select>
-        </section>
+    <main class="max-w-2xl mx-auto space-y-8 pb-20">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                <h2 class="text-xl font-bold mb-4 text-blue-400">1. Especie</h2>
+                <select id="select-especie" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+            </section>
+
+            <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
+                <h2 class="text-xl font-bold mb-4 text-red-400">2. Clase</h2>
+                <select id="select-clase" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 focus:outline-none focus:ring-2 focus:ring-red-500"></select>
+            </section>
+        </div>
 
         <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 shadow-lg">
-            <h2 class="text-xl font-bold mb-4 text-red-400">2. Selecciona tu Clase</h2>
-            <select id="select-clase" class="w-full bg-slate-700 p-3 rounded-lg border border-slate-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-                </select>
+            <h2 class="text-xl font-bold mb-6 text-yellow-500 text-center">3. Puntuaciones de Característica</h2>
+            <p class="text-xs text-slate-400 mb-4 text-center italic">Usa el conjunto estándar: 15, 14, 13, 12, 10, 8</p>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                <div class="stat-card text-center">
+                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Fuerza</label>
+                    <input type="number" id="score-str" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
+                    <div id="mod-str" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                </div>
+                <div class="stat-card text-center">
+                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Destreza</label>
+                    <input type="number" id="score-dex" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
+                    <div id="mod-dex" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                </div>
+                <div class="stat-card text-center">
+                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Constitución</label>
+                    <input type="number" id="score-con" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
+                    <div id="mod-con" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                </div>
+                <div class="stat-card text-center">
+                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Inteligencia</label>
+                    <input type="number" id="score-int" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
+                    <div id="mod-int" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                </div>
+                <div class="stat-card text-center">
+                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Sabiduría</label>
+                    <input type="number" id="score-wis" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
+                    <div id="mod-wis" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                </div>
+                <div class="stat-card text-center">
+                    <label class="block text-xs font-bold uppercase text-slate-400 mb-2">Carisma</label>
+                    <input type="number" id="score-cha" value="10" class="w-16 bg-slate-900 border-2 border-slate-700 rounded-lg p-2 text-center text-xl font-bold focus:border-yellow-500 outline-none" oninput="actualizar()">
+                    <div id="mod-cha" class="text-2xl font-black text-yellow-500 mt-1">+0</div>
+                </div>
+            </div>
         </section>
 
-        <section id="resumen" class="bg-red-900/20 p-6 rounded-xl border border-red-500/30 hidden">
-            <h3 class="text-2xl font-bold text-red-500 mb-2">Tu Héroe Actual:</h3>
-            <p id="txt-resumen" class="text-lg"></p>
+        <section id="resumen" class="bg-gradient-to-r from-red-900/40 to-slate-800 p-8 rounded-2xl border-2 border-red-500/50 hidden shadow-2xl">
+            <h3 id="nombre-heroe" class="text-3xl font-black text-red-500 uppercase tracking-widest mb-4">NOMBRE DEL HÉROE</h3>
+            <div class="grid grid-cols-2 gap-4 text-slate-200">
+                <div>
+                    <p class="text-sm uppercase text-slate-500 font-bold">Concepto</p>
+                    <p id="txt-clase-especie" class="text-lg font-bold italic"></p>
+                </div>
+                <div>
+                    <p class="text-sm uppercase text-slate-500 font-bold">Puntos de Golpe (HP)</p>
+                    <p id="txt-hp" class="text-2xl font-black text-green-400"></p>
+                </div>
+            </div>
+            <div class="mt-6 p-4 bg-black/30 rounded-lg">
+                <p class="text-sm uppercase text-red-400 font-bold mb-1">Rasgo Especial</p>
+                <p id="txt-habilidad" class="text-sm italic"></p>
+            </div>
         </section>
     </main>
 
     <script>
-        // Cargar datos del JSON
+        let dndData = {};
+
+        // Función matemática de D&D
+        const getMod = (score) => Math.floor((score - 10) / 2);
+
+        function actualizar() {
+            if (!dndData.clases) return;
+
+            const selEspecie = document.getElementById('select-especie').value;
+            const selClase = document.getElementById('select-clase').value;
+            
+            const esp = dndData.especies.find(e => e.id === selEspecie);
+            const cl = dndData.clases.find(c => c.id === selClase);
+
+            // 1. Actualizar Modificadores Visuales
+            ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(stat => {
+                const score = document.getElementById(`score-${stat}`).value;
+                const mod = getMod(score);
+                const el = document.getElementById(`mod-${stat}`);
+                el.innerText = (mod >= 0 ? "+" : "") + mod;
+            });
+
+            // 2. Calcular Vida (HP)
+            // Vida Nivel 1 = Dado de Vida base + Modificador de Constitución
+            const modCon = getMod(document.getElementById('score-con').value);
+            const totalHP = cl.hp_base + modCon;
+
+            // 3. Mostrar Resumen
+            document.getElementById('resumen').classList.remove('hidden');
+            document.getElementById('txt-clase-especie').innerText = `${esp.nombre} ${cl.nombre}`;
+            document.getElementById('txt-hp').innerText = `${totalHP} PV`;
+            document.getElementById('txt-habilidad').innerText = `${cl.habilidad_lvl1}`;
+        }
+
         fetch('./data.json')
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
-                const selEspecie = document.getElementById('select-especie');
-                const selClase = document.getElementById('select-clase');
+                dndData = data;
+                const selEsp = document.getElementById('select-especie');
+                const selCl = document.getElementById('select-clase');
 
-                // Llenar especies
-                data.especies.forEach(esp => {
-                    let opt = document.createElement('option');
-                    opt.value = esp.id;
-                    opt.innerText = esp.nombre;
-                    selEspecie.appendChild(opt);
-                });
+                data.especies.forEach(e => selEsp.innerHTML += `<option value="${e.id}">${e.nombre}</option>`);
+                data.clases.forEach(c => selCl.innerHTML += `<option value="${c.id}">${c.nombre}</option>`);
 
-                // Llenar clases
-                data.clases.forEach(cl => {
-                    let opt = document.createElement('option');
-                    opt.value = cl.id;
-                    opt.innerText = cl.nombre;
-                    selClase.appendChild(opt);
-                });
-
-                // Evento para actualizar resumen
-                const actualizar = () => {
-                    const esp = data.especies.find(e => e.id === selEspecie.value);
-                    const cl = data.clases.find(c => c.id === selClase.value);
-                    document.getElementById('resumen').classList.remove('hidden');
-                    document.getElementById('txt-resumen').innerHTML = 
-                        `Eres un <strong>${esp.nombre} ${cl.nombre}</strong>.<br>` +
-                        `<span class="text-sm text-slate-400">${cl.descripcion} Vida base: ${cl.hp_base}</span>`;
-                };
-
-                selEspecie.addEventListener('change', actualizar);
-                selClase.addEventListener('change', actualizar);
+                actualizar();
+                
+                selEsp.addEventListener('change', actualizar);
+                selCl.addEventListener('change', actualizar);
             });
     </script>
 </body>
