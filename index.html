@@ -5,6 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D&D - Crea tu personaje - En español</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @media print {
+            /* Ocultar todo lo que no sea la ficha */
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            header, section:not(#resumen), .no-print, #seccion-magia { display: none !important; }
+            
+            /* Forzar que la sección de magia se vea SOLO si tiene hechizos marcados */
+            #seccion-magia { 
+                display: block !important; 
+                background: white !important; 
+                border: 1px solid #ccc !important;
+                page-break-before: always; /* Que la magia salga en una hoja nueva si es mucha */
+            }
+
+            #resumen {
+                box-shadow: none !important;
+                border: 1px solid #000 !important;
+                width: 100% !important;
+                margin: 0 !important;
+            }
+            
+            /* Ocultar los checkboxes en el PDF para que se vea limpio */
+            input[type="checkbox"] { display: none !important; }
+        }
+    </style>
 </head>
 <body class="bg-slate-900 text-white font-sans min-h-screen p-4">
 
@@ -12,7 +37,11 @@
         <h1 class="text-4xl font-black text-red-600 drop-shadow-lg">⚔️ D&D Creador de personaje</h1>
         <p class="text-slate-400 uppercase tracking-tighter text-sm">Forja tu destino en español</p>
     </header>
-
+    <div class="max-w-3xl mx-auto mb-4 flex justify-end no-print">
+        <button onclick="exportarPDF()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all">
+            <span>📄 Descargar Ficha (PDF)</span>
+        </button>
+    </div>
     <main class="max-w-3xl mx-auto space-y-6 pb-20">
         
         <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -260,6 +289,20 @@
                     </div>
                 `;
             });
+        }
+
+        function exportarPDF() {
+            // Cambiamos el título del documento temporalmente para que el archivo se guarde con el nombre del héroe
+            const nombreHeroe = document.getElementById('res-nombre').innerText;
+            const tituloOriginal = document.title;
+            
+            document.title = "Ficha_DnD_" + nombreHeroe.replace(/\s+/g, '_');
+            
+            // Abrir el diálogo de impresión
+            window.print();
+            
+            // Restaurar el título original
+            document.title = tituloOriginal;
         }
 
         // ESTO ES LO QUE FALTA: Cargar el JSON y llenar los menús al iniciar
