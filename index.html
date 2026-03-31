@@ -187,6 +187,15 @@
                     <p id="res-trasfondo-desc" class="text-xs italic"></p>
                 </div>
             </div>
+
+            <div class="mt-6 border-t-2 border-slate-200 pt-4">
+                <h4 class="font-black text-xs mb-2 uppercase tracking-widest text-blue-600">Equipamiento e Inventario</h4>
+                <div id="res-inventario" class="grid grid-cols-2 gap-x-4 gap-y-1">
+                    </div>
+                <div class="mt-2 border-t border-dashed border-slate-300 pt-2 h-16 text-[10px] text-slate-400 italic">
+                    Notas de equipo adicional: __________________________________________________________________
+                </div>
+            </div>
         </section>
 
     </main>
@@ -219,6 +228,16 @@
             const hpAdicional = (nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + modCon);
             const hpTotal = hpNivel1 + hpAdicional;
 
+            // Lógica de CA básica (10 + Destreza)
+            let caBase = 10 + getMod(document.getElementById('score-dex').value);
+
+            // Si tiene armadura en su equipo inicial, le damos un bono (simplificado)
+            if (clId === 'guerrero' || clId === 'paladin' || clId === 'clerigo') caBase = 16; // Armadura pesada
+            if (clId === 'picaro' || clId === 'bardo' || clId === 'explorador') caBase += 2; // Armadura ligera
+
+            // Mostrarlo en el resumen (Añade un ID 'res-ca' en tu HTML cerca del HP)
+            document.getElementById('res-ca').innerText = caBase;
+
             // 4. ACTUALIZAR MODIFICADORES DE ATRIBUTOS
             ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(stat => {
                 const s = document.getElementById(`score-${stat}`).value;
@@ -245,6 +264,7 @@
             document.getElementById('res-dote').innerText = tr.dote;
             document.getElementById('res-trasfondo-desc').innerText = tr.desc;
             actualizarRasgos(clId, nivel);
+            actualizarEquipamiento(clId);
         }
 
         function renderizarHechizos(claseId, nivelPersonaje, especieId, trasfondoId) {
@@ -325,6 +345,21 @@
                         <span class="text-[10px] font-bold bg-red-100 text-red-700 px-1 rounded">Nivel ${r.nivel}</span>
                         <p class="text-sm font-black text-slate-800">${r.nombre}</p>
                         <p class="text-xs text-slate-600 leading-tight">${r.desc}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function actualizarEquipamiento(claseId) {
+            const contenedor = document.getElementById('res-inventario');
+            const equipo = dndData.equipamiento_inicial[claseId] || [];
+            
+            contenedor.innerHTML = "";
+            
+            equipo.forEach(item => {
+                contenedor.innerHTML += `
+                    <div class="text-xs border-b border-slate-100 py-1 flex items-center">
+                        <span class="mr-2">📦</span> ${item}
                     </div>
                 `;
             });

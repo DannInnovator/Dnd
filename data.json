@@ -85,5 +85,19 @@
     { "id": "accion_astuta", "clase": "picaro", "nivel": 2, "nombre": "Acción Astuta", "desc": "Puedes usar una Acción Adicional para Correr, Destrabarte o Esconderte." },
     { "id": "arquetipo_p", "clase": "picaro", "nivel": 3, "nombre": "Arquetipo de Pícaro", "desc": "Eliges tu especialidad (Ladrón, Asesino, etc.)." },
     { "id": "esquiva_as", "clase": "picaro", "nivel": 5, "nombre": "Esquiva Asombrosa", "desc": "Cuando un atacante que puedes ver te impacta, usas tu reacción para reducir el daño a la mitad." }
-  ]
+  ],
+  "equipamiento_inicial": {
+    "barbaro": ["Hacha a dos manos", "Jabalina (x4)", "Pack de explorador"],
+    "bardo": ["Estoque", "Laúd", "Pack de artista", "Armadura de cuero"],
+    "clerigo": ["Maza", "Cota de escamas", "Escudo", "Símbolo sagrado"],
+    "druida": ["Cimitarra", "Escudo de madera", "Foco de hierbas", "Armadura de cuero"],
+    "guerrero": ["Espada larga", "Escudo", "Cota de malla", "Arco largo"],
+    "mago": ["Daga", "Bastón", "Libro de conjuros", "Bolsa de componentes"],
+    "monje": ["Bastón", "Dardo (x10)", "Pack de explorador"],
+    "paladin": ["Espada larga", "Escudo", "Cota de malla", "Símbolo sagrado"],
+    "picaro": ["Estoque", "Arco corto", "Herramientas de ladrón", "Armadura de cuero"],
+    "brujo": ["Daga (x2)", "Foco arcano", "Armadura de cuero", "Pack de erudito"],
+    "hechicero": ["Daga (x2)", "Foco arcano", "Pack de explorador"],
+    "explorador": ["Arco largo", "Espada corta (x2)", "Armadura de tachones"]
+    }
 }
