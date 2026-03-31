@@ -165,6 +165,8 @@
                 renderizarHechizos(clId, nivel, espId, trId);
             } else {
                 document.getElementById('seccion-magia').classList.add('hidden');
+                document.getElementById('lista-hechizos').innerHTML = ""; 
+                document.getElementById('contador-hechizos').innerText = "0 Seleccionados"; // <-- Añade esto
             }
 
             // 6. LLENAR LA HOJA DE PERSONAJE (RESUMEN)
@@ -222,11 +224,15 @@
                     </div>
                 `;
             });
+            actualizarContador();
         }
 
         function actualizarContador() {
+            const contenedorContador = document.getElementById('contador-hechizos');
+            if (!contenedorContador) return;
+
             const seleccionados = document.querySelectorAll('#lista-hechizos input[type="checkbox"]:checked').length;
-            document.getElementById('contador-hechizos').innerText = `${seleccionados} Seleccionados`;
+            contenedorContador.innerText = `${seleccionados} Seleccionados`;
         }
 
         function actualizarRasgos(claseId, nivelPersonaje) {
