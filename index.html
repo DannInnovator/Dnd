@@ -28,6 +28,10 @@
                     <option>Legal Malvado</option><option>Neutral Malvado</option><option>Caótico Malvado</option>
                 </select>
             </div>
+            <div>
+                <label class="block text-xs font-bold text-red-500 uppercase mb-1">Nivel</label>
+                <input type="number" id="nivel" value="1" min="1" max="20" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:border-red-500 outline-none" oninput="actualizar()">
+            </div>
         </section>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -81,6 +85,12 @@
             </div>
         </section>
 
+        <section id="seccion-magia" class="bg-slate-800 p-6 rounded-2xl border border-purple-500 hidden shadow-xl">
+            <h2 class="text-purple-400 font-bold mb-4 uppercase flex items-center gap-2">✨ Libro de Hechizos</h2>
+            <div id="lista-hechizos" class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                </div>
+        </section>
+
         <section id="resumen" class="bg-white text-slate-900 p-8 rounded-sm shadow-2xl border-t-8 border-red-600 space-y-4">
             <div class="flex justify-between items-start border-b-2 border-slate-200 pb-4">
                 <div>
@@ -117,29 +127,45 @@
         function actualizar() {
             if (!dndData.clases) return;
 
+            // 1. OBTENER VALORES DE LOS INPUTS
             const nombre = document.getElementById('nombre').value || "Héroe sin nombre";
             const alineamiento = document.getElementById('alineamiento').value;
             const espId = document.getElementById('select-especie').value;
             const clId = document.getElementById('select-clase').value;
             const trId = document.getElementById('select-trasfondo').value;
-
+            const nivel = parseInt(document.getElementById('nivel').value) || 1;
+            
+            // 2. BUSCAR DATOS EN EL JSON (Definirlos todos antes de usarlos)
             const esp = dndData.especies.find(e => e.id === espId);
             const cl = dndData.clases.find(c => c.id === clId);
             const tr = dndData.trasfondos.find(t => t.id === trId);
+            const modCon = getMod(document.getElementById('score-con').value);
 
-            // Actualizar Modificadores
+            // 3. LÓGICA DE SUBIDA DE NIVEL (HP)
+            const hpNivel1 = cl.hp_base + modCon;
+            // El "promedio" del dado es (Base / 2) + 1. Ej: en un d10 es 6.
+            const hpAdicional = (nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + modCon);
+            const hpTotal = hpNivel1 + hpAdicional;
+
+            // 4. ACTUALIZAR MODIFICADORES DE ATRIBUTOS
             ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(stat => {
                 const s = document.getElementById(`score-${stat}`).value;
-                document.getElementById(`mod-${stat}`).innerText = (getMod(s) >= 0 ? "+" : "") + getMod(s);
+                const mod = getMod(s);
+                document.getElementById(`mod-${stat}`).innerText = (mod >= 0 ? "+" : "") + mod;
             });
 
-            // Cálculos
-            const modCon = getMod(document.getElementById('score-con').value);
-            const hpTotal = cl.hp_base + modCon;
+            // 5. LÓGICA DE MAGIA
+            const seccionMagia = document.getElementById('seccion-magia');
+            if (cl.usa_magia) {
+                seccionMagia.classList.remove('hidden');
+                renderizarHechizos();
+            } else {
+                seccionMagia.classList.add('hidden');
+            }
 
-            // Llenar Hoja
+            // 6. LLENAR LA HOJA DE PERSONAJE (RESUMEN)
             document.getElementById('res-nombre').innerText = nombre;
-            document.getElementById('res-clase-esp').innerText = `${esp.nombre} ${cl.nombre} | ${alineamiento}`;
+            document.getElementById('res-clase-esp').innerText = `${esp.nombre} ${cl.nombre} (Nivel ${nivel}) | ${alineamiento}`;
             document.getElementById('res-hp').innerText = hpTotal;
             document.getElementById('res-habilidad').innerText = cl.habilidad_lvl1;
             document.getElementById('res-especie-rasgo').innerText = "Rasgo racial: " + esp.rasgo;
@@ -147,20 +173,22 @@
             document.getElementById('res-trasfondo-desc').innerText = tr.desc;
         }
 
-        fetch('./data.json')
-            .then(res => res.json())
-            .then(data => {
-                dndData = data;
-                const selEsp = document.getElementById('select-especie');
-                const selCl = document.getElementById('select-clase');
-                const selTr = document.getElementById('select-trasfondo');
+        function renderizarHechizos() {
+            const contenedor = document.getElementById('lista-hechizos');
+            if (contenedor.innerHTML !== "") return; // Evitar duplicados
 
-                data.especies.forEach(e => selEsp.innerHTML += `<option value="${e.id}">${e.nombre}</option>`);
-                data.clases.forEach(c => selCl.innerHTML += `<option value="${c.id}">${c.nombre}</option>`);
-                data.trasfondos.forEach(t => selTr.innerHTML += `<option value="${t.id}">${t.nombre}</option>`);
-
-                actualizar();
+            dndData.hechizos.forEach(h => {
+                contenedor.innerHTML += `
+                    <div class="flex items-start gap-2 p-2 bg-slate-900 rounded border border-slate-700">
+                        <input type="checkbox" class="mt-1">
+                        <div>
+                            <p class="font-bold text-sm text-purple-300">${h.nombre}</p>
+                            <p class="text-[10px] text-slate-400">${h.desc}</p>
+                        </div>
+                    </div>
+                `;
             });
+        }
     </script>
 </body>
 </html>
