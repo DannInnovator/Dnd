@@ -7,27 +7,62 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media print {
-            /* Ocultar todo lo que no sea la ficha */
-            body { background: white !important; color: black !important; padding: 0 !important; }
-            header, section:not(#resumen), .no-print, #seccion-magia { display: none !important; }
-            
-            /* Forzar que la sección de magia se vea SOLO si tiene hechizos marcados */
-            #seccion-magia { 
-                display: block !important; 
+            /* 1. Limpieza General: Fondo blanco y quitar scroll */
+            body { 
                 background: white !important; 
-                border: 1px solid #ccc !important;
-                page-break-before: always; /* Que la magia salga en una hoja nueva si es mucha */
-            }
-
-            #resumen {
-                box-shadow: none !important;
-                border: 1px solid #000 !important;
-                width: 100% !important;
+                color: black !important; 
+                padding: 0 !important; 
                 margin: 0 !important;
             }
-            
-            /* Ocultar los checkboxes en el PDF para que se vea limpio */
+
+            /* 2. Ocultar elementos de la interfaz web que no queremos en papel */
+            header, 
+            .no-print, 
+            select, 
+            input[type="number"], 
+            input[type="text"],
+            button { 
+                display: none !important; 
+            }
+
+            /* 3. Mostrar las secciones importantes pero con estilo de "Hoja Impresa" */
+            section {
+                background: white !important;
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+                color: black !important;
+                margin-bottom: 1rem !important;
+                padding: 10px !important;
+                display: block !important; /* Forzamos que se vean */
+            }
+
+            /* 4. Estilo específico para las Estadísticas (FUE, DES...) */
+            /* Como ocultamos los inputs, necesitamos que los MODIFICADORES se vean grandes */
+            .grid { display: grid !important; }
+            [id^="mod-"] { 
+                font-size: 24px !important; 
+                color: black !important; 
+                font-weight: bold !important;
+            }
+            .text-slate-500 { color: #666 !important; }
+
+            /* 5. Estilo para el Libro de Hechizos */
+            #seccion-magia {
+                border: 2px solid #a855f7 !important;
+                page-break-before: auto;
+            }
+            /* Ocultar hechizos que NO estén seleccionados para ahorrar papel */
+            #lista-hechizos div:has(input[type="checkbox"]:not(:checked)) {
+                display: none !important;
+            }
+            /* Quitar el checkbox del PDF para que se vea limpio */
             input[type="checkbox"] { display: none !important; }
+
+            /* 6. El Resumen Final */
+            #resumen {
+                border: 2px solid black !important;
+                page-break-inside: avoid;
+            }
         }
     </style>
 </head>
