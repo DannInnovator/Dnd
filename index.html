@@ -6,67 +6,36 @@
     <title>D&D - Crea tu personaje - En español</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* Estilo para la web */
+        .only-print { display: none; }
+
         @media print {
-            /* 1. Limpieza General: Fondo blanco y quitar scroll */
-            body { 
-                background: white !important; 
-                color: black !important; 
-                padding: 0 !important; 
-                margin: 0 !important;
-            }
-
-            /* 2. Ocultar elementos de la interfaz web que no queremos en papel */
-            header, 
-            .no-print, 
-            button { 
-                display: none !important; 
-            }
-
-            /* 3. Mostrar las secciones importantes pero con estilo de "Hoja Impresa" */
+            header, .no-print, button { display: none !important; }
+            
+            body { background: white !important; color: black !important; padding: 0; }
+            
             section {
                 background: white !important;
                 border: 1px solid #ddd !important;
-                box-shadow: none !important;
-                color: black !important;
+                display: block !important;
                 margin-bottom: 1rem !important;
-                padding: 10px !important;
-                display: block !important; /* Forzamos que se vean */
+                color: black !important;
             }
 
-            /* 4. Estilo específico para las Estadísticas (FUE, DES...) */
-            /* Como ocultamos los inputs, necesitamos que los MODIFICADORES se vean grandes */
-            .grid { display: grid !important; }
-            [id^="mod-"] { 
-                font-size: 24px !important; 
-                color: black !important; 
-                font-weight: bold !important;
-            }
-            .text-slate-500 { color: #666 !important; }
-
-            /* 5. Estilo para el Libro de Hechizos */
-            #seccion-magia {
-                border: 2px solid #a855f7 !important;
-                page-break-before: auto;
-            }
-            /* Ocultar hechizos que NO estén seleccionados para ahorrar papel */
-            #lista-hechizos div:has(input[type="checkbox"]:not(:checked)) {
-                display: none !important;
-            }
-            /* Quitar el checkbox del PDF para que se vea limpio */
-            input[type="checkbox"] { display: none !important; }
-
-            /* 6. El Resumen Final */
-            #resumen {
-                border: 2px solid black !important;
-                page-break-inside: avoid;
-            }
-
+            /* Quitar bordes de inputs en el PDF para que parezca una hoja oficial */
             input, select { 
                 border: none !important; 
                 background: transparent !important; 
-                appearance: none; /* Quita la flechita del select en algunos navegadores */
                 color: black !important;
+                appearance: none;
+                -webkit-appearance: none;
             }
+
+            #seccion-magia { border: 2px solid #a855f7 !important; }
+            
+            /* Ocultar hechizos no marcados */
+            #lista-hechizos div:has(input[type="checkbox"]:not(:checked)) { display: none !important; }
+            input[type="checkbox"] { display: none !important; }
         }
     </style>
 </head>
@@ -168,9 +137,15 @@
                     <h2 id="res-nombre" class="text-3xl font-black uppercase italic">NOMBRE</h2>
                     <p id="res-clase-esp" class="text-slate-600 font-bold"></p>
                 </div>
-                <div class="text-right">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase">Puntos de Golpe</p>
-                    <p id="res-hp" class="text-4xl font-black text-red-600">--</p>
+                <div class="text-right flex gap-4">
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Clase de Armadura</p>
+                        <p id="res-ca" class="text-4xl font-black text-blue-600">--</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase">Puntos de Golpe</p>
+                        <p id="res-hp" class="text-4xl font-black text-red-600">--</p>
+                    </div>
                 </div>
             </div>
 
@@ -216,27 +191,26 @@
             const trId = document.getElementById('select-trasfondo').value;
             const nivel = parseInt(document.getElementById('nivel').value) || 1;
             
-            // 2. BUSCAR DATOS EN EL JSON (Definirlos todos antes de usarlos)
+            // 2. BUSCAR DATOS EN EL JSON
             const esp = dndData.especies.find(e => e.id === espId);
             const cl = dndData.clases.find(c => c.id === clId);
             const tr = dndData.trasfondos.find(t => t.id === trId);
             const modCon = getMod(document.getElementById('score-con').value);
+            const modDex = getMod(document.getElementById('score-dex').value);
 
-            // 3. LÓGICA DE SUBIDA DE NIVEL (HP)
+            // 3. LÓGICA DE HP Y CA
             const hpNivel1 = cl.hp_base + modCon;
-            // El "promedio" del dado es (Base / 2) + 1. Ej: en un d10 es 6.
             const hpAdicional = (nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + modCon);
             const hpTotal = hpNivel1 + hpAdicional;
 
-            // Lógica de CA básica (10 + Destreza)
-            let caBase = 10 + getMod(document.getElementById('score-dex').value);
+            // --- AQUÍ ESTÁ EL PUNTO 3 (Cálculo de Armadura) ---
+            let caBase = 10 + modDex;
+            if (clId === 'guerrero' || clId === 'paladin' || clId === 'clerigo') caBase = 16; 
+            if (clId === 'picaro' || clId === 'bardo' || clId === 'explorador') caBase += 2;
 
-            // Si tiene armadura en su equipo inicial, le damos un bono (simplificado)
-            if (clId === 'guerrero' || clId === 'paladin' || clId === 'clerigo') caBase = 16; // Armadura pesada
-            if (clId === 'picaro' || clId === 'bardo' || clId === 'explorador') caBase += 2; // Armadura ligera
-
-            // Mostrarlo en el resumen (Añade un ID 'res-ca' en tu HTML cerca del HP)
-            document.getElementById('res-ca').innerText = caBase;
+            const resCa = document.getElementById('res-ca');
+            if (resCa) { resCa.innerText = caBase; }
+            // --------------------------------------------------
 
             // 4. ACTUALIZAR MODIFICADORES DE ATRIBUTOS
             ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(stat => {
@@ -246,14 +220,13 @@
             });
 
             // 5. LÓGICA DE MAGIA
-
             if (cl.usa_magia || trId.includes("acolito") || trId.includes("sabio") || trId.includes("guia")) {
                 document.getElementById('seccion-magia').classList.remove('hidden');
                 renderizarHechizos(clId, nivel, espId, trId);
             } else {
                 document.getElementById('seccion-magia').classList.add('hidden');
                 document.getElementById('lista-hechizos').innerHTML = ""; 
-                document.getElementById('contador-hechizos').innerText = "0 Seleccionados"; // <-- Añade esto
+                document.getElementById('contador-hechizos').innerText = "0 Seleccionados";
             }
 
             // 6. LLENAR LA HOJA DE PERSONAJE (RESUMEN)
@@ -263,6 +236,8 @@
             document.getElementById('res-especie-rasgo').innerText = "Rasgo racial: " + esp.rasgo;
             document.getElementById('res-dote').innerText = tr.dote;
             document.getElementById('res-trasfondo-desc').innerText = tr.desc;
+            
+            // Llamar a las funciones de actualización
             actualizarRasgos(clId, nivel);
             actualizarEquipamiento(clId);
         }
