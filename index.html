@@ -49,6 +49,9 @@
         <button onclick="exportarPDF()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all">
             <span>📄 Descargar Ficha (PDF)</span>
         </button>
+        <button onclick="exportarIA()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all no-print">
+            <span>🤖 Copiar para IA</span>
+        </button>
     </div>
     <main class="max-w-3xl mx-auto space-y-6 pb-20">
         
@@ -352,6 +355,38 @@
             
             // Restaurar el título original
             document.title = tituloOriginal;
+        }
+
+        function exportarIA() {
+            // Recolectamos los datos actuales
+            const personaje = {
+                nombre: document.getElementById('nombre').value || "Sin nombre",
+                nivel: document.getElementById('nivel').value,
+                clase: document.getElementById('select-clase').value,
+                especie: document.getElementById('select-especie').value,
+                trasfondo: document.getElementById('select-trasfondo').value,
+                alineamiento: document.getElementById('alineamiento').value,
+                stats: {
+                    FUE: document.getElementById('score-str').value,
+                    DES: document.getElementById('score-dex').value,
+                    CON: document.getElementById('score-con').value,
+                    INT: document.getElementById('score-int').value,
+                    SAB: document.getElementById('score-wis').value,
+                    CAR: document.getElementById('score-cha').value
+                },
+                hp: document.getElementById('res-hp').innerText,
+                ca: document.getElementById('res-ca').innerText,
+                hechizos_preparados: Array.from(document.querySelectorAll('#lista-hechizos input:checked'))
+                    .map(cb => cb.closest('div').querySelector('p').innerText.trim())
+            };
+
+            // Convertimos a texto bonito (JSON)
+            const dataString = JSON.stringify(personaje, null, 2);
+
+            // Lo copiamos al portapapeles
+            navigator.clipboard.writeText(dataString).then(() => {
+                alert("¡Datos copiados! Ahora puedes pegarlos en el chat con Gemini.");
+            });
         }
 
         // ESTO ES LO QUE FALTA: Cargar el JSON y llenar los menús al iniciar
