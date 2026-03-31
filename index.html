@@ -126,12 +126,18 @@
         </section>
 
         <section id="seccion-magia" class="bg-slate-800 p-6 rounded-2xl border border-purple-500 hidden shadow-xl">
-            <h2 class="text-purple-400 font-bold mb-4 uppercase flex justify-between items-center">
+            <h2 class="text-purple-400 font-bold mb-2 uppercase flex justify-between items-center">
                 <span>✨ Libro de Hechizos</span>
                 <span id="contador-hechizos" class="text-xs bg-purple-900 px-2 py-1 rounded text-white">0 Seleccionados</span>
             </h2>
-            <div id="lista-hechizos" class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                </div>
+            
+            <div class="flex gap-4 mb-4 text-[10px] text-slate-400 border-b border-slate-700 pb-2">
+                <span><strong class="text-purple-300">V:</strong> Verbal (Voz fuerte)</span>
+                <span><strong class="text-purple-300">S:</strong> Somático (Gestos con las manos)</span>
+                <span><strong class="text-purple-300">M:</strong> Material (Objetos o Foco Arcano)</span>
+            </div>
+
+            <div id="lista-hechizos" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
         </section>
 
         <section id="resumen" class="bg-white text-slate-900 p-8 rounded-sm shadow-2xl border-t-8 border-red-600 space-y-4">
@@ -293,13 +299,21 @@
                 // Iconos de componentes
                 const ritualTag = h.ritual ? '<span class="bg-blue-600 text-[8px] px-1 rounded ml-1">RITUAL</span>' : '';
                 
+                const componentesFormateados = h.componentes.split(',').map(c => {
+                    let titulo = "";
+                    if(c.trim() === 'V') titulo = "Verbal (Requiere hablar)";
+                    if(c.trim() === 'S') titulo = "Somático (Requiere mover las manos)";
+                    if(c.trim() === 'M') titulo = "Material (Requiere objetos o foco)";
+                    return `<span title="${titulo}" class="cursor-help hover:text-purple-300">${c.trim()}</span>`;
+                }).join(', ');
+
                 contenedor.innerHTML += `
                     <div class="flex items-start gap-2 p-2 bg-slate-900 rounded border border-slate-700">
                         <input type="checkbox" class="mt-1 accent-purple-500" onclick="actualizarContador()">
                         <div class="flex-1">
                             <div class="flex justify-between items-center">
                                 <p class="font-bold text-sm text-purple-300">${h.nombre} ${ritualTag}</p>
-                                <span class="text-[9px] font-mono text-slate-500">${h.componentes}</span>
+                                <span class="text-[9px] font-mono text-slate-500">${componentesFormateados}</span>
                             </div>
                             <p class="text-[10px] text-slate-400 leading-tight">${h.desc}</p>
                         </div>
