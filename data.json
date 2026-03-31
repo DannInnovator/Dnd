@@ -12,31 +12,33 @@
     { "id": "aasimar", "nombre": "Aasimar", "rasgo": "Transformación celestial y curación.", "stats": "+2 Car, +1 Sab" }
   ],
   "clases": [
-    { "id": "barbaro", "nombre": "Bárbaro", "hp_base": 12, "habilidad_lvl1": "Furia y Defensa sin Armadura." },
-    { "id": "bardo", "nombre": "Bardo", "hp_base": 8, "habilidad_lvl1": "Inspiración Bárdica y Hechizos." },
-    { "id": "brujo", "nombre": "Brujo", "hp_base": 8, "habilidad_lvl1": "Magia de Pacto y Descarga Sobrenatural." },
-    { "id": "clerigo", "nombre": "Clérigo", "hp_base": 8, "habilidad_lvl1": "Dominios Divinos y Curación." },
-    { "id": "druida", "nombre": "Druida", "hp_base": 8, "habilidad_lvl1": "Forma Salvaje y Magia Natural." },
-    { "id": "explorador", "nombre": "Explorador", "hp_base": 10, "habilidad_lvl1": "Enemigo Predilecto y Rastreo." },
-    { "id": "mago", "nombre": "Mago", "hp_base": 6, "dado_vida": 6, "usa_magia": true },
-    { "id": "guerrero", "nombre": "Guerrero", "hp_base": 10, "dado_vida": 10, "usa_magia": false },
-    { "id": "hechicero", "nombre": "Hechicero", "hp_base": 6, "habilidad_lvl1": "Metamagia y Origen Mágico." },
-    { "id": "monje", "nombre": "Monje", "hp_base": 8, "habilidad_lvl1": "Artes Marciales y Defensa sin Armadura." },
-    { "id": "paladin", "nombre": "Paladín", "hp_base": 10, "habilidad_lvl1": "Imposición de Manos y Sentido Divino." },
-    { "id": "picaro", "nombre": "Pícaro", "hp_base": 8, "habilidad_lvl1": "Ataque Furtivo y Pericia." }
+    { "id": "barbaro", "nombre": "Bárbaro", "hp_base": 12, "habilidad_lvl1": "Furia y Defensa sin Armadura.", "usa_magia": false },
+    { "id": "bardo", "nombre": "Bardo", "hp_base": 8, "habilidad_lvl1": "Inspiración Bárdica y Hechizos.", "usa_magia": true },
+    { "id": "brujo", "nombre": "Brujo", "hp_base": 8, "habilidad_lvl1": "Magia de Pacto y Descarga Sobrenatural.", "usa_magia": true },
+    { "id": "clerigo", "nombre": "Clérigo", "hp_base": 8, "habilidad_lvl1": "Dominios Divinos y Curación.", "usa_magia": true },
+    { "id": "druida", "nombre": "Druida", "hp_base": 8, "habilidad_lvl1": "Forma Salvaje y Magia Natural.", "usa_magia": true },
+    { "id": "explorador", "nombre": "Explorador", "hp_base": 10, "habilidad_lvl1": "Enemigo Predilecto y Rastreo.", "usa_magia": true },
+    { "id": "guerrero", "nombre": "Guerrero", "hp_base": 10, "habilidad_lvl1": "Recuperar Aliento y Estilos.", "usa_magia": false },
+    { "id": "hechicero", "nombre": "Hechicero", "hp_base": 6, "habilidad_lvl1": "Metamagia y Origen Mágico.", "usa_magia": true },
+    { "id": "mago", "nombre": "Mago", "hp_base": 6, "habilidad_lvl1": "Libro de Hechizos y Recuperación.", "usa_magia": true },
+    { "id": "monje", "nombre": "Monje", "hp_base": 8, "habilidad_lvl1": "Artes Marciales y Ki.", "usa_magia": false },
+    { "id": "paladin", "nombre": "Paladín", "hp_base": 10, "habilidad_lvl1": "Imposición de Manos y Sentido Divino.", "usa_magia": true },
+    { "id": "picaro", "nombre": "Pícaro", "hp_base": 8, "habilidad_lvl1": "Ataque Furtivo y Pericia.", "usa_magia": false }
   ],
   "trasfondos": [
-    { "id": "acólito", "nombre": "Acólito", "dote": "Iniciado en la Magia (Clérigo)", "desc": "Has servido en un templo." },
+    { "id": "acolito", "nombre": "Acólito", "dote": "Iniciado en la Magia (Clérigo)", "desc": "Has servido en un templo." },
     { "id": "criminal", "nombre": "Criminal", "dote": "Alerta", "desc": "Tienes contactos en los bajos fondos." },
-    { "id": "graniero", "nombre": "Granjero", "dote": "Duro (Tough)", "desc": "Una vida de trabajo duro te ha hecho resistente." },
+    { "id": "granjero", "nombre": "Granjero", "dote": "Duro (Tough)", "desc": "Una vida de trabajo duro te ha hecho resistente." },
     { "id": "guia", "nombre": "Guía", "dote": "Iniciado en la Magia (Druida)", "desc": "Vives en armonía con la naturaleza." },
-    { "id": "noble", "nombre": "Noble", "dote": "Caminante Hábil", "desc": "Nacido para liderar y con privilegios." },
-    { "id": "sabio", "nombre": "Sabio", "dote": "Iniciado en la Magia (Mago)", "desc": "Has dedicado tu vida al estudio." },
-    { "id": "soldado", "nombre": "Soldado", "dote": "Atleta", "desc": "Entrenado para la guerra y la disciplina." }
+    { "id": "noble", "nombre": "Noble", "dote": "Caminante Hábil", "desc": "Nacido para liderar." },
+    { "id": "sabio", "nombre": "Sabio", "dote": "Iniciado en la Magia (Mago)", "desc": "Dedicado al estudio." },
+    { "id": "soldado", "nombre": "Soldado", "dote": "Atleta", "desc": "Entrenado para la guerra." }
   ],
   "hechizos": [
     { "id": "fuego", "nombre": "Proyectil Mágico", "nivel": 1, "desc": "3 dardos de 1d4+1 de fuerza." },
     { "id": "curar", "nombre": "Curar Heridas", "nivel": 1, "desc": "Sana 1d8 + mod carisma/sabiduría." },
-    { "id": "escudo", "nombre": "Escudo", "nivel": 1, "desc": "+5 a la CA hasta tu próximo turno." }
+    { "id": "escudo", "nombre": "Escudo", "nivel": 1, "desc": "+5 a la CA hasta tu próximo turno." },
+    { "id": "grasa", "nombre": "Grasa", "nivel": 1, "desc": "Suelo resbaladizo en área." },
+    { "id": "dormir", "nombre": "Dormir", "nivel": 1, "desc": "Sume en sueño mágico a enemigos cercanos." }
   ]
 }
