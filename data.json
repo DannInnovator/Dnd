@@ -64,5 +64,18 @@
     { "id": "detener_t", "nombre": "Detener el Tiempo", "nivel": 9, "clases": ["mago", "hechicero"], "componentes": "V", "ritual": false, "desc": "Te da 1d4+1 turnos extra de forma inmediata." },
     { "id": "deseo", "nombre": "Deseo", "nivel": 9, "clases": ["mago", "hechicero"], "componentes": "V", "ritual": false, "desc": "El hechizo más poderoso. Copia cualquier otro o altera la realidad." },
     { "id": "palabra_matar", "nombre": "Palabra de Poder Matar", "nivel": 9, "clases": ["bardo", "brujo", "hechicero", "mago"], "componentes": "V", "ritual": false, "desc": "Mata instantáneamente a criatura con < 100 HP." }
+  ],
+  "rasgos": [
+    { "id": "furia", "clase": "barbaro", "nivel": 1, "nombre": "Furia", "desc": "Bonus al daño y resistencia física." },
+    { "id": "inspiracion", "clase": "bardo", "nivel": 1, "nombre": "Inspiración Bárdica", "desc": "Das un d6 a un aliado para sus tiradas." },
+    { "id": "segundo_aliento", "clase": "guerrero", "nivel": 1, "nombre": "Segundo Aliento", "desc": "Recuperas 1d10 + nivel HP (Acc. Adicional)." },
+    { "id": "furtivo", "clase": "picaro", "nivel": 1, "nombre": "Ataque Furtivo", "desc": "+1d6 de daño si tienes ventaja." },
+    { "id": "oleada", "clase": "guerrero", "nivel": 2, "nombre": "Oleada de Acción", "desc": "Puedes realizar una acción adicional este turno." },
+    { "id": "accion_astuta", "clase": "picaro", "nivel": 2, "nombre": "Acción Astuta", "desc": "Correr, Destrabar o Esconderse como Acc. Adicional." },
+    { "id": "smite", "clase": "paladin", "nivel": 2, "nombre": "Castigo Divino", "desc": "Gasta espacio de magia para hacer daño radiante." },
+    { "id": "metamagia", "clase": "hechicero", "nivel": 3, "nombre": "Metamagia", "desc": "Modifica tus hechizos (Alcance, Duración, etc)." },
+    { "id": "ataque_extra", "clase": "guerrero", "nivel": 5, "nombre": "Ataque Extra", "desc": "Atacas dos veces por cada acción de ataque." },
+    { "id": "aura_proteccion", "clase": "paladin", "nivel": 6, "nombre": "Aura de Protección", "desc": "+Mod Carisma a salvaciones propias y de aliados a 10 pies." },
+    { "id": "indomable", "clase": "guerrero", "nivel": 9, "nombre": "Indomable", "desc": "Repite una tirada de salvación fallida." }
   ]
 }

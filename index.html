@@ -106,8 +106,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <h4 class="font-black text-xs border-b border-slate-300 mb-2 uppercase tracking-widest text-red-600">Rasgos y Habilidades</h4>
-                    <p id="res-habilidad" class="text-sm leading-tight mb-2"></p>
-                    <p id="res-especie-rasgo" class="text-sm italic text-slate-600"></p>
+                    <div id="res-rasgos-lista" class="space-y-2">
+                        </div>
+                    <p id="res-especie-rasgo" class="text-sm italic text-slate-600 mt-2 border-t pt-2"></p>
                 </div>
                 <div class="bg-slate-100 p-4 rounded-lg">
                     <h4 class="font-black text-xs uppercase mb-1 text-slate-500">Dote de Trasfondo</h4>
@@ -167,10 +168,10 @@
             document.getElementById('res-nombre').innerText = nombre;
             document.getElementById('res-clase-esp').innerText = `${esp.nombre} ${cl.nombre} (Nivel ${nivel}) | ${alineamiento}`;
             document.getElementById('res-hp').innerText = hpTotal;
-            document.getElementById('res-habilidad').innerText = cl.habilidad_lvl1;
             document.getElementById('res-especie-rasgo').innerText = "Rasgo racial: " + esp.rasgo;
             document.getElementById('res-dote').innerText = tr.dote;
             document.getElementById('res-trasfondo-desc').innerText = tr.desc;
+            actualizarRasgos(clId, nivel);
         }
 
         function renderizarHechizos(claseId, nivelPersonaje, especieId, trasfondoId) {
@@ -215,6 +216,33 @@
                             </div>
                             <p class="text-[10px] text-slate-400 leading-tight">${h.desc}</p>
                         </div>
+                    </div>
+                `;
+            });
+        }
+
+        function actualizarRasgos(claseId, nivelPersonaje) {
+            const contenedor = document.getElementById('res-rasgos-lista');
+            if (!dndData.rasgos) return;
+
+            contenedor.innerHTML = "";
+
+            // Filtramos rasgos de la clase que sean de nivel actual o menor
+            const rasgosVisibles = dndData.rasgos.filter(r => 
+                r.clase === claseId && r.nivel <= nivelPersonaje
+            );
+
+            if (rasgosVisibles.length === 0) {
+                contenedor.innerHTML = "<p class='text-xs text-slate-400 italic'>Sin rasgos de clase adicionales aún.</p>";
+                return;
+            }
+
+            rasgosVisibles.forEach(r => {
+                contenedor.innerHTML += `
+                    <div class="mb-2">
+                        <span class="text-[10px] font-bold bg-red-100 text-red-700 px-1 rounded">Nivel ${r.nivel}</span>
+                        <p class="text-sm font-black text-slate-800">${r.nombre}</p>
+                        <p class="text-xs text-slate-600 leading-tight">${r.desc}</p>
                     </div>
                 `;
             });
