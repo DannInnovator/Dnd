@@ -189,6 +189,38 @@
                 `;
             });
         }
+
+        // ESTO ES LO QUE FALTA: Cargar el JSON y llenar los menús al iniciar
+        fetch('./data.json')
+            .then(res => {
+                if (!res.ok) throw new Error("No se pudo cargar el archivo data.json");
+                return res.json();
+            })
+            .then(data => {
+                dndData = data;
+                const selEsp = document.getElementById('select-especie');
+                const selCl = document.getElementById('select-clase');
+                const selTr = document.getElementById('select-trasfondo');
+
+                // Llenar Especies
+                data.especies.forEach(e => {
+                    selEsp.innerHTML += `<option value="${e.id}">${e.nombre}</option>`;
+                });
+
+                // Llenar Clases
+                data.clases.forEach(c => {
+                    selCl.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+                });
+
+                // Llenar Trasfondos
+                data.trasfondos.forEach(t => {
+                    selTr.innerHTML += `<option value="${t.id}">${t.nombre}</option>`;
+                });
+
+                // Ejecutar actualización inicial para que la hoja no esté vacía
+                actualizar();
+            })
+            .catch(error => console.error("Error crítico:", error));
     </script>
 </body>
 </html>
