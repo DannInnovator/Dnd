@@ -35,12 +35,13 @@
         { "id": "soldado", "nombre": "Soldado", "dote": "Atleta", "desc": "Entrenado para la guerra." }
     ],
     "hechizos": [
-        { "id": "fuego", "nombre": "Proyectil Mágico", "nivel": 1, "clases": ["mago", "hechicero"], "desc": "3 dardos de 1d4+1." },
-        { "id": "curar", "nombre": "Curar Heridas", "nivel": 1, "clases": ["clerigo", "bardo", "druida", "paladin", "explorador"], "desc": "Sana 1d8 + mod." },
-        { "id": "escudo", "nombre": "Escudo", "nivel": 1, "clases": ["mago", "hechicero"], "desc": "+5 a la CA." },
-        { "id": "grasa", "nombre": "Grasa", "nivel": 1, "clases": ["mago"], "desc": "Suelo resbaladizo." },
-        { "id": "colera", "nombre": "Castigo Atronador", "nivel": 1, "clases": ["paladin"], "desc": "2d6 daño trueno extra." },
-        { "id": "animales", "nombre": "Hablar con Animales", "nivel": 1, "clases": ["druida", "explorador", "bardo"], "desc": "Entiendes a las bestias." },
-        { "id": "bola-fuego", "nombre": "Bola de Fuego", "nivel": 3, "clases": ["mago", "hechicero"], "desc": "8d6 de daño de fuego en área." }
+        { "id": "proyectil", "nombre": "Proyectil Mágico", "nivel": 1, "clases": ["mago", "hechicero"], "componentes": "V, S", "ritual": false, "desc": "3 dardos de 1d4+1 fuerza." },
+        { "id": "curar", "nombre": "Curar Heridas", "nivel": 1, "clases": ["clerigo", "bardo", "druida", "paladin", "explorador"], "componentes": "V, S", "ritual": false, "desc": "Sana 1d8 + mod." },
+        { "id": "escudo", "nombre": "Escudo", "nivel": 1, "clases": ["mago", "hechicero"], "componentes": "V, S", "ritual": false, "desc": "+5 CA hasta sig. turno." },
+        { "id": "detectar_magia", "nombre": "Detectar Magia", "nivel": 1, "clases": ["mago", "clerigo", "druida", "bardo"], "componentes": "V, S", "ritual": true, "desc": "Ves auras mágicas a 30 pies." },
+        { "id": "bendicion", "nombre": "Bendición", "nivel": 1, "clases": ["clerigo", "paladin"], "componentes": "V, S, M", "ritual": false, "desc": "+1d4 a ataques y salvaciones." },
+        { "id": "bola_fuego", "nombre": "Bola de Fuego", "nivel": 3, "clases": ["mago", "hechicero"], "componentes": "V, S, M", "ritual": false, "desc": "8d6 fuego en radio 20 pies." },
+        { "id": "paso_brumoso", "nombre": "Paso Brumoso", "nivel": 2, "clases": ["mago", "hechicero", "brujo"], "componentes": "V", "ritual": false, "desc": "Teletransporte 30 pies (Acc. adicional)." },
+        { "id": "identificar", "nombre": "Identificar", "nivel": 1, "clases": ["mago", "bardo"], "componentes": "V, S, M", "ritual": true, "desc": "Conoces propiedades de un objeto." }
     ]
 }
