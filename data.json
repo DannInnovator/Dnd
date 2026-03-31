@@ -69,13 +69,21 @@
     { "id": "furia", "clase": "barbaro", "nivel": 1, "nombre": "Furia", "desc": "Bonus al daño y resistencia física." },
     { "id": "inspiracion", "clase": "bardo", "nivel": 1, "nombre": "Inspiración Bárdica", "desc": "Das un d6 a un aliado para sus tiradas." },
     { "id": "segundo_aliento", "clase": "guerrero", "nivel": 1, "nombre": "Segundo Aliento", "desc": "Recuperas 1d10 + nivel HP (Acc. Adicional)." },
-    { "id": "furtivo", "clase": "picaro", "nivel": 1, "nombre": "Ataque Furtivo", "desc": "+1d6 de daño si tienes ventaja." },
     { "id": "oleada", "clase": "guerrero", "nivel": 2, "nombre": "Oleada de Acción", "desc": "Puedes realizar una acción adicional este turno." },
-    { "id": "accion_astuta", "clase": "picaro", "nivel": 2, "nombre": "Acción Astuta", "desc": "Correr, Destrabar o Esconderse como Acc. Adicional." },
     { "id": "smite", "clase": "paladin", "nivel": 2, "nombre": "Castigo Divino", "desc": "Gasta espacio de magia para hacer daño radiante." },
     { "id": "metamagia", "clase": "hechicero", "nivel": 3, "nombre": "Metamagia", "desc": "Modifica tus hechizos (Alcance, Duración, etc)." },
     { "id": "ataque_extra", "clase": "guerrero", "nivel": 5, "nombre": "Ataque Extra", "desc": "Atacas dos veces por cada acción de ataque." },
     { "id": "aura_proteccion", "clase": "paladin", "nivel": 6, "nombre": "Aura de Protección", "desc": "+Mod Carisma a salvaciones propias y de aliados a 10 pies." },
-    { "id": "indomable", "clase": "guerrero", "nivel": 9, "nombre": "Indomable", "desc": "Repite una tirada de salvación fallida." }
+    { "id": "indomable", "clase": "guerrero", "nivel": 9, "nombre": "Indomable", "desc": "Repite una tirada de salvación fallida." },
+    { "id": "escuela", "clase": "mago", "nivel": 2, "nombre": "Subclase Arcaica", "desc": "Eliges tu especialización mágica." },
+    { "id": "rec_arcana", "clase": "mago", "nivel": 1, "nombre": "Recuperación Arcana", "desc": "Una vez al día, tras un descanso corto, recuperas espacios de conjuro (suma de niveles = mitad de tu nivel de mago)." },
+    { "id": "erudicion", "clase": "mago", "nivel": 2, "nombre": "Erudición de Subclase", "desc": "Eliges tu Escuela de Magia (Evocación, Abjuración, etc.)." },
+    { "id": "mejora_carac", "clase": "mago", "nivel": 4, "nombre": "Mejora de Característica", "desc": "Aumentas una puntuación de característica en 2 o dos en 1." },
+    { "id": "furtivo", "clase": "picaro", "nivel": 1, "nombre": "Ataque Furtivo", "desc": "Haces 1d6 de daño extra (sube con el nivel) si tienes ventaja o un aliado cerca del objetivo." },
+    { "id": "jerga", "clase": "picaro", "nivel": 1, "nombre": "Jerga de Ladrones", "desc": "Conoces el lenguaje secreto de los bajos fondos." },
+    { "id": "pericia", "clase": "picaro", "nivel": 1, "nombre": "Pericia", "desc": "Duplicas tu bono de competencia en dos habilidades elegidas." },
+    { "id": "accion_astuta", "clase": "picaro", "nivel": 2, "nombre": "Acción Astuta", "desc": "Puedes usar una Acción Adicional para Correr, Destrabarte o Esconderte." },
+    { "id": "arquetipo_p", "clase": "picaro", "nivel": 3, "nombre": "Arquetipo de Pícaro", "desc": "Eliges tu especialidad (Ladrón, Asesino, etc.)." },
+    { "id": "esquiva_as", "clase": "picaro", "nivel": 5, "nombre": "Esquiva Asombrosa", "desc": "Cuando un atacante que puedes ver te impacta, usas tu reacción para reducir el daño a la mitad." }
   ]
 }
