@@ -63,7 +63,19 @@
     { "id": "mente_vacia", "nombre": "Mente en Blanco", "nivel": 8, "clases": ["mago", "bardo"], "componentes": "V, S", "ritual": false, "desc": "Inmunidad total a daño psíquico y detección mental." },
     { "id": "detener_t", "nombre": "Detener el Tiempo", "nivel": 9, "clases": ["mago", "hechicero"], "componentes": "V", "ritual": false, "desc": "Te da 1d4+1 turnos extra de forma inmediata." },
     { "id": "deseo", "nombre": "Deseo", "nivel": 9, "clases": ["mago", "hechicero"], "componentes": "V", "ritual": false, "desc": "El hechizo más poderoso. Copia cualquier otro o altera la realidad." },
-    { "id": "palabra_matar", "nombre": "Palabra de Poder Matar", "nivel": 9, "clases": ["bardo", "brujo", "hechicero", "mago"], "componentes": "V", "ritual": false, "desc": "Mata instantáneamente a criatura con < 100 HP." }
+    { "id": "palabra_matar", "nombre": "Palabra de Poder Matar", "nivel": 9, "clases": ["bardo", "brujo", "hechicero", "mago"], "componentes": "V", "ritual": false, "desc": "Mata instantáneamente a criatura con < 100 HP." },
+    { "id": "shillelagh", "clases": ["druida"], "nivel": 0, "nombre": "Shillelagh", "componentes": "V,S,M", "ritual": false, "desc": "Tu bastón se imbuye de poder. Usas tu Sabiduría para atacar y hace 1d8 de daño mágico." },
+    { "id": "druidcraft", "clases": ["druida"], "nivel": 0, "nombre": "Artificio Druídico", "componentes": "V,S", "ritual": false, "desc": "Creas efectos sensoriales minúsculos: flores que brotan, olor a lluvia o predicción del tiempo." },
+    { "id": "produce_flame", "clases": ["druida"], "nivel": 0, "nombre": "Producir Llama", "componentes": "V,S", "ritual": false, "desc": "Una llama aparece en tu mano. Ilumina y puedes lanzarla para hacer 1d8 de daño de fuego." },
+    { "id": "entangle", "clases": ["druida"], "nivel": 1, "nombre": "Enmarañar", "componentes": "V,S", "ritual": false, "desc": "Plantas y raíces brotan del suelo en un área de 20 pies, dejando a los enemigos apresados." },
+    { "id": "cure_wounds_d", "clases": ["druida"], "nivel": 1, "nombre": "Curar Heridas", "componentes": "V,S", "ritual": false, "desc": "Tocas a una criatura y recupera 1d8 + tu modificador de Sabiduría en puntos de golpe." },
+    { "id": "goodberry", "clases": ["druida"], "nivel": 1, "nombre": "Bayas de Buena Baya", "componentes": "V,S,M", "ritual": false, "desc": "Creas 10 bayas mágicas. Cada una cura 1 HP y proporciona sustento para todo un día." },
+    { "id": "faerie_fire", "clases": ["druida"], "nivel": 1, "nombre": "Fuego Feérico", "componentes": "V", "ritual": false, "desc": "Rodeas a los enemigos con luz. Todos los ataques contra ellos tienen ventaja y no pueden ser invisibles." },
+    { "id": "spike_growth", "clases": ["druida"], "nivel": 2, "nombre": "Crecimiento de Espinas", "componentes": "V,S,M", "ritual": false, "desc": "El suelo se llena de espinas camufladas. Las criaturas reciben 2d4 de daño por cada 5 pies que se muevan." },
+    { "id": "moonbeam", "clases": ["druida"], "nivel": 2, "nombre": "Haz Lunar", "componentes": "V,S,M", "ritual": false, "desc": "Un rayo de luz plateada baja del cielo. Hace 2d10 de daño radiante por turno en un cilindro." },
+    { "id": "pass_without_trace", "clases": ["druida"], "nivel": 2, "nombre": "Pasar sin dejar rastro", "componentes": "V,S,M", "ritual": false, "desc": "Un velo de sombras os rodea. Todo el grupo recibe un +10 a sus tiradas de Sigilo." },
+    { "id": "call_lightning", "clases": ["druida"], "nivel": 3, "nombre": "Llamar al Relámpago", "componentes": "V,S", "ritual": false, "desc": "Invocas una nube de tormenta. Cada turno puedes hacer que caiga un rayo que hace 3d10 de daño de relámpago." },
+    { "id": "conjure_animals", "clases": ["druida"], "nivel": 3, "nombre": "Conjurar Animales", "componentes": "V,S", "ritual": false, "desc": "Invocas espíritus que toman forma de bestias (ej: 8 lobos o 2 osos) para que luchen por ti." }
   ],
   "rasgos": [
     { "id": "furia", "clase": "barbaro", "nivel": 1, "nombre": "Furia", "desc": "Bonus al daño y resistencia física." },
@@ -84,13 +96,19 @@
     { "id": "pericia", "clase": "picaro", "nivel": 1, "nombre": "Pericia", "desc": "Duplicas tu bono de competencia en dos habilidades elegidas." },
     { "id": "accion_astuta", "clase": "picaro", "nivel": 2, "nombre": "Acción Astuta", "desc": "Puedes usar una Acción Adicional para Correr, Destrabarte o Esconderte." },
     { "id": "arquetipo_p", "clase": "picaro", "nivel": 3, "nombre": "Arquetipo de Pícaro", "desc": "Eliges tu especialidad (Ladrón, Asesino, etc.)." },
-    { "id": "esquiva_as", "clase": "picaro", "nivel": 5, "nombre": "Esquiva Asombrosa", "desc": "Cuando un atacante que puedes ver te impacta, usas tu reacción para reducir el daño a la mitad." }
+    { "id": "esquiva_as", "clase": "picaro", "nivel": 5, "nombre": "Esquiva Asombrosa", "desc": "Cuando un atacante que puedes ver te impacta, usas tu reacción para reducir el daño a la mitad." },
+    { "id": "dru_idioma", "clase": "druida", "nivel": 1, "nombre": "Druídico", "desc": "Conoces el lenguaje secreto de los druidas." },
+    { "id": "dru_magia", "clase": "druida", "nivel": 1, "nombre": "Lanzamiento de Conjuros", "desc": "Usas Sabiduría para lanzar hechizos de la naturaleza." },
+    { "id": "forma_salvaje", "clase": "druida", "nivel": 2, "nombre": "Forma Salvaje (2 usos)", "desc": "Puedes transformarte en una bestia que hayas visto (Niv 2: CR 1/4, sin volar ni nadar)." },
+    { "id": "circulo_d", "clase": "druida", "nivel": 2, "nombre": "Círculo Druídico", "desc": "Eliges tu especialización (Círculo de la Luna, Tierra, etc.)." },
+    { "id": "mejora_dru", "clase": "druida", "nivel": 4, "nombre": "Mejora de Característica", "desc": "Subes un atributo +2 o dos atributos +1." },
+    { "id": "forma_mejora", "clase": "druida", "nivel": 4, "nombre": "Forma Salvaje Mejorada", "desc": "Ahora puedes transformarte en bestias con velocidad de natación (CR 1/2)." }
   ],
   "equipamiento_inicial": {
     "barbaro": ["Hacha a dos manos", "Jabalina (x4)", "Pack de explorador"],
     "bardo": ["Estoque", "Laúd", "Pack de artista", "Armadura de cuero"],
     "clerigo": ["Maza", "Cota de escamas", "Escudo", "Símbolo sagrado"],
-    "druida": ["Cimitarra", "Escudo de madera", "Foco de hierbas", "Armadura de cuero"],
+    "druida": ["Cimitarra", "Escudo de madera", "Armadura de cuero", "Foco Druídico (Muérdago o Bastón de tejo)"],
     "guerrero": ["Espada larga", "Escudo", "Cota de malla", "Arco largo"],
     "mago": ["Daga", "Bastón", "Libro de conjuros", "Bolsa de componentes"],
     "monje": ["Bastón", "Dardo (x10)", "Pack de explorador"],

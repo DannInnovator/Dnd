@@ -243,6 +243,22 @@
             // Llamar a las funciones de actualización
             actualizarRasgos(clId, nivel);
             actualizarEquipamiento(clId);
+            
+            // Cosas para Druida
+            if (clId === 'druida') {
+                const listaRasgos = document.getElementById('res-rasgos-lista');
+                let guiaForma = "";
+                
+                if (nivel < 4) guiaForma = "🐾 Formas sugeridas: Lobo, Araña Gigante, Jabalí.";
+                else if (nivel < 8) guiaForma = "🐟 Formas sugeridas: Cocodrilo, Tiburón arrecife (puedes nadar).";
+                else guiaForma = "🦅 Formas sugeridas: Águila gigante, Búho (puedes volar).";
+
+                listaRasgos.innerHTML += `
+                    <div class="mt-2 p-2 bg-green-50 border-l-4 border-green-500 text-[10px] text-green-800 italic">
+                        ${guiaForma}
+                    </div>
+                `;
+            }
         }
 
         function renderizarHechizos(claseId, nivelPersonaje, especieId, trasfondoId) {
