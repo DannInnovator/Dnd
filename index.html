@@ -175,21 +175,23 @@
 
         function renderizarHechizos(claseId, nivelPersonaje, especieId, trasfondoId) {
             const contenedor = document.getElementById('lista-hechizos');
+            const tituloMagia = document.querySelector('#seccion-magia h2');
             if (!dndData.hechizos) return;
 
             contenedor.innerHTML = ""; 
+            
+            // Cambiar título si es Monje
+            tituloMagia.innerText = (claseId === 'monje') ? "🧘 Técnicas de Disciplina (Ki)" : "✨ Libro de Hechizos";
 
-            // OBTENER DATOS DE ORIGEN
             const tr = dndData.trasfondos.find(t => t.id === trasfondoId);
-            // Verificamos si la dote del trasfondo es "Iniciado en la Magia"
             const tieneMagiaExtra = tr.dote.includes("Iniciado en la Magia");
             
-            // FILTRAR HECHIZOS
             const hechizosFiltrados = dndData.hechizos.filter(h => {
                 const porClase = h.clases.includes(claseId);
-                // Si el trasfondo da magia de Clérigo, incluimos hechizos de Clérigo
                 const porTrasfondo = tieneMagiaExtra && tr.dote.includes(h.clases[0]); 
-                const nivelApto = h.nivel <= Math.ceil(nivelPersonaje / 2);
+                
+                // Nivel 0 siempre se muestra. Para el resto: NivelHechizo <= PJ_Nivel/2
+                const nivelApto = (h.nivel === 0) || (h.nivel <= Math.max(1, Math.ceil(nivelPersonaje / 2)));
                 
                 return (porClase || porTrasfondo) && nivelApto;
             });
