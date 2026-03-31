@@ -175,18 +175,24 @@
 
         function renderizarHechizos() {
             const contenedor = document.getElementById('lista-hechizos');
-            if (contenedor.innerHTML !== "") return; // Evitar duplicados
+            
+            // Si no hay datos de hechizos todavía, esperamos.
+            if (!dndData.hechizos) return;
+
+            // Limpiamos el contenedor antes de llenar para que siempre esté fresco
+            contenedor.innerHTML = ""; 
 
             dndData.hechizos.forEach(h => {
-                contenedor.innerHTML += `
-                    <div class="flex items-start gap-2 p-2 bg-slate-900 rounded border border-slate-700">
-                        <input type="checkbox" class="mt-1">
-                        <div>
-                            <p class="font-bold text-sm text-purple-300">${h.nombre}</p>
-                            <p class="text-[10px] text-slate-400">${h.desc}</p>
-                        </div>
+                const div = document.createElement('div');
+                div.className = "flex items-start gap-2 p-2 bg-slate-900 rounded border border-slate-700 hover:border-purple-500 transition-colors";
+                div.innerHTML = `
+                    <input type="checkbox" class="mt-1 accent-purple-500">
+                    <div>
+                        <p class="font-bold text-sm text-purple-300">${h.nombre}</p>
+                        <p class="text-[10px] text-slate-400 leading-tight">${h.desc}</p>
                     </div>
                 `;
+                contenedor.appendChild(div);
             });
         }
 
