@@ -162,14 +162,18 @@
                     <h2 id="res-nombre" class="text-3xl font-black uppercase italic">NOMBRE</h2>
                     <p id="res-clase-esp" class="text-slate-600 font-bold"></p>
                 </div>
-                <div class="text-right flex gap-4">
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Clase de Armadura</p>
-                        <p id="res-ca" class="text-4xl font-black text-blue-600">--</p>
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-red-50 p-2 rounded border border-red-200">
+                        <p class="text-xs font-bold text-red-700 uppercase">Vida (HP)</p>
+                        <p id="res-hp" class="text-2xl font-black text-red-600">0</p>
                     </div>
-                    <div>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase">Puntos de Golpe</p>
-                        <p id="res-hp" class="text-4xl font-black text-red-600">--</p>
+                    <div class="bg-blue-50 p-2 rounded border border-blue-200">
+                        <p class="text-xs font-bold text-blue-700 uppercase">Armadura (CA)</p>
+                        <p id="res-ca" class="text-2xl font-black text-blue-600">10</p>
+                    </div>
+                    <div class="bg-amber-50 p-2 rounded border border-amber-200">
+                        <p class="text-xs font-bold text-amber-700 uppercase">Iniciativa</p>
+                        <p id="res-iniciativa" class="text-2xl font-black text-amber-600">+0</p>
                     </div>
                 </div>
             </div>
@@ -259,6 +263,19 @@
             const resCa = document.getElementById('res-ca');
             if (resCa) { resCa.innerText = caBase; }
             // --------------------------------------------------
+
+            // --- CÁLCULO DE INICIATIVA ---
+            let iniciativa = modDex; // La iniciativa base es el modificador de Destreza
+
+            // Si el personaje es Humano o tiene el trasfondo que da Alerta, sumamos el bono de competencia (+2 a nivel 1)
+            const doteTexto = document.getElementById('res-dote').innerText;
+            if (doteTexto.includes("Alerta") || espId === 'humano') {
+                iniciativa += 2; // Suma el bono de competencia por la dote Alerta
+            }
+
+            // Le damos formato de texto con el símbolo "+" si es positivo
+            const signoIniciativa = iniciativa >= 0 ? "+" : "";
+            document.getElementById('res-iniciativa').innerText = signoIniciativa + iniciativa;
 
             // 4. ACTUALIZAR MODIFICADORES DE ATRIBUTOS
             ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(stat => {
@@ -466,6 +483,7 @@
                 },
                 hp: document.getElementById('res-hp').innerText,
                 ca: document.getElementById('res-ca').innerText,
+                iniciativa: document.getElementById('res-iniciativa').innerText, // <-- NUEVA LÍNEA
                 historia_trasfondo: document.getElementById('input-historia').value,
                 rasgos_rol_mesa: document.getElementById('input-rasgos-rol').value,
                 hechizos_preparados: Array.from(document.querySelectorAll('#lista-hechizos input:checked'))
@@ -500,7 +518,6 @@
                 // 2. Rellenamos las estadísticas (Atributos)
                 if (personaje.stats) {
                     if (personaje.stats.FUE) document.getElementById('score-str').value = personaje.stats.FUE;
-                    if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.FUE === personaje.stats.DES ? personaje.stats.DES : personaje.stats.DES; 
                     if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.DES;
                     if (personaje.stats.CON) document.getElementById('score-con').value = personaje.stats.CON;
                     if (personaje.stats.INT) document.getElementById('score-int').value = personaje.stats.INT;
@@ -512,10 +529,16 @@
                 if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
                 if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
 
-                // 4. Forzamos a la aplicación a recalcular la vida, la CA y refrescar la vista
+                // 4. Forzamos a la aplicación a recalcular la vida, la CA, la INICIATIVA y refrescar la vista
                 actualizar();
 
-                // 5. Si tenía hechizos guardados, los volvemos a marcar como seleccionados
+                // 5. Verificación de seguridad para la Iniciativa
+                // Si el JSON importado ya trae iniciativa calculada por la IA, la sobreescribimos en pantalla
+                if (personaje.iniciativa) {
+                    document.getElementById('res-iniciativa').innerText = personaje.iniciativa;
+                }
+
+                // 6. Si tenía hechizos guardados, los volvemos a marcar como seleccionados
                 if (personaje.hechizos_preparados && personaje.hechizos_preparados.length > 0) {
                     // Esperamos un milisegundo a que se renderice la lista de hechizos antes de marcarlos
                     setTimeout(() => {
@@ -527,11 +550,13 @@
                                 if (cb) cb.checked = true;
                             }
                         });
-                        actualizarContador(); // Actualiza el número de hechizos seleccionados en el título
+                        if (typeof actualizarContador === "function") {
+                            actualizarContador(); // Actualiza el número de hechizos seleccionados si la función existe
+                        }
                     }, 50);
                 }
 
-                alert("¡Personaje importado con éxito! Todo se ha actualizado.");
+                alert("¡Personaje importado con éxito! Todo se ha actualizado, incluyendo su Iniciativa.");
 
             } catch (error) {
                 // Si el JSON estaba roto o incompleto, avisamos del error para no romper la app
