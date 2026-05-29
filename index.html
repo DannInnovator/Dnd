@@ -290,7 +290,10 @@
             });
 
             // 7. LÓGICA DE MAGIA
-            if (cl.usa_magia || trId.includes("acolito") || trId.includes("sabio") || trId.includes("guia")) {
+            // Cambia la condición original por esta:
+            const tieneMagiaPorClase = cl.usa_magia && (clId !== 'paladin' && clId !== 'explorador' || nivel >= 2);
+
+            if (tieneMagiaPorClase || trId.includes("acolito") || trId.includes("sabio") || trId.includes("guia")) {
                 document.getElementById('seccion-magia').classList.remove('hidden');
                 renderizarHechizos(clId, nivel, espId, trId);
             } else {
@@ -339,7 +342,7 @@
                 `;
             }
 
-            // --- LÓGICA DE RECURSOS ESPECIALES (INSPIRACIÓN / KI) ---
+            // --- LÓGICA DE RECURSOS ESPECIALES (INSPIRACIÓN / KI / IMPOSICIÓN DE MANOS) ---
             const bloqueEspecial = document.getElementById('bloque-bardo-monje');
             const tituloEspecial = document.getElementById('titulo-especial');
             const resEspecial = document.getElementById('res-especial');
@@ -353,6 +356,11 @@
                 bloqueEspecial.className = "p-2 rounded border bg-cyan-50 border-cyan-200 text-cyan-700";
                 tituloEspecial.innerText = "Puntos de Ki";
                 resEspecial.innerText = nivel >= 2 ? nivel : 0; 
+            } else if (clId === 'paladin') {
+                // ¡NUEVO! Configuración para la reserva de curación del Paladín
+                bloqueEspecial.className = "p-2 rounded border bg-emerald-50 border-emerald-200 text-emerald-700";
+                tituloEspecial.innerText = "Salud Sagrada";
+                resEspecial.innerText = nivel * 5; // Regla oficial: Nivel x 5
             } else {
                 bloqueEspecial.classList.add('hidden');
             }
@@ -484,6 +492,7 @@
                 iniciativa: document.getElementById('res-iniciativa').innerText, 
                 inspiraciones: claseSeleccionada === 'bardo' ? document.getElementById('res-especial').innerText : "0",
                 puntos_ki: claseSeleccionada === 'monje' ? document.getElementById('res-especial').innerText : "0", 
+                salud_sagrada: claseSeleccionada === 'paladin' ? document.getElementById('res-especial').innerText : "0", // <-- NUEVA LÍNEA
                 historia_trasfondo: document.getElementById('input-historia').value,
                 rasgos_rol_mesa: document.getElementById('input-rasgos-rol').value,
                 hechizos_preparados: Array.from(document.querySelectorAll('#lista-hechizos input:checked'))
@@ -551,6 +560,10 @@
                 } else if (personaje.clase === 'monje' && personaje.puntos_ki) {
                     if (bloqueEsp) bloqueEsp.classList.remove('hidden');
                     document.getElementById('res-especial').innerText = personaje.puntos_ki;
+                } else if (personaje.clase === 'paladin' && personaje.salud_sagrada) {
+                    // ¡NUEVO!
+                    if (bloqueEsp) bloqueEsp.classList.remove('hidden');
+                    document.getElementById('res-especial').innerText = personaje.salud_sagrada;
                 }
 
                 // 6. Cargar Hechizos Seleccionados
