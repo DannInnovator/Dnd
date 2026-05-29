@@ -526,12 +526,25 @@
         }
 
         function importarIA() {
-            // Le pedimos al usuario que pegue el texto JSON en una ventana emergente
-            const jsonTexto = prompt("Pega aquí el código JSON de tu personaje exportado:");
+            let jsonTexto = prompt("Pega aquí el código JSON de tu personaje exportado:");
             
             if (!jsonTexto) return; // Si cancela, no hacemos nada
 
             try {
+                // --- AQUÍ ESTÁ EL BLINDAJE ---
+                // 1. Reemplaza comillas curvadas de apertura y cierre por comillas rectas válidas
+                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"');
+                
+                // 2. Limpia posibles comillas dobles repetidas ("") si vienen de un chat
+                jsonTexto = jsonTexto.replace(/""/g, '"');
+                
+                // 3. Quita comillas que hayan quedado envolviendo todo el JSON en los extremos
+                jsonTexto = jsonTexto.trim();
+                if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
+                    jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
+                }
+                // -----------------------------
+
                 // Convertimos el texto de vuelta a un objeto de JavaScript
                 const personaje = JSON.parse(jsonTexto);
 
@@ -564,7 +577,7 @@
                 if (personaje.iniciativa) {
                     document.getElementById('res-iniciativa').innerText = personaje.iniciativa;
                 }
-
+                
                 // Control de recursos especiales al importar
                 const bloqueEsp = document.getElementById('bloque-bardo-monje');
                 if (personaje.clase === 'bardo' && personaje.inspiraciones) {
@@ -577,7 +590,6 @@
 
                 // 6. Si tenía hechizos guardados, los volvemos a marcar como seleccionados
                 if (personaje.hechizos_preparados && personaje.hechizos_preparados.length > 0) {
-                    // Esperamos un milisegundo a que se renderice la lista de hechizos antes de marcarlos
                     setTimeout(() => {
                         const checkboxes = document.querySelectorAll('#lista-hechizos div');
                         checkboxes.forEach(div => {
@@ -588,20 +600,19 @@
                             }
                         });
                         if (typeof actualizarContador === "function") {
-                            actualizarContador(); // Actualiza el número de hechizos seleccionados si la función existe
+                            actualizarContador();
                         }
                     }, 50);
                 }
 
-                alert("¡Personaje importado con éxito! Todo se ha actualizado, incluyendo Iniciativa e Inspiraciones.");
+                alert("¡Personaje importado con éxito! El sistema corrigió las comillas automáticamente.");
 
             } catch (error) {
-                // Si el JSON estaba roto o incompleto, avisamos del error para no romper la app
                 console.error(error);
-                alert("¡Error al importar! Asegúrate de haber copiado el texto JSON completo y exacto.");
+                alert("¡Error al importar! El formato del texto sigue teniendo caracteres incompatibles.");
             }
         }
-        
+
         // ESTO ES LO QUE FALTA: Cargar el JSON y llenar los menús al iniciar
         fetch('./data.json')
             .then(res => {
