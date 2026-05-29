@@ -29,7 +29,7 @@
     { "id": "acolito", "nombre": "Acólito", "dote": "Iniciado en la Magia (Clérigo)", "desc": "Has servido en un templo." },
     { "id": "criminal", "nombre": "Criminal", "dote": "Alerta", "desc": "Contactos en bajos fondos." },
     { "id": "granjero", "nombre": "Granjero", "dote": "Duro (Tough)", "desc": "Resistencia física superior." },
-    { "id": "guia", "nombre": "Guía", "dote": "Iniciado en la Magia (Druida)", "desc": "Armonía con la naturaleza. (Nota: Si aplicas dotes de reglas 2024, este trasfondo otorga la dote Alerta)." },
+    { "id": "guia", "nombre": "Guía", "dote": "Alerta", "desc": "Armonía con la naturaleza y reflejos felinos en entornos salvajes." },
     { "id": "noble", "nombre": "Noble", "dote": "Caminante Hábil", "desc": "Nacido para liderar." },
     { "id": "sabio", "nombre": "Sabio", "dote": "Iniciado en la Magia (Mago)", "desc": "Dedicado al estudio arcano." },
     { "id": "soldado", "nombre": "Soldado", "dote": "Atleta", "desc": "Entrenado para la guerra." }

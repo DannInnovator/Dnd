@@ -278,7 +278,12 @@
             document.getElementById('res-clase-esp').innerText = `${esp.nombre} ${cl.nombre} (Nivel ${nivel}) | ${alineamiento}`;
             document.getElementById('res-hp').innerText = hpTotal;
             document.getElementById('res-especie-rasgo').innerText = "Rasgo racial: " + esp.rasgo;
-            document.getElementById('res-dote').innerText = tr.dote;
+            // Si eres humano, te avisa que tienes una dote extra a elegir además de la de tu trasfondo
+            if (espId === 'humano') {
+                document.getElementById('res-dote').innerText = tr.dote + " + [Dote Extra por Humano: Alerta]";
+            } else {
+                document.getElementById('res-dote').innerText = tr.dote;
+            }
             document.getElementById('res-trasfondo-desc').innerText = tr.desc;
             
             const bloqueHist = document.getElementById('bloque-res-historia');
