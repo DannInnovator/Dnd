@@ -125,6 +125,18 @@
             </div>
         </section>
 
+        <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4 no-print">
+            <h2 class="text-lg font-bold text-blue-400 uppercase border-b border-slate-700 pb-2">Narrativa y Rol Personalizado</h2>
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Historia del Trasfondo (Biografía)</label>
+                <textarea id="input-historia" rows="5" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:border-blue-500 outline-none text-sm text-slate-200" placeholder="Escribe aquí la crónica de tu personaje..." oninput="actualizar()"></textarea>
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Rasgos de Rol en la Mesa (Interpretación)</label>
+                <textarea id="input-rasgos-rol" rows="4" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:border-blue-500 outline-none text-sm text-slate-200" placeholder="Ej: Manías, principios de interpretación..." oninput="actualizar()"></textarea>
+            </div>
+        </section>
+
         <section id="seccion-magia" class="bg-slate-800 p-6 rounded-2xl border border-purple-500 hidden shadow-xl">
             <h2 class="text-purple-400 font-bold mb-2 uppercase flex justify-between items-center">
                 <span>✨ Libro de Hechizos</span>
@@ -159,16 +171,30 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h4 class="font-black text-xs border-b border-slate-300 mb-2 uppercase tracking-widest text-red-600">Rasgos y Habilidades</h4>
-                    <div id="res-rasgos-lista" class="space-y-2">
-                        </div>
-                    <p id="res-especie-rasgo" class="text-sm italic text-slate-600 mt-2 border-t pt-2"></p>
+                <div class="space-y-4">
+                    <div>
+                        <h4 class="font-black text-xs border-b border-slate-300 mb-2 uppercase tracking-widest text-red-600">Rasgos y Habilidades de Clase</h4>
+                        <div id="res-rasgos-lista" class="space-y-2"></div>
+                        <p id="res-especie-rasgo" class="text-sm italic text-slate-600 mt-2 border-t pt-2"></p>
+                    </div>
+
+                    <div id="bloque-res-historia" class="hidden border-t border-slate-200 pt-3">
+                        <h4 class="font-black text-xs mb-1 uppercase tracking-widest text-amber-600">Historia y Trasfondo</h4>
+                        <p id="res-historia" class="text-xs text-slate-700 whitespace-pre-line leading-relaxed italic bg-slate-50 p-2 rounded"></p>
+                    </div>
                 </div>
-                <div class="bg-slate-100 p-4 rounded-lg">
-                    <h4 class="font-black text-xs uppercase mb-1 text-slate-500">Dote de Trasfondo</h4>
-                    <p id="res-dote" class="text-lg font-bold text-blue-800"></p>
-                    <p id="res-trasfondo-desc" class="text-xs italic"></p>
+                
+                <div class="space-y-4">
+                    <div class="bg-slate-100 p-4 rounded-lg">
+                        <h4 class="font-black text-xs uppercase mb-1 text-slate-500">Dote de Trasfondo</h4>
+                        <p id="res-dote" class="text-lg font-bold text-blue-800"></p>
+                        <p id="res-trasfondo-desc" class="text-xs italic text-slate-600"></p>
+                    </div>
+
+                    <div id="bloque-res-rol" class="hidden bg-amber-50 p-4 rounded-lg border-l-4 border-amber-500">
+                        <h4 class="font-black text-xs uppercase mb-1 text-amber-800">Rasgos de Rol en la Mesa</h4>
+                        <p id="res-rasgos-rol" class="text-xs text-slate-800 whitespace-pre-line leading-relaxed font-medium"></p>
+                    </div>
                 </div>
             </div>
 
@@ -195,6 +221,8 @@
             // 1. OBTENER VALORES DE LOS INPUTS
             const nombre = document.getElementById('nombre').value || "Héroe sin nombre";
             const alineamiento = document.getElementById('alineamiento').value;
+            const textoHistoria = document.getElementById('input-historia').value;
+            const textoRol = document.getElementById('input-rasgos-rol').value;
             const espId = document.getElementById('select-especie').value;
             const clId = document.getElementById('select-clase').value;
             const trId = document.getElementById('select-trasfondo').value;
@@ -246,6 +274,22 @@
             document.getElementById('res-dote').innerText = tr.dote;
             document.getElementById('res-trasfondo-desc').innerText = tr.desc;
             
+            const bloqueHist = document.getElementById('bloque-res-historia');
+            if (textoHistoria.trim()) {
+                bloqueHist.classList.remove('hidden');
+                document.getElementById('res-historia').innerText = textoHistoria;
+            } else {
+                bloqueHist.classList.add('hidden');
+            }
+
+            const bloqueRol = document.getElementById('bloque-res-rol');
+            if (textoRol.trim()) {
+                bloqueRol.classList.remove('hidden');
+                document.getElementById('res-rasgos-rol').innerText = textoRol;
+            } else {
+                bloqueRol.classList.add('hidden');
+            }
+
             // Llamar a las funciones de actualización
             actualizarRasgos(clId, nivel);
             actualizarEquipamiento(clId);
@@ -388,7 +432,6 @@
         }
 
         function exportarIA() {
-            // Recolectamos los datos actuales
             const personaje = {
                 nombre: document.getElementById('nombre').value || "Sin nombre",
                 nivel: document.getElementById('nivel').value,
@@ -406,16 +449,16 @@
                 },
                 hp: document.getElementById('res-hp').innerText,
                 ca: document.getElementById('res-ca').innerText,
+                historia_trasfondo: document.getElementById('input-historia').value,
+                rasgos_rol_mesa: document.getElementById('input-rasgos-rol').value,
                 hechizos_preparados: Array.from(document.querySelectorAll('#lista-hechizos input:checked'))
                     .map(cb => cb.closest('div').querySelector('p').innerText.trim())
             };
 
-            // Convertimos a texto bonito (JSON)
             const dataString = JSON.stringify(personaje, null, 2);
 
-            // Lo copiamos al portapapeles
             navigator.clipboard.writeText(dataString).then(() => {
-                alert("¡Datos copiados! Ahora puedes pegarlos en el chat con Gemini.");
+                alert("¡Ficha de rol completa copiada al portapapeles! Listo para pegar en tu chat de IA.");
             });
         }
 
