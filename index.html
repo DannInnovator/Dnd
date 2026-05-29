@@ -348,20 +348,24 @@
             const resEspecial = document.getElementById('res-especial');
 
             if (clId === 'bardo') {
+                bloqueEspecial.classList.remove('hidden'); // Asegura encendido
                 bloqueEspecial.className = "p-2 rounded border bg-purple-50 border-purple-200 text-purple-700";
                 tituloEspecial.innerText = "Inspiraciones";
                 const modCha = getMod(document.getElementById('score-cha').value);
                 resEspecial.innerText = Math.max(1, modCha);
             } else if (clId === 'monje') {
+                bloqueEspecial.classList.remove('hidden'); // Asegura encendido
                 bloqueEspecial.className = "p-2 rounded border bg-cyan-50 border-cyan-200 text-cyan-700";
                 tituloEspecial.innerText = "Puntos de Ki";
                 resEspecial.innerText = nivel >= 2 ? nivel : 0; 
             } else if (clId === 'paladin') {
-                // ¡NUEVO! Configuración para la reserva de curación del Paladín
+                // ¡CORRECCIÓN AQUÍ! Añadimos de forma explícita que remueva la propiedad "hidden"
+                bloqueEspecial.classList.remove('hidden'); 
                 bloqueEspecial.className = "p-2 rounded border bg-emerald-50 border-emerald-200 text-emerald-700";
                 tituloEspecial.innerText = "Salud Sagrada";
-                resEspecial.innerText = nivel * 5; // Regla oficial: Nivel x 5
+                resEspecial.innerText = nivel * 5; 
             } else {
+                // Ocultar para las demás clases (Guerrero, Mago, Pícaro, etc.)
                 bloqueEspecial.classList.add('hidden');
             }
         }
@@ -553,6 +557,7 @@
                     document.getElementById('res-iniciativa').innerText = personaje.iniciativa;
                 }
                 
+                // Control de recursos especiales al importar
                 const bloqueEsp = document.getElementById('bloque-bardo-monje');
                 if (personaje.clase === 'bardo' && personaje.inspiraciones) {
                     if (bloqueEsp) bloqueEsp.classList.remove('hidden');
@@ -561,7 +566,7 @@
                     if (bloqueEsp) bloqueEsp.classList.remove('hidden');
                     document.getElementById('res-especial').innerText = personaje.puntos_ki;
                 } else if (personaje.clase === 'paladin' && personaje.salud_sagrada) {
-                    // ¡NUEVO!
+                    // ¡AQUÍ ESTÁ LA CORRECCIÓN! Forzamos a quitar el "hidden" al importar el Paladín
                     if (bloqueEsp) bloqueEsp.classList.remove('hidden');
                     document.getElementById('res-especial').innerText = personaje.salud_sagrada;
                 }
