@@ -29,7 +29,7 @@
     { "id": "acolito", "nombre": "Acólito", "dote": "Iniciado en la Magia (Clérigo)", "desc": "Has servido en un templo." },
     { "id": "criminal", "nombre": "Criminal", "dote": "Alerta", "desc": "Contactos en bajos fondos." },
     { "id": "granjero", "nombre": "Granjero", "dote": "Duro (Tough)", "desc": "Resistencia física superior." },
-    { "id": "guia", "nombre": "Guía", "dote": "Iniciado en la Magia (Druida)", "desc": "Armonía con la naturaleza." },
+    { "id": "guia", "nombre": "Guía", "dote": "Iniciado en la Magia (Druida)", "desc": "Armonía con la naturaleza. (Nota: Si aplicas dotes de reglas 2024, este trasfondo otorga la dote Alerta)." },
     { "id": "noble", "nombre": "Noble", "dote": "Caminante Hábil", "desc": "Nacido para liderar." },
     { "id": "sabio", "nombre": "Sabio", "dote": "Iniciado en la Magia (Mago)", "desc": "Dedicado al estudio arcano." },
     { "id": "soldado", "nombre": "Soldado", "dote": "Atleta", "desc": "Entrenado para la guerra." }
@@ -102,7 +102,10 @@
     { "id": "forma_salvaje", "clase": "druida", "nivel": 2, "nombre": "Forma Salvaje (2 usos)", "desc": "Puedes transformarte en una bestia que hayas visto (Niv 2: CR 1/4, sin volar ni nadar)." },
     { "id": "circulo_d", "clase": "druida", "nivel": 2, "nombre": "Círculo Druídico", "desc": "Eliges tu especialización (Círculo de la Luna, Tierra, etc.)." },
     { "id": "mejora_dru", "clase": "druida", "nivel": 4, "nombre": "Mejora de Característica", "desc": "Subes un atributo +2 o dos atributos +1." },
-    { "id": "forma_mejora", "clase": "druida", "nivel": 4, "nombre": "Forma Salvaje Mejorada", "desc": "Ahora puedes transformarte en bestias con velocidad de natación (CR 1/2)." }
+    { "id": "forma_mejora", "clase": "druida", "nivel": 4, "nombre": "Forma Salvaje Mejorada", "desc": "Ahora puedes transformarte en bestias con velocidad de natación (CR 1/2)." },
+    { "id": "mon_defensa", "clase": "monje", "nivel": 1, "nombre": "Defensa sin Armadura", "desc": "Mientras no lleves armadura ni escudo, tu Clase de Armadura (CA) es igual a 10 + tu mod de Destreza + tu mod de Sabiduría." },
+    { "id": "mon_artes", "clase": "monje", "nivel": 1, "nombre": "Artes Marciales", "desc": "Tus ataques desarmados hacen 1d4 de daño base y escalan con el nivel. Puedes usar Destreza en lugar de Fuerza con armas de monje." },
+    { "id": "mon_ki", "clase": "monje", "nivel": 2, "nombre": "Energía de Disciplina (Ki)", "desc": "Obtienes puntos de Ki igual a tu nivel de Monje. Se restauran con descansos cortos y sirven para activar tus rasgos místicos de combate." }
   ],
   "equipamiento_inicial": {
     "barbaro": ["Hacha a dos manos", "Jabalina (x4)", "Pack de explorador"],
@@ -117,5 +120,5 @@
     "brujo": ["Daga (x2)", "Foco arcano", "Armadura de cuero", "Pack de erudito"],
     "hechicero": ["Daga (x2)", "Foco arcano", "Pack de explorador"],
     "explorador": ["Arco largo", "Espada corta (x2)", "Armadura de tachones"]
-    }
+  }
 }

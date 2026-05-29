@@ -234,6 +234,7 @@
             const tr = dndData.trasfondos.find(t => t.id === trId);
             const modCon = getMod(document.getElementById('score-con').value);
             const modDex = getMod(document.getElementById('score-dex').value);
+            const modWis = getMod(document.getElementById('score-wis').value);
 
             // 3. LÓGICA DE HP Y CA
             const hpNivel1 = cl.hp_base + modCon;
@@ -242,8 +243,14 @@
 
             // --- AQUÍ ESTÁ EL PUNTO 3 (Cálculo de Armadura) ---
             let caBase = 10 + modDex;
-            if (clId === 'guerrero' || clId === 'paladin' || clId === 'clerigo') caBase = 16; 
-            if (clId === 'picaro' || clId === 'bardo' || clId === 'explorador') caBase += 2;
+            if (clId === 'monje') {
+                // Suma la Destreza Y la Sabiduría si es Monje
+                caBase = 10 + modDex + modWis; 
+            } else if (clId === 'guerrero' || clId === 'paladin' || clId === 'clerigo') {
+                caBase = 16; // Armadura pesada/media inicial por defecto
+            } else if (clId === 'picaro' || clId === 'bardo' || clId === 'explorador') {
+                caBase += 2; // Armadura ligera inicial por defecto
+            }
 
             const resCa = document.getElementById('res-ca');
             if (resCa) { resCa.innerText = caBase; }
@@ -438,6 +445,7 @@
                 clase: document.getElementById('select-clase').value,
                 especie: document.getElementById('select-especie').value,
                 trasfondo: document.getElementById('select-trasfondo').value,
+                dote_trasfondo: document.getElementById('res-dote').innerText,
                 alineamiento: document.getElementById('alineamiento').value,
                 stats: {
                     FUE: document.getElementById('score-str').value,
