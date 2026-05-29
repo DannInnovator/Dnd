@@ -253,42 +253,43 @@
             const hpAdicional = (nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + modCon);
             const hpTotal = hpNivel1 + hpAdicional;
 
-            // --- AQUÍ ESTÁ EL PUNTO 3 (Cálculo de Armadura) ---
             let caBase = 10 + modDex;
             if (clId === 'monje') {
-                // Suma la Destreza Y la Sabiduría si es Monje
                 caBase = 10 + modDex + modWis; 
             } else if (clId === 'guerrero' || clId === 'paladin' || clId === 'clerigo') {
-                caBase = 16; // Armadura pesada/media inicial por defecto
+                caBase = 16; 
             } else if (clId === 'picaro' || clId === 'bardo' || clId === 'explorador') {
-                caBase += 2; // Armadura ligera inicial por defecto
+                caBase += 2; 
             }
 
             const resCa = document.getElementById('res-ca');
             if (resCa) { resCa.innerText = caBase; }
-            // --------------------------------------------------
 
-            // --- CÁLCULO DE INICIATIVA ---
-            let iniciativa = modDex; // La iniciativa base es el modificador de Destreza
-
-            // Si el personaje es Humano o tiene el trasfondo que da Alerta, sumamos el bono de competencia (+2 a nivel 1)
-            const doteTexto = document.getElementById('res-dote').innerText;
-            if (doteTexto.includes("Alerta") || espId === 'humano') {
-                iniciativa += 2; // Suma el bono de competencia por la dote Alerta
+            // 4. ASIGNAR DOTES PRIMERO (Para que la iniciativa pueda leerla)
+            const resDoteElement = document.getElementById('res-dote');
+            if (espId === 'humano') {
+                resDoteElement.innerText = tr.dote + " + [Dote Extra por Humano: Alerta]";
+            } else {
+                resDoteElement.innerText = tr.dote;
             }
 
-            // Le damos formato de texto con el símbolo "+" si es positivo
+            // 5. CÁLCULO DE INICIATIVA (Ahora lee el texto asignado de forma segura)
+            let iniciativa = modDex; 
+            const doteTexto = resDoteElement.innerText;
+            if (doteTexto.includes("Alerta") || espId === 'humano') {
+                iniciativa += 2; 
+            }
             const signoIniciativa = iniciativa >= 0 ? "+" : "";
             document.getElementById('res-iniciativa').innerText = signoIniciativa + iniciativa;
 
-            // 4. ACTUALIZAR MODIFICADORES DE ATRIBUTOS
+            // 6. ACTUALIZAR MODIFICADORES DE ATRIBUTOS
             ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(stat => {
                 const s = document.getElementById(`score-${stat}`).value;
                 const mod = getMod(s);
                 document.getElementById(`mod-${stat}`).innerText = (mod >= 0 ? "+" : "") + mod;
             });
 
-            // 5. LÓGICA DE MAGIA
+            // 7. LÓGICA DE MAGIA
             if (cl.usa_magia || trId.includes("acolito") || trId.includes("sabio") || trId.includes("guia")) {
                 document.getElementById('seccion-magia').classList.remove('hidden');
                 renderizarHechizos(clId, nivel, espId, trId);
@@ -298,17 +299,11 @@
                 document.getElementById('contador-hechizos').innerText = "0 Seleccionados";
             }
 
-            // 6. LLENAR LA HOJA DE PERSONAJE (RESUMEN)
+            // 8. LLENAR LA HOJA DE PERSONAJE (RESUMEN)
             document.getElementById('res-nombre').innerText = nombre;
             document.getElementById('res-clase-esp').innerText = `${esp.nombre} ${cl.nombre} (Nivel ${nivel}) | ${alineamiento}`;
             document.getElementById('res-hp').innerText = hpTotal;
             document.getElementById('res-especie-rasgo').innerText = "Rasgo racial: " + esp.rasgo;
-            // Si eres humano, te avisa que tienes una dote extra a elegir además de la de tu trasfondo
-            if (espId === 'humano') {
-                document.getElementById('res-dote').innerText = tr.dote + " + [Dote Extra por Humano: Alerta]";
-            } else {
-                document.getElementById('res-dote').innerText = tr.dote;
-            }
             document.getElementById('res-trasfondo-desc').innerText = tr.desc;
             
             const bloqueHist = document.getElementById('bloque-res-historia');
@@ -327,15 +322,12 @@
                 bloqueRol.classList.add('hidden');
             }
 
-            // Llamar a las funciones de actualización
             actualizarRasgos(clId, nivel);
             actualizarEquipamiento(clId);
             
-            // Cosas para Druida
             if (clId === 'druida') {
                 const listaRasgos = document.getElementById('res-rasgos-lista');
                 let guiaForma = "";
-                
                 if (nivel < 4) guiaForma = "🐾 Formas sugeridas: Lobo, Araña Gigante, Jabalí.";
                 else if (nivel < 8) guiaForma = "🐟 Formas sugeridas: Cocodrilo, Tiburón arrecife (puedes nadar).";
                 else guiaForma = "🦅 Formas sugeridas: Águila gigante, Búho (puedes volar).";
@@ -351,21 +343,17 @@
             const bloqueEspecial = document.getElementById('bloque-bardo-monje');
             const tituloEspecial = document.getElementById('titulo-especial');
             const resEspecial = document.getElementById('res-especial');
-            const nivelActual = parseInt(document.getElementById('nivel').value) || 1;
 
             if (clId === 'bardo') {
-                // Configuración para el Bardo
                 bloqueEspecial.className = "p-2 rounded border bg-purple-50 border-purple-200 text-purple-700";
                 tituloEspecial.innerText = "Inspiraciones";
                 const modCha = getMod(document.getElementById('score-cha').value);
                 resEspecial.innerText = Math.max(1, modCha);
             } else if (clId === 'monje') {
-                // Configuración para el Monje (Los puntos de Ki se obtienen a nivel 2+)
                 bloqueEspecial.className = "p-2 rounded border bg-cyan-50 border-cyan-200 text-cyan-700";
                 tituloEspecial.innerText = "Puntos de Ki";
-                resEspecial.innerText = nivelActual >= 2 ? nivelActual : 0; 
+                resEspecial.innerText = nivel >= 2 ? nivel : 0; 
             } else {
-                // Ocultar para las demás clases
                 bloqueEspecial.classList.add('hidden');
             }
         }
@@ -376,20 +364,15 @@
             if (!dndData.hechizos) return;
 
             contenedor.innerHTML = ""; 
-            
-            // Cambiar título si es Monje
             tituloMagia.innerText = (claseId === 'monje') ? "🧘 Técnicas de Disciplina (Ki)" : "✨ Libro de Hechizos";
 
             const tr = dndData.trasfondos.find(t => t.id === trasfondoId);
-            const tieneMagiaExtra = tr.dote.includes("Iniciado en la Magia");
+            const tieneMagiaExtra = tr && tr.dote && tr.dote.includes("Iniciado en la Magia");
             
             const hechizosFiltrados = dndData.hechizos.filter(h => {
                 const porClase = h.clases.includes(claseId);
                 const porTrasfondo = tieneMagiaExtra && tr.dote.includes(h.clases[0]); 
-                
-                // Nivel 0 siempre se muestra. Para el resto: NivelHechizo <= PJ_Nivel/2
                 const nivelApto = (h.nivel === 0) || (h.nivel <= Math.max(1, Math.ceil(nivelPersonaje / 2)));
-                
                 return (porClase || porTrasfondo) && nivelApto;
             });
 
@@ -399,9 +382,7 @@
             }
 
             hechizosFiltrados.forEach(h => {
-                // Iconos de componentes
                 const ritualTag = h.ritual ? '<span class="bg-blue-600 text-[8px] px-1 rounded ml-1">RITUAL</span>' : '';
-                
                 const componentesFormateados = h.componentes.split(',').map(c => {
                     let titulo = "";
                     if(c.trim() === 'V') titulo = "Verbal (Requiere hablar)";
@@ -429,7 +410,6 @@
         function actualizarContador() {
             const contenedorContador = document.getElementById('contador-hechizos');
             if (!contenedorContador) return;
-
             const seleccionados = document.querySelectorAll('#lista-hechizos input[type="checkbox"]:checked').length;
             contenedorContador.innerText = `${seleccionados} Seleccionados`;
         }
@@ -439,8 +419,6 @@
             if (!dndData.rasgos) return;
 
             contenedor.innerHTML = "";
-
-            // Filtramos rasgos de la clase que sean de nivel actual o menor
             const rasgosVisibles = dndData.rasgos.filter(r => 
                 r.clase === claseId && r.nivel <= nivelPersonaje
             );
@@ -464,9 +442,7 @@
         function actualizarEquipamiento(claseId) {
             const contenedor = document.getElementById('res-inventario');
             const equipo = dndData.equipamiento_inicial[claseId] || [];
-            
             contenedor.innerHTML = "";
-            
             equipo.forEach(item => {
                 contenedor.innerHTML += `
                     <div class="text-xs border-b border-slate-100 py-1 flex items-center">
@@ -477,24 +453,20 @@
         }
 
         function exportarPDF() {
-            // Cambiamos el título del documento temporalmente para que el archivo se guarde con el nombre del héroe
             const nombreHeroe = document.getElementById('res-nombre').innerText;
             const tituloOriginal = document.title;
-            
             document.title = "Ficha_DnD_" + nombreHeroe.replace(/\s+/g, '_');
-            
-            // Abrir el diálogo de impresión
             window.print();
-            
-            // Restaurar el título original
             document.title = tituloOriginal;
         }
 
         function exportarIA() {
+            const claseSeleccionada = document.getElementById('select-clase').value;
+            
             const personaje = {
                 nombre: document.getElementById('nombre').value || "Sin nombre",
                 nivel: document.getElementById('nivel').value,
-                clase: document.getElementById('select-clase').value,
+                clase: claseSeleccionada,
                 especie: document.getElementById('select-especie').value,
                 trasfondo: document.getElementById('select-trasfondo').value,
                 dote_trasfondo: document.getElementById('res-dote').innerText,
@@ -509,9 +481,9 @@
                 },
                 hp: document.getElementById('res-hp').innerText,
                 ca: document.getElementById('res-ca').innerText,
-                iniciativa: document.getElementById('res-iniciativa').innerText, // <-- NUEVA LÍNEA
-                inspiraciones: clId === 'bardo' ? document.getElementById('res-especial').innerText : "0",
-                puntos_ki: clId === 'monje' ? document.getElementById('res-especial').innerText : "0", // <-- NUEVA LÍNEA
+                iniciativa: document.getElementById('res-iniciativa').innerText, 
+                inspiraciones: claseSeleccionada === 'bardo' ? document.getElementById('res-especial').innerText : "0",
+                puntos_ki: claseSeleccionada === 'monje' ? document.getElementById('res-especial').innerText : "0", 
                 historia_trasfondo: document.getElementById('input-historia').value,
                 rasgos_rol_mesa: document.getElementById('input-rasgos-rol').value,
                 hechizos_preparados: Array.from(document.querySelectorAll('#lista-hechizos input:checked'))
@@ -527,28 +499,22 @@
 
         function importarIA() {
             let jsonTexto = prompt("Pega aquí el código JSON de tu personaje exportado:");
-            
-            if (!jsonTexto) return; // Si cancela, no hacemos nada
+            if (!jsonTexto) return; 
 
             try {
-                // --- AQUÍ ESTÁ EL BLINDAJE ---
-                // 1. Reemplaza comillas curvadas de apertura y cierre por comillas rectas válidas
-                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"');
+                // === EL ESCUDO DEFINITIVO CONTRA CARACTERES DE CHAT ===
+                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Espacios invisibles de WhatsApp
+                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Comillas curvas
+                jsonTexto = jsonTexto.replace(/""/g, '"'); // Comillas dobles repetidas
                 
-                // 2. Limpia posibles comillas dobles repetidas ("") si vienen de un chat
-                jsonTexto = jsonTexto.replace(/""/g, '"');
-                
-                // 3. Quita comillas que hayan quedado envolviendo todo el JSON en los extremos
                 jsonTexto = jsonTexto.trim();
                 if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
-                // -----------------------------
 
-                // Convertimos el texto de vuelta a un objeto de JavaScript
                 const personaje = JSON.parse(jsonTexto);
 
-                // 1. Rellenamos los inputs de texto y selectores básicos
+                // 1. Rellenar entradas básicas
                 if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
                 if (personaje.nivel) document.getElementById('nivel').value = personaje.nivel;
                 if (personaje.alineamiento) document.getElementById('alineamiento').value = personaje.alineamiento;
@@ -556,7 +522,7 @@
                 if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
                 if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
 
-                // 2. Rellenamos las estadísticas (Atributos)
+                // 2. Rellenar Atributos
                 if (personaje.stats) {
                     if (personaje.stats.FUE) document.getElementById('score-str').value = personaje.stats.FUE;
                     if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.DES;
@@ -566,19 +532,18 @@
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
                 }
 
-                // 3. Rellenamos las áreas de texto narrativo
+                // 3. Rellenar Textos narrativos
                 if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
                 if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
 
-                // 4. Forzamos a la aplicación a recalcular la vida, la CA, la INICIATIVA y refrescar la vista
+                // 4. Forzar recálculo del sistema
                 actualizar();
 
-                // 5. Verificaciones de seguridad para campos calculados por la IA
+                // 5. Forzar sobreescritura de datos calculados por IA
                 if (personaje.iniciativa) {
                     document.getElementById('res-iniciativa').innerText = personaje.iniciativa;
                 }
                 
-                // Control de recursos especiales al importar
                 const bloqueEsp = document.getElementById('bloque-bardo-monje');
                 if (personaje.clase === 'bardo' && personaje.inspiraciones) {
                     if (bloqueEsp) bloqueEsp.classList.remove('hidden');
@@ -588,7 +553,7 @@
                     document.getElementById('res-especial').innerText = personaje.puntos_ki;
                 }
 
-                // 6. Si tenía hechizos guardados, los volvemos a marcar como seleccionados
+                // 6. Cargar Hechizos Seleccionados
                 if (personaje.hechizos_preparados && personaje.hechizos_preparados.length > 0) {
                     setTimeout(() => {
                         const checkboxes = document.querySelectorAll('#lista-hechizos div');
@@ -605,15 +570,15 @@
                     }, 50);
                 }
 
-                alert("¡Personaje importado con éxito! El sistema corrigió las comillas automáticamente.");
+                alert("¡Personaje importado con éxito! Se limpiaron las comillas y los espacios invisibles automáticamente.");
 
             } catch (error) {
-                console.error(error);
+                console.error("Error de importación detallado:", error);
                 alert("¡Error al importar! El formato del texto sigue teniendo caracteres incompatibles.");
             }
         }
 
-        // ESTO ES LO QUE FALTA: Cargar el JSON y llenar los menús al iniciar
+        // Cargar el JSON inicial
         fetch('./data.json')
             .then(res => {
                 if (!res.ok) throw new Error("No se pudo cargar el archivo data.json");
@@ -625,22 +590,18 @@
                 const selCl = document.getElementById('select-clase');
                 const selTr = document.getElementById('select-trasfondo');
 
-                // Llenar Especies
                 data.especies.forEach(e => {
                     selEsp.innerHTML += `<option value="${e.id}">${e.nombre}</option>`;
                 });
 
-                // Llenar Clases
                 data.clases.forEach(c => {
                     selCl.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
                 });
 
-                // Llenar Trasfondos
                 data.trasfondos.forEach(t => {
                     selTr.innerHTML += `<option value="${t.id}">${t.nombre}</option>`;
                 });
 
-                // Ejecutar actualización inicial para que la hoja no esté vacía
                 actualizar();
             })
             .catch(error => console.error("Error crítico:", error));
