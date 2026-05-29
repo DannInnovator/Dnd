@@ -45,12 +45,16 @@
         <h1 class="text-4xl font-black text-red-600 drop-shadow-lg">⚔️ D&D Creador de personaje</h1>
         <p class="text-slate-400 uppercase tracking-tighter text-sm">Forja tu destino en español</p>
     </header>
-    <div class="max-w-3xl mx-auto mb-4 flex justify-end no-print">
+    <div class="max-w-3xl mx-auto mb-4 flex justify-end gap-2 no-print">
+        <button onclick="importarIA()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all">
+            <span>📥 Importar desde IA</span>
+        </button>
+        
+        <button onclick="exportarIA()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all">
+            <span>🤖 Copiar para IA</span>
+        </button>
         <button onclick="exportarPDF()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all">
             <span>📄 Descargar Ficha (PDF)</span>
-        </button>
-        <button onclick="exportarIA()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all no-print">
-            <span>🤖 Copiar para IA</span>
         </button>
     </div>
     <main class="max-w-3xl mx-auto space-y-6 pb-20">
@@ -473,6 +477,67 @@
             navigator.clipboard.writeText(dataString).then(() => {
                 alert("¡Ficha de rol completa copiada al portapapeles! Listo para pegar en tu chat de IA.");
             });
+        }
+
+        function importarIA() {
+            // Le pedimos al usuario que pegue el texto JSON en una ventana emergente
+            const jsonTexto = prompt("Pega aquí el código JSON de tu personaje exportado:");
+            
+            if (!jsonTexto) return; // Si cancela, no hacemos nada
+
+            try {
+                // Convertimos el texto de vuelta a un objeto de JavaScript
+                const personaje = JSON.parse(jsonTexto);
+
+                // 1. Rellenamos los inputs de texto y selectores básicos
+                if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
+                if (personaje.nivel) document.getElementById('nivel').value = personaje.nivel;
+                if (personaje.alineamiento) document.getElementById('alineamiento').value = personaje.alineamiento;
+                if (personaje.especie) document.getElementById('select-especie').value = personaje.especie;
+                if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
+                if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
+
+                // 2. Rellenamos las estadísticas (Atributos)
+                if (personaje.stats) {
+                    if (personaje.stats.FUE) document.getElementById('score-str').value = personaje.stats.FUE;
+                    if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.FUE === personaje.stats.DES ? personaje.stats.DES : personaje.stats.DES; 
+                    if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.DES;
+                    if (personaje.stats.CON) document.getElementById('score-con').value = personaje.stats.CON;
+                    if (personaje.stats.INT) document.getElementById('score-int').value = personaje.stats.INT;
+                    if (personaje.stats.SAB) document.getElementById('score-wis').value = personaje.stats.SAB;
+                    if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
+                }
+
+                // 3. Rellenamos las áreas de texto narrativo
+                if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
+                if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
+
+                // 4. Forzamos a la aplicación a recalcular la vida, la CA y refrescar la vista
+                actualizar();
+
+                // 5. Si tenía hechizos guardados, los volvemos a marcar como seleccionados
+                if (personaje.hechizos_preparados && personaje.hechizos_preparados.length > 0) {
+                    // Esperamos un milisegundo a que se renderice la lista de hechizos antes de marcarlos
+                    setTimeout(() => {
+                        const checkboxes = document.querySelectorAll('#lista-hechizos div');
+                        checkboxes.forEach(div => {
+                            const nombreHechizo = div.querySelector('p').innerText.replace('RITUAL', '').trim();
+                            if (personaje.hechizos_preparados.includes(nombreHechizo)) {
+                                const cb = div.querySelector('input[type="checkbox"]');
+                                if (cb) cb.checked = true;
+                            }
+                        });
+                        actualizarContador(); // Actualiza el número de hechizos seleccionados en el título
+                    }, 50);
+                }
+
+                alert("¡Personaje importado con éxito! Todo se ha actualizado.");
+
+            } catch (error) {
+                // Si el JSON estaba roto o incompleto, avisamos del error para no romper la app
+                console.error(error);
+                alert("¡Error al importar! Asegúrate de haber copiado el texto JSON completo y exacto.");
+            }
         }
 
         // ESTO ES LO QUE FALTA: Cargar el JSON y llenar los menús al iniciar
