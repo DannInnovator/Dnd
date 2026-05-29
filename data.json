@@ -76,11 +76,14 @@
     { "id": "moonbeam", "clases": ["druida"], "nivel": 2, "nombre": "Haz Lunar", "componentes": "V,S,M", "ritual": false, "desc": "Un rayo de luz plateada baja del cielo. Hace 2d10 de daño radiante por turno en un cilindro." },
     { "id": "pass_without_trace", "clases": ["druida"], "nivel": 2, "nombre": "Pasar sin dejar rastro", "componentes": "V,S,M", "ritual": false, "desc": "Un velo de sombras os rodea. Todo el grupo recibe un +10 a sus tiradas de Sigilo." },
     { "id": "call_lightning", "clases": ["druida"], "nivel": 3, "nombre": "Llamar al Relámpago", "componentes": "V,S", "ritual": false, "desc": "Invocas una nube de tormenta. Cada turno puedes hacer que caiga un rayo que hace 3d10 de daño de relámpago." },
-    { "id": "conjure_animals", "clases": ["druida"], "nivel": 3, "nombre": "Conjurar Animales", "componentes": "V,S", "ritual": false, "desc": "Invocas espíritus que toman forma de bestias (ej: 8 lobos o 2 osos) para que luchen por ti." }
+    { "id": "conjure_animals", "clases": ["druida"], "nivel": 3, "nombre": "Conjurar Animales", "componentes": "V,S", "ritual": false, "desc": "Invocas espíritus que toman forma de bestias (ej: 8 lobos o 2 osos) para que luchen por ti." },
+    { "id": "burla_hiriente", "nombre": "Burlas Hirientes", "nivel": 0, "clases": ["bardo"], "componentes": "V", "ritual": false, "desc": "Insultas a una criatura. Recibe 1d4 daño psíquico y desventaja en su próximo ataque si falla salvación de Sabiduría." },
+    { "id": "palabra_curacion", "nombre": "Palabra de Curación", "nivel": 1, "clases": ["bardo", "clerigo", "druida"], "componentes": "V", "ritual": false, "desc": "Acción Adicional. Sana 1d4 + mod a distancia (60 pies). Ideal para levantar aliados caídos." },
+    { "id": "fuego_faerico_b", "nombre": "Fuego Faérico", "nivel": 1, "clases": ["bardo", "druida"], "componentes": "V", "ritual": false, "desc": "Luz que rodea a los enemigos. Todos los ataques contra ellos tienen ventaja." }
   ],
   "rasgos": [
     { "id": "furia", "clase": "barbaro", "nivel": 1, "nombre": "Furia", "desc": "Bonus al daño y resistencia física." },
-    { "id": "inspiracion", "clase": "bardo", "nivel": 1, "nombre": "Inspiración Bárdica", "desc": "Das un d6 a un aliado para sus tiradas." },
+    { "id": "inspiracion", "clase": "bardo", "nivel": 1, "nombre": "Inspiración Bárdica", "desc": "Como acción adicional, das un dado de Inspiración (1d6) a un aliado a 60 pies. Puede sumarlo a una tirada de ataque, salvación o habilidad en los próximos 10 min. Usos iguales a tu modificador de Carisma." },
     { "id": "segundo_aliento", "clase": "guerrero", "nivel": 1, "nombre": "Segundo Aliento", "desc": "Recuperas 1d10 + nivel HP (Acc. Adicional)." },
     { "id": "oleada", "clase": "guerrero", "nivel": 2, "nombre": "Oleada de Acción", "desc": "Puedes realizar una acción adicional este turno." },
     { "id": "smite", "clase": "paladin", "nivel": 2, "nombre": "Castigo Divino", "desc": "Gasta espacio de magia para hacer daño radiante." },

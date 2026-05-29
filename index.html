@@ -162,7 +162,7 @@
                     <h2 id="res-nombre" class="text-3xl font-black uppercase italic">NOMBRE</h2>
                     <p id="res-clase-esp" class="text-slate-600 font-bold"></p>
                 </div>
-                <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-center">
                     <div class="bg-red-50 p-2 rounded border border-red-200">
                         <p class="text-xs font-bold text-red-700 uppercase">Vida (HP)</p>
                         <p id="res-hp" class="text-2xl font-black text-red-600">0</p>
@@ -174,6 +174,10 @@
                     <div class="bg-amber-50 p-2 rounded border border-amber-200">
                         <p class="text-xs font-bold text-amber-700 uppercase">Iniciativa</p>
                         <p id="res-iniciativa" class="text-2xl font-black text-amber-600">+0</p>
+                    </div>
+                    <div id="bloque-bardo-monje" class="p-2 rounded border hidden">
+                        <p id="titulo-especial" class="text-xs font-bold uppercase">Especial</p>
+                        <p id="res-especial" class="text-2xl font-black">0</p>
                     </div>
                 </div>
             </div>
@@ -342,6 +346,28 @@
                     </div>
                 `;
             }
+
+            // --- LÓGICA DE RECURSOS ESPECIALES (INSPIRACIÓN / KI) ---
+            const bloqueEspecial = document.getElementById('bloque-bardo-monje');
+            const tituloEspecial = document.getElementById('titulo-especial');
+            const resEspecial = document.getElementById('res-especial');
+            const nivelActual = parseInt(document.getElementById('nivel').value) || 1;
+
+            if (clId === 'bardo') {
+                // Configuración para el Bardo
+                bloqueEspecial.className = "p-2 rounded border bg-purple-50 border-purple-200 text-purple-700";
+                tituloEspecial.innerText = "Inspiraciones";
+                const modCha = getMod(document.getElementById('score-cha').value);
+                resEspecial.innerText = Math.max(1, modCha);
+            } else if (clId === 'monje') {
+                // Configuración para el Monje (Los puntos de Ki se obtienen a nivel 2+)
+                bloqueEspecial.className = "p-2 rounded border bg-cyan-50 border-cyan-200 text-cyan-700";
+                tituloEspecial.innerText = "Puntos de Ki";
+                resEspecial.innerText = nivelActual >= 2 ? nivelActual : 0; 
+            } else {
+                // Ocultar para las demás clases
+                bloqueEspecial.classList.add('hidden');
+            }
         }
 
         function renderizarHechizos(claseId, nivelPersonaje, especieId, trasfondoId) {
@@ -484,6 +510,8 @@
                 hp: document.getElementById('res-hp').innerText,
                 ca: document.getElementById('res-ca').innerText,
                 iniciativa: document.getElementById('res-iniciativa').innerText, // <-- NUEVA LÍNEA
+                inspiraciones: clId === 'bardo' ? document.getElementById('res-especial').innerText : "0",
+                puntos_ki: clId === 'monje' ? document.getElementById('res-especial').innerText : "0", // <-- NUEVA LÍNEA
                 historia_trasfondo: document.getElementById('input-historia').value,
                 rasgos_rol_mesa: document.getElementById('input-rasgos-rol').value,
                 hechizos_preparados: Array.from(document.querySelectorAll('#lista-hechizos input:checked'))
@@ -532,10 +560,19 @@
                 // 4. Forzamos a la aplicación a recalcular la vida, la CA, la INICIATIVA y refrescar la vista
                 actualizar();
 
-                // 5. Verificación de seguridad para la Iniciativa
-                // Si el JSON importado ya trae iniciativa calculada por la IA, la sobreescribimos en pantalla
+                // 5. Verificaciones de seguridad para campos calculados por la IA
                 if (personaje.iniciativa) {
                     document.getElementById('res-iniciativa').innerText = personaje.iniciativa;
+                }
+
+                // Control de recursos especiales al importar
+                const bloqueEsp = document.getElementById('bloque-bardo-monje');
+                if (personaje.clase === 'bardo' && personaje.inspiraciones) {
+                    if (bloqueEsp) bloqueEsp.classList.remove('hidden');
+                    document.getElementById('res-especial').innerText = personaje.inspiraciones;
+                } else if (personaje.clase === 'monje' && personaje.puntos_ki) {
+                    if (bloqueEsp) bloqueEsp.classList.remove('hidden');
+                    document.getElementById('res-especial').innerText = personaje.puntos_ki;
                 }
 
                 // 6. Si tenía hechizos guardados, los volvemos a marcar como seleccionados
@@ -556,7 +593,7 @@
                     }, 50);
                 }
 
-                alert("¡Personaje importado con éxito! Todo se ha actualizado, incluyendo su Iniciativa.");
+                alert("¡Personaje importado con éxito! Todo se ha actualizado, incluyendo Iniciativa e Inspiraciones.");
 
             } catch (error) {
                 // Si el JSON estaba roto o incompleto, avisamos del error para no romper la app
@@ -564,7 +601,7 @@
                 alert("¡Error al importar! Asegúrate de haber copiado el texto JSON completo y exacto.");
             }
         }
-
+        
         // ESTO ES LO QUE FALTA: Cargar el JSON y llenar los menús al iniciar
         fetch('./data.json')
             .then(res => {
