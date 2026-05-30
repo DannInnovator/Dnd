@@ -572,11 +572,13 @@
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
 
-                // 🌟 ¡NUEVO ESCUDO PARA CORREGIR SALTOS DE LÍNEA TEXTUALES (\n)!
-                // Esto evita que los textos de rasgos o historia congelen el JSON.parse()
-                jsonTexto = jsonTexto.replace(/\n/g, "\\n").replace(/\r/g, "\\r");
-                // Corrección por si el reemplazo duplicó los escapes de las barras inversas
-                jsonTexto = jsonTexto.replace(/\\\\n/g, "\\n").replace(/\\\\r/g, "\\r");
+                // 🌟 CORRECCIÓN CRÍTICA:
+                // En lugar de dañar la estructura externa del JSON, este filtro limpia 
+                // saltos de línea físicos accidentales que queden huérfanos dentro de los strings.
+                // Si el prompt rompió los "\n" de los rasgos convirtiéndolos en Enters reales, esto los repara de forma segura.
+                jsonTexto = jsonTexto.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/g, function(match, p1) {
+                    return '"' + p1.replace(/\n/g, '\\n').replace(/\r/g, '\\r') + '"';
+                });
 
                 const personaje = JSON.parse(jsonTexto);
 
