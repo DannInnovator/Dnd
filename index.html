@@ -562,28 +562,31 @@
             if (!jsonTexto) return; 
 
             try {
-                // === EL ESCUDO DEFINITIVO CONTRA CARACTERES DE CHAT ===
-                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Espacios invisibles de WhatsApp
-                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Comillas curvas
-                jsonTexto = jsonTexto.replace(/""/g, '"'); // Comillas dobles repetidas
+                // 1. Limpieza básica de basura invisible de portapapeles y chats (WhatsApp/Discord)
+                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Espacios invisibles
+                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Comillas curvas a normales
+                jsonTexto = jsonTexto.replace(/""/g, '"'); // Remover comillas dobles accidentales
                 
                 jsonTexto = jsonTexto.trim();
+                
+                // Si el texto completo viene envuelto en comillas externas por error, se las quitamos
                 if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
 
-                // 🌟 CORRECCIÓN CRÍTICA:
-                // En lugar de dañar la estructura externa del JSON, este filtro limpia 
-                // saltos de línea físicos accidentales que queden huérfanos dentro de los strings.
-                // Si el prompt rompió los "\n" de los rasgos convirtiéndolos en Enters reales, esto los repara de forma segura.
-                jsonTexto = jsonTexto.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/g, function(match, p1) {
-                    return '"' + p1.replace(/\n/g, '\\n').replace(/\r/g, '\\r') + '"';
-                });
+                // 🌟 EL NUEVO ESCUDO BLINDADO:
+                // Reemplaza de forma segura los saltos de línea físicos (Enters reales) que estén 
+                // rompiendo las propiedades del JSON, convirtiéndolos en un '\n' que JSON.parse sí entiende.
+                jsonTexto = jsonTexto.replace(/\r?\n/g, '\\n');
+                
+                // Corrección por si el reemplazo dañó la estructura exterior de las llaves del JSON
+                jsonTexto = jsonTexto.replace(/{\\n/g, '{').replace(/}\\n/g, '}').replace(/,\\n/g, ',');
+                jsonTexto = jsonTexto.replace(/"\\n\s*"/g, '""').replace(/"\s*:\\n\s*/g, '":');
 
+                // Procesar el JSON purificado
                 const personaje = JSON.parse(jsonTexto);
 
                 // --- 🌟 RESETEO SEGURO DE SEGURIDAD ---
-                // Una vez que sabemos que el JSON es válido, limpiamos los datos anteriores
                 if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
                 if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
                 if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
@@ -607,9 +610,13 @@
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
                 }
 
-                // 3. Rellenar Textos narrativos
-                if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
-                if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
+                // 3. Rellenar Textos narrativos (reparando los saltos de línea para que se vean bonitos en el cuadro)
+                if (personaje.historia_trasfondo) {
+                    document.getElementById('input-historia').value = personaje.historia_trasfondo.replace(/\\n/g, '\n');
+                }
+                if (personaje.rasgos_rol_mesa) {
+                    document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa.replace(/\\n/g, '\n');
+                }
 
                 // Cargar dinero y notas al importar
                 if (personaje.dinero) {
@@ -658,7 +665,7 @@
                     }, 50);
                 }
 
-                alert("¡Personaje importado con éxito! Se limpiaron las comillas, saltos de línea y espacios automáticamente.");
+                alert("¡Personaje importado con éxito!");
 
             } catch (error) {
                 console.error("Error de importación detallado:", error);
