@@ -570,40 +570,58 @@
             if (!jsonTexto) return; 
 
             try {
-                // 1. Limpieza estándar de caracteres invisibles y comillas de chats (WhatsApp/Discord)
-                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Espacios invisibles
-                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Comillas curvas a rectas
-                jsonTexto = jsonTexto.replace(/""/g, '"'); // Quitar comillas dobles repetidas
+                alert("DEBUG 1: Texto recibido con éxito. Longitud del texto: " + jsonTexto.length);
+
+                // 1. Limpieza de espacios invisibles de WhatsApp/Webs
+                jsonTexto = jsonTexto.replace(/\u00a0/g, ' ');
+                
+                // 2. Convertir comillas curvas de chat a comillas rectas válidas de código
+                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"');
+                
+                // 3. Limpiar comillas dobles repetidas accidentales
+                jsonTexto = jsonTexto.replace(/""/g, '"');
                 jsonTexto = jsonTexto.trim();
                 
-                // Si el bloque completo viene envuelto en comillas externas por error, se las quitamos
+                alert("DEBUG 2: Comillas y espacios invisibles purificados.");
+
+                // Si viene envuelto en comillas externas por error de copiado, se las quitamos
                 if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
+                    alert("DEBUG 3: Se detectaron y removieron comillas gigantes externas.");
                 }
 
-                // 🌟 ¡EL PURIFICADOR ESTRUCTURAL DEFINITIVO!
-                // Primero: Protegemos los '\n' escritos por la IA duplicando su barra (\\n) 
-                // para que JSON.parse los interprete correctamente como texto.
+                // 🌟 PROTECCIÓN DE ESCAPES ESCRITOS (\n literal)
+                // Duplica la barra para que pase a ser \\n (texto legal dentro del JSON)
                 jsonTexto = jsonTexto.replace(/\\n/g, '\\\\n').replace(/\\r/g, '\\\\r');
+                alert("DEBUG 4: Se protegieron los saltos de línea '\\n' de las historias.");
 
-                // Segundo: Eliminamos de golpe todos los Enters físicos (saltos de línea reales)
-                // que rompen la estructura de las llaves del dinero o de las propiedades anidadas.
+                // 🌟 ELIMINACIÓN DE ENTERS FÍSICOS (Saltos de línea reales)
+                // Convierte el JSON en una sola línea continua horizontal
                 jsonTexto = jsonTexto.replace(/\r?\n/g, ' ');
+                alert("DEBUG 5: Se eliminaron los Enters físicos de la estructura del JSON.");
 
-                // Tercero: Limpiamos los espacios múltiples generados al aplanar el JSON
+                // Limpiar espacios múltiples que hayan quedado al juntar las líneas
                 jsonTexto = jsonTexto.replace(/\s+/g, ' ');
+                
+                // Muestra un pequeño fragmento del texto final que va a entrar a JSON.parse
+                alert("DEBUG 6: Texto final listo para parsear (primeros 150 caracteres):\n\n" + jsonTexto.substring(0, 150));
 
-                // Convertimos el texto purificado en un objeto JavaScript real
+                // ========================================================
+                // AQUÍ ES DONDE ESTABA EL CORTOCIRCUITO ORIGINAL
+                // ========================================================
                 const personaje = JSON.parse(jsonTexto);
+                
+                alert("DEBUG 7: ¡ÉXITO TOTAL! JSON.parse() aceptó el texto. Iniciando limpieza de pantalla anterior...");
 
-                // --- 🌟 RESETEO SEGURO DE LA PANTALLA ANTERIOR ---
-                // Solo se ejecuta si el JSON.parse de arriba fue un éxito absoluto.
+                // --- RESETEO SEGURO DE LA PANTALLA ANTERIOR ---
                 if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
                 if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
                 if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
                 if (document.getElementById('input-notas-diversas')) document.getElementById('input-notas-diversas').value = "";
                 if (document.getElementById('input-historia')) document.getElementById('input-historia').value = "";
                 if (document.getElementById('input-rasgos-rol')) document.getElementById('input-rasgos-rol').value = "";
+
+                alert("DEBUG 8: Pantalla anterior reseteada. Inyectando datos del nuevo personaje...");
 
                 // 1. Rellenar entradas básicas
                 if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
@@ -623,7 +641,7 @@
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
                 }
 
-                // 3. Rellenar Textos narrativos (reparando los saltos de línea para las cajas de texto)
+                // 3. Rellenar Textos narrativos (restaurando los saltos de línea para las cajas del usuario)
                 if (personaje.historia_trasfondo) {
                     document.getElementById('input-historia').value = personaje.historia_trasfondo.replace(/\\n/g, '\n');
                 }
@@ -640,6 +658,8 @@
                 if (personaje.notas_diversas) {
                     document.getElementById('input-notas-diversas').value = personaje.notas_diversas;
                 }
+
+                alert("DEBUG 9: Datos inyectados. Forzando recálculo del sistema...");
 
                 // 4. Forzar recálculo general de la aplicación
                 actualizar();
@@ -682,7 +702,8 @@
 
             } catch (error) {
                 console.error("Error de importación detallado:", error);
-                alert("¡Error al importar! El formato del texto sigue teniendo caracteres incompatibles.");
+                // Ponemos una alerta que nos diga el mensaje exacto del error nativo del navegador
+                alert("🚨 EXPLOTÓ EN EL CATCH:\n\n" + error.message);
             }
         }
 
