@@ -570,58 +570,48 @@
             if (!jsonTexto) return; 
 
             try {
-                alert("DEBUG 1: Texto recibido con éxito. Longitud del texto: " + jsonTexto.length);
-
-                // 1. Limpieza de espacios invisibles de WhatsApp/Webs
-                jsonTexto = jsonTexto.replace(/\u00a0/g, ' ');
-                
-                // 2. Convertir comillas curvas de chat a comillas rectas válidas de código
-                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"');
-                
-                // 3. Limpiar comillas dobles repetidas accidentales
-                jsonTexto = jsonTexto.replace(/""/g, '"');
+                // 1. Limpieza estándar de caracteres molestos de portapapeles y chats
+                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Quitar espacios invisibles
+                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Convertir comillas curvas a rectas
+                jsonTexto = jsonTexto.replace(/""/g, '"'); // Eliminar comillas dobles accidentales
                 jsonTexto = jsonTexto.trim();
                 
-                alert("DEBUG 2: Comillas y espacios invisibles purificados.");
-
-                // Si viene envuelto en comillas externas por error de copiado, se las quitamos
+                // Si viene envuelto en comillas externas por error, se las quitamos
                 if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
-                    alert("DEBUG 3: Se detectaron y removieron comillas gigantes externas.");
                 }
 
-                // 🌟 PROTECCIÓN DE ESCAPES ESCRITOS (\n literal)
-                // Duplica la barra para que pase a ser \\n (texto legal dentro del JSON)
-                jsonTexto = jsonTexto.replace(/\\n/g, '\\\\n').replace(/\\r/g, '\\\\r');
-                alert("DEBUG 4: Se protegieron los saltos de línea '\\n' de las historias.");
+                // 🌟 EL ESCUDO QUIRÚRGICO AUTOMÁTICO:
+                // Recorremos el string carácter por carácter para detectar saltos de línea crudos
+                // ÚNICAMENTE cuando están metidos dentro de unas comillas (valores de texto narrativo).
+                // No toca los saltos de línea estructurales que dividen las propiedades o el dinero.
+                let procesado = "";
+                let dentroDeTexto = false;
+                for (let i = 0; i < jsonTexto.length; i++) {
+                    let char = jsonTexto[i];
+                    // Validamos si entramos o salimos de un string ignorando comillas escapadas
+                    if (char === '"' && jsonTexto[i - 1] !== '\\') {
+                        dentroDeTexto = !dentroDeTexto;
+                    }
+                    // Si es un Enter físico real dentro de una biografía/nota, lo hacemos legal para JSON
+                    if ((char === '\n' || char === '\r') && dentroDeTexto) {
+                        procesado += '\\n';
+                    } else {
+                        procesado += char;
+                    }
+                }
+                jsonTexto = procesado;
 
-                // 🌟 ELIMINACIÓN DE ENTERS FÍSICOS (Saltos de línea reales)
-                // Convierte el JSON en una sola línea continua horizontal
-                jsonTexto = jsonTexto.replace(/\r?\n/g, ' ');
-                alert("DEBUG 5: Se eliminaron los Enters físicos de la estructura del JSON.");
-
-                // Limpiar espacios múltiples que hayan quedado al juntar las líneas
-                jsonTexto = jsonTexto.replace(/\s+/g, ' ');
-                
-                // Muestra un pequeño fragmento del texto final que va a entrar a JSON.parse
-                alert("DEBUG 6: Texto final listo para parsear (primeros 150 caracteres):\n\n" + jsonTexto.substring(0, 150));
-
-                // ========================================================
-                // AQUÍ ES DONDE ESTABA EL CORTOCIRCUITO ORIGINAL
-                // ========================================================
+                // Ahora sí, el texto está perfectamente estructurado y limpio
                 const personaje = JSON.parse(jsonTexto);
-                
-                alert("DEBUG 7: ¡ÉXITO TOTAL! JSON.parse() aceptó el texto. Iniciando limpieza de pantalla anterior...");
 
-                // --- RESETEO SEGURO DE LA PANTALLA ANTERIOR ---
+                // --- 🌟 RESETEO SEGURO DE LA PANTALLA ANTERIOR ---
                 if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
                 if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
                 if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
                 if (document.getElementById('input-notas-diversas')) document.getElementById('input-notas-diversas').value = "";
                 if (document.getElementById('input-historia')) document.getElementById('input-historia').value = "";
                 if (document.getElementById('input-rasgos-rol')) document.getElementById('input-rasgos-rol').value = "";
-
-                alert("DEBUG 8: Pantalla anterior reseteada. Inyectando datos del nuevo personaje...");
 
                 // 1. Rellenar entradas básicas
                 if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
@@ -641,15 +631,11 @@
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
                 }
 
-                // 3. Rellenar Textos narrativos (restaurando los saltos de línea para las cajas del usuario)
-                if (personaje.historia_trasfondo) {
-                    document.getElementById('input-historia').value = personaje.historia_trasfondo.replace(/\\n/g, '\n');
-                }
-                if (personaje.rasgos_rol_mesa) {
-                    document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa.replace(/\\n/g, '\n');
-                }
+                // 3. Rellenar Textos narrativos
+                if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
+                if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
 
-                // Cargar dinero y notas si el JSON los incluye
+                // Cargar dinero y notas al importar
                 if (personaje.dinero) {
                     if (personaje.dinero.oro) document.getElementById('coin-gold').value = personaje.dinero.oro;
                     if (personaje.dinero.plata) document.getElementById('coin-silver').value = personaje.dinero.plata;
@@ -659,9 +645,7 @@
                     document.getElementById('input-notas-diversas').value = personaje.notas_diversas;
                 }
 
-                alert("DEBUG 9: Datos inyectados. Forzando recálculo del sistema...");
-
-                // 4. Forzar recálculo general de la aplicación
+                // 4. Forzar recálculo del sistema
                 actualizar();
 
                 // 5. Forzar sobreescritura de datos calculados por IA
@@ -681,7 +665,7 @@
                     document.getElementById('res-especial').innerText = personaje.salud_sagrada;
                 }
 
-                // 6. Marcar Hechizos Preparados
+                // 6. Cargar Hechizos Seleccionados
                 if (personaje.hechizos_preparados && personaje.hechizos_preparados.length > 0) {
                     setTimeout(() => {
                         const checkboxes = document.querySelectorAll('#lista-hechizos div');
@@ -702,8 +686,7 @@
 
             } catch (error) {
                 console.error("Error de importación detallado:", error);
-                // Ponemos una alerta que nos diga el mensaje exacto del error nativo del navegador
-                alert("🚨 EXPLOTÓ EN EL CATCH:\n\n" + error.message);
+                alert("¡Error al importar! El formato del texto sigue teniendo caracteres incompatibles.");
             }
         }
 
