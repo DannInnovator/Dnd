@@ -562,35 +562,36 @@
             if (!jsonTexto) return; 
 
             try {
-                // 1. Limpieza básica de basura invisible de portapapeles y chats (WhatsApp/Discord)
-                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Espacios invisibles
-                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Comillas curvas a normales
-                jsonTexto = jsonTexto.replace(/""/g, '"'); // Remover comillas dobles accidentales
+                // 1. Limpieza estándar de caracteres molestos de chats (WhatsApp/Discord)
+                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Quitar espacios invisibles
+                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Convertir comillas curvas a rectas
+                jsonTexto = jsonTexto.replace(/""/g, '"'); // Quitar comillas dobles repetidas
                 
                 jsonTexto = jsonTexto.trim();
                 
-                // Si el texto completo viene envuelto en comillas externas por error, se las quitamos
+                // Si el bloque completo viene envuelto en comillas externas accidentales, se las quitamos
                 if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
 
-                // 🌟 EL NUEVO ESCUDO BLINDADO:
-                // Reemplaza de forma segura los saltos de línea físicos (Enters reales) que estén 
-                // rompiendo las propiedades del JSON, convirtiéndolos en un '\n' que JSON.parse sí entiende.
-                jsonTexto = jsonTexto.replace(/\r?\n/g, '\\n');
-                
-                // Corrección por si el reemplazo dañó la estructura exterior de las llaves del JSON
-                jsonTexto = jsonTexto.replace(/{\\n/g, '{').replace(/}\\n/g, '}').replace(/,\\n/g, ',');
-                jsonTexto = jsonTexto.replace(/"\\n\s*"/g, '""').replace(/"\s*:\\n\s*/g, '":');
+                // 🌟 EL FILTRO REPARADOR: Convierte los saltos de línea reales en escapes (\n) 
+                // pero protegiendo la estructura del JSON para que JSON.parse() no falle.
+                // Reemplaza los Enters dentro de los textos y limpia espacios raros entre propiedades.
+                jsonTexto = jsonTexto.replace(/\r?\n/g, ' '); 
+                // Reparamos posibles espacios múltiples generados por la unificación de líneas
+                jsonTexto = jsonTexto.replace(/\s+/g, ' ');
 
-                // Procesar el JSON purificado
+                // Convertimos el texto purificado en un objeto JavaScript real
                 const personaje = JSON.parse(jsonTexto);
 
-                // --- 🌟 RESETEO SEGURO DE SEGURIDAD ---
+                // --- 🌟 RESETEO SEGURO DE LA PANTALLA ANTERIOR ---
+                // Solo se ejecuta si el JSON.parse de arriba fue un éxito absoluto.
                 if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
                 if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
                 if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
                 if (document.getElementById('input-notas-diversas')) document.getElementById('input-notas-diversas').value = "";
+                if (document.getElementById('input-historia')) document.getElementById('input-historia').value = "";
+                if (document.getElementById('input-rasgos-rol')) document.getElementById('input-rasgos-rol').value = "";
 
                 // 1. Rellenar entradas básicas
                 if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
@@ -610,15 +611,11 @@
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
                 }
 
-                // 3. Rellenar Textos narrativos (reparando los saltos de línea para que se vean bonitos en el cuadro)
-                if (personaje.historia_trasfondo) {
-                    document.getElementById('input-historia').value = personaje.historia_trasfondo.replace(/\\n/g, '\n');
-                }
-                if (personaje.rasgos_rol_mesa) {
-                    document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa.replace(/\\n/g, '\n');
-                }
+                // 3. Rellenar Textos narrativos
+                if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
+                if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
 
-                // Cargar dinero y notas al importar
+                // Cargar dinero y notas si el JSON los incluye
                 if (personaje.dinero) {
                     if (personaje.dinero.oro) document.getElementById('coin-gold').value = personaje.dinero.oro;
                     if (personaje.dinero.plata) document.getElementById('coin-silver').value = personaje.dinero.plata;
@@ -628,7 +625,7 @@
                     document.getElementById('input-notas-diversas').value = personaje.notas_diversas;
                 }
 
-                // 4. Forzar recálculo del sistema
+                // 4. Forzar recálculo general de la aplicación
                 actualizar();
 
                 // 5. Forzar sobreescritura de datos calculados por IA
@@ -648,7 +645,7 @@
                     document.getElementById('res-especial').innerText = personaje.salud_sagrada;
                 }
 
-                // 6. Cargar Hechizos Seleccionados
+                // 6. Marcar Hechizos Preparados
                 if (personaje.hechizos_preparados && personaje.hechizos_preparados.length > 0) {
                     setTimeout(() => {
                         const checkboxes = document.querySelectorAll('#lista-hechizos div');
