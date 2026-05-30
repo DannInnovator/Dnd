@@ -576,14 +576,15 @@
                 if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
-
+                alert("linea 579");
                 // 🌟 EL FILTRO REPARADOR: Convierte los saltos de línea reales en escapes (\n) 
                 // pero protegiendo la estructura del JSON para que JSON.parse() no falle.
                 // Reemplaza los Enters dentro de los textos y limpia espacios raros entre propiedades.
                 jsonTexto = jsonTexto.replace(/\r?\n/g, ' '); 
+                alert("linea 584");
                 // Reparamos posibles espacios múltiples generados por la unificación de líneas
                 jsonTexto = jsonTexto.replace(/\s+/g, ' ');
-
+                alert("linea 587");
                 // Convertimos el texto purificado en un objeto JavaScript real
                 const personaje = JSON.parse(jsonTexto);
                 alert("linea 589");
