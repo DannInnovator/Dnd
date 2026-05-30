@@ -568,7 +568,7 @@
                 jsonTexto = jsonTexto.replace(/""/g, '"'); // Quitar comillas dobles repetidas
                 
                 jsonTexto = jsonTexto.trim();
-                
+                alert("linea 571");
                 // Si el bloque completo viene envuelto en comillas externas accidentales, se las quitamos
                 if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
@@ -580,7 +580,7 @@
                 jsonTexto = jsonTexto.replace(/\r?\n/g, ' '); 
                 // Reparamos posibles espacios múltiples generados por la unificación de líneas
                 jsonTexto = jsonTexto.replace(/\s+/g, ' ');
-
+                alert("linea 583");
                 // Convertimos el texto purificado en un objeto JavaScript real
                 const personaje = JSON.parse(jsonTexto);
 
