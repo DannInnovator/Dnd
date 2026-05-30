@@ -572,15 +572,20 @@
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
 
-                // --- 🌟 ¡NUEVA LÍNEA DE LIMPIEZA DE SEGURIDAD! ---
-                // Reseteamos el monedero y las notas antes de cargar el nuevo archivo
+                // 🌟 ¡NUEVO ESCUDO PARA CORREGIR SALTOS DE LÍNEA TEXTUALES (\n)!
+                // Esto evita que los textos de rasgos o historia congelen el JSON.parse()
+                jsonTexto = jsonTexto.replace(/\n/g, "\\n").replace(/\r/g, "\\r");
+                // Corrección por si el reemplazo duplicó los escapes de las barras inversas
+                jsonTexto = jsonTexto.replace(/\\\\n/g, "\\n").replace(/\\\\r/g, "\\r");
+
+                const personaje = JSON.parse(jsonTexto);
+
+                // --- 🌟 RESETEO SEGURO DE SEGURIDAD ---
+                // Una vez que sabemos que el JSON es válido, limpiamos los datos anteriores
                 if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
                 if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
                 if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
                 if (document.getElementById('input-notas-diversas')) document.getElementById('input-notas-diversas').value = "";
-                // ------------------------------------------------
-
-                const personaje = JSON.parse(jsonTexto);
 
                 // 1. Rellenar entradas básicas
                 if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
@@ -603,6 +608,7 @@
                 // 3. Rellenar Textos narrativos
                 if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
                 if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
+
                 // Cargar dinero y notas al importar
                 if (personaje.dinero) {
                     if (personaje.dinero.oro) document.getElementById('coin-gold').value = personaje.dinero.oro;
@@ -621,7 +627,6 @@
                     document.getElementById('res-iniciativa').innerText = personaje.iniciativa;
                 }
                 
-                // Control de recursos especiales al importar
                 const bloqueEsp = document.getElementById('bloque-bardo-monje');
                 if (personaje.clase === 'bardo' && personaje.inspiraciones) {
                     if (bloqueEsp) bloqueEsp.classList.remove('hidden');
@@ -630,7 +635,6 @@
                     if (bloqueEsp) bloqueEsp.classList.remove('hidden');
                     document.getElementById('res-especial').innerText = personaje.puntos_ki;
                 } else if (personaje.clase === 'paladin' && personaje.salud_sagrada) {
-                    // ¡AQUÍ ESTÁ LA CORRECCIÓN! Forzamos a quitar el "hidden" al importar el Paladín
                     if (bloqueEsp) bloqueEsp.classList.remove('hidden');
                     document.getElementById('res-especial').innerText = personaje.salud_sagrada;
                 }
@@ -652,7 +656,7 @@
                     }, 50);
                 }
 
-                alert("¡Personaje importado con éxito! Se limpiaron las comillas y los espacios invisibles automáticamente.");
+                alert("¡Personaje importado con éxito! Se limpiaron las comillas, saltos de línea y espacios automáticamente.");
 
             } catch (error) {
                 console.error("Error de importación detallado:", error);
