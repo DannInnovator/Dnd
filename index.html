@@ -218,6 +218,35 @@
                     Notas de equipo adicional: __________________________________________________________________
                 </div>
             </div>
+            <div class="mt-4 p-4 bg-white rounded-lg shadow border border-slate-200 no-print">
+                <h3 class="text-sm font-bold text-slate-700 uppercase mb-2">💰 Monedas y Notas de Campaña</h3>
+                
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <div>
+                        <label class="text-[10px] font-bold text-amber-600 block">Oro (PO)</label>
+                        <input type="number" id="coin-gold" value="0" class="w-full p-1 border rounded text-center text-sm font-bold" oninput="actualizar()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 block">Plata (PP)</label>
+                        <input type="number" id="coin-silver" value="0" class="w-full p-1 border rounded text-center text-sm" oninput="actualizar()">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-amber-700 block">Cobre (PC)</label>
+                        <input type="number" id="coin-copper" value="0" class="w-full p-1 border rounded text-center text-sm" oninput="actualizar()">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-slate-500 block mb-1">Notas del Diario / Estado Temporal</label>
+                    <textarea id="input-notas-diversas" rows="4" class="w-full p-2 border rounded text-xs text-slate-700" placeholder="Ej: Buscando pistas del culto de Monkeybone. Envenenado por 2 turnos..." oninput="actualizar()"></textarea>
+                </div>
+            </div>
+
+            <div class="only-print mt-4 p-2 border border-slate-300 rounded">
+                <p class="text-[10px] font-bold text-slate-700 uppercase">💰 Riquezas y Notas:</p>
+                <p class="text-xs text-slate-800 mt-1"><span class="font-bold">Oro:</span> <span id="res-gold">0</span> | <span class="font-bold">Plata:</span> <span id="res-silver">0</span> | <span class="font-bold">Cobre:</span> <span id="res-copper">0</span></p>
+                <p id="res-notas-diversas" class="text-xs text-slate-600 italic mt-2 whitespace-pre-line"></p>
+            </div>
         </section>
 
     </main>
@@ -341,6 +370,17 @@
                     </div>
                 `;
             }
+
+            // --- ACTUALIZACIÓN DE MONEDAS Y NOTAS ---
+            const po = document.getElementById('coin-gold').value || "0";
+            const pp = document.getElementById('coin-silver').value || "0";
+            const pc = document.getElementById('coin-copper').value || "0";
+            const notasTxt = document.getElementById('input-notas-diversas').value;
+
+            document.getElementById('res-gold').innerText = po;
+            document.getElementById('res-silver').innerText = pp;
+            document.getElementById('res-copper').innerText = pc;
+            document.getElementById('res-notas-diversas').innerText = notasTxt;
 
             // --- LÓGICA DE RECURSOS ESPECIALES (INSPIRACIÓN / KI / IMPOSICIÓN DE MANOS) ---
             const bloqueEspecial = document.getElementById('bloque-bardo-monje');
@@ -499,6 +539,13 @@
                 salud_sagrada: claseSeleccionada === 'paladin' ? document.getElementById('res-especial').innerText : "0", // <-- NUEVA LÍNEA
                 historia_trasfondo: document.getElementById('input-historia').value,
                 rasgos_rol_mesa: document.getElementById('input-rasgos-rol').value,
+                // Dentro del objeto personaje en exportarIA():
+                dinero: {
+                    oro: document.getElementById('coin-gold').value,
+                    plata: document.getElementById('coin-silver').value,
+                    cobre: document.getElementById('coin-copper').value
+                },
+                notas_diversas: document.getElementById('input-notas-diversas').value,
                 hechizos_preparados: Array.from(document.querySelectorAll('#lista-hechizos input:checked'))
                     .map(cb => cb.closest('div').querySelector('p').innerText.trim())
             };
@@ -548,6 +595,15 @@
                 // 3. Rellenar Textos narrativos
                 if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
                 if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
+                // Cargar dinero y notas al importar
+                if (personaje.dinero) {
+                    if (personaje.dinero.oro) document.getElementById('coin-gold').value = personaje.dinero.oro;
+                    if (personaje.dinero.plata) document.getElementById('coin-silver').value = personaje.dinero.plata;
+                    if (personaje.dinero.cobre) document.getElementById('coin-copper').value = personaje.dinero.cobre;
+                }
+                if (personaje.notas_diversas) {
+                    document.getElementById('input-notas-diversas').value = personaje.notas_diversas;
+                }
 
                 // 4. Forzar recálculo del sistema
                 actualizar();
