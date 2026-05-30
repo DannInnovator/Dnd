@@ -569,31 +569,28 @@
             let jsonTexto = prompt("Pega aquí el código JSON de tu personaje exportado:");
             if (!jsonTexto) return; 
 
+            // Guardamos una copia exacta del texto original para poder analizarlo si falla
+            const textoOriginalIngresado = jsonTexto;
+
             try {
-                // 1. Limpieza estándar de caracteres molestos de portapapeles y chats
-                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Quitar espacios invisibles
-                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Convertir comillas curvas a rectas
-                jsonTexto = jsonTexto.replace(/""/g, '"'); // Eliminar comillas dobles accidentales
+                // 1. Limpieza estándar inicial
+                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); 
+                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); 
+                jsonTexto = jsonTexto.replace(/""/g, '"'); 
                 jsonTexto = jsonTexto.trim();
                 
-                // Si viene envuelto en comillas externas por error, se las quitamos
                 if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
 
-                // 🌟 EL ESCUDO QUIRÚRGICO AUTOMÁTICO:
-                // Recorremos el string carácter por carácter para detectar saltos de línea crudos
-                // ÚNICAMENTE cuando están metidos dentro de unas comillas (valores de texto narrativo).
-                // No toca los saltos de línea estructurales que dividen las propiedades o el dinero.
+                // 2. Escape quirúrgico carácter por carácter dentro de strings
                 let procesado = "";
                 let dentroDeTexto = false;
                 for (let i = 0; i < jsonTexto.length; i++) {
                     let char = jsonTexto[i];
-                    // Validamos si entramos o salimos de un string ignorando comillas escapadas
                     if (char === '"' && jsonTexto[i - 1] !== '\\') {
                         dentroDeTexto = !dentroDeTexto;
                     }
-                    // Si es un Enter físico real dentro de una biografía/nota, lo hacemos legal para JSON
                     if ((char === '\n' || char === '\r') && dentroDeTexto) {
                         procesado += '\\n';
                     } else {
@@ -602,10 +599,10 @@
                 }
                 jsonTexto = procesado;
 
-                // Ahora sí, el texto está perfectamente estructurado y limpio
+                // Intentar el parseo normal
                 const personaje = JSON.parse(jsonTexto);
 
-                // --- 🌟 RESETEO SEGURO DE LA PANTALLA ANTERIOR ---
+                // --- SI TODO VA BIEN, INYECTAR DATOS EN LA PANTALLA ---
                 if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
                 if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
                 if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
@@ -613,7 +610,6 @@
                 if (document.getElementById('input-historia')) document.getElementById('input-historia').value = "";
                 if (document.getElementById('input-rasgos-rol')) document.getElementById('input-rasgos-rol').value = "";
 
-                // 1. Rellenar entradas básicas
                 if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
                 if (personaje.nivel) document.getElementById('nivel').value = personaje.nivel;
                 if (personaje.alineamiento) document.getElementById('alineamiento').value = personaje.alineamiento;
@@ -621,7 +617,6 @@
                 if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
                 if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
 
-                // 2. Rellenar Atributos
                 if (personaje.stats) {
                     if (personaje.stats.FUE) document.getElementById('score-str').value = personaje.stats.FUE;
                     if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.DES;
@@ -631,27 +626,19 @@
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
                 }
 
-                // 3. Rellenar Textos narrativos
                 if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
                 if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
 
-                // Cargar dinero y notas al importar
                 if (personaje.dinero) {
                     if (personaje.dinero.oro) document.getElementById('coin-gold').value = personaje.dinero.oro;
                     if (personaje.dinero.plata) document.getElementById('coin-silver').value = personaje.dinero.plata;
                     if (personaje.dinero.cobre) document.getElementById('coin-copper').value = personaje.dinero.cobre;
                 }
-                if (personaje.notas_diversas) {
-                    document.getElementById('input-notas-diversas').value = personaje.notas_diversas;
-                }
+                if (personaje.notas_diversas) document.getElementById('input-notas-diversas').value = personaje.notas_diversas;
 
-                // 4. Forzar recálculo del sistema
                 actualizar();
 
-                // 5. Forzar sobreescritura de datos calculados por IA
-                if (personaje.iniciativa) {
-                    document.getElementById('res-iniciativa').innerText = personaje.iniciativa;
-                }
+                if (personaje.iniciativa) document.getElementById('res-iniciativa').innerText = personaje.iniciativa;
                 
                 const bloqueEsp = document.getElementById('bloque-bardo-monje');
                 if (personaje.clase === 'bardo' && personaje.inspiraciones) {
@@ -665,7 +652,6 @@
                     document.getElementById('res-especial').innerText = personaje.salud_sagrada;
                 }
 
-                // 6. Cargar Hechizos Seleccionados
                 if (personaje.hechizos_preparados && personaje.hechizos_preparados.length > 0) {
                     setTimeout(() => {
                         const checkboxes = document.querySelectorAll('#lista-hechizos div');
@@ -676,9 +662,7 @@
                                 if (cb) cb.checked = true;
                             }
                         });
-                        if (typeof actualizarContador === "function") {
-                            actualizarContador();
-                        }
+                        if (typeof actualizarContador === "function") actualizarContador();
                     }, 50);
                 }
 
@@ -686,7 +670,71 @@
 
             } catch (error) {
                 console.error("Error de importación detallado:", error);
-                alert("¡Error al importar! El formato del texto sigue teniendo caracteres incompatibles.");
+                
+                // 🕵️‍♂️ ESCÁNER PROGRESIVO DE CARACTERES
+                // Si el error no nos da la posición, la descubriremos nosotros rompiendo el JSON en partes
+                let posicionFallo = -1;
+                let mensajeErrorNativo = error.message;
+
+                // Intento 1: Ver si el mensaje del navegador ya trae un número de posición
+                let matches = mensajeErrorNativo.match(/position\s+(\d+)/);
+                if (matches && matches[1]) {
+                    posicionFallo = parseInt(matches[1]);
+                } else {
+                    // Intento 2: Escáner manual. Intentamos parsear sub-bloques del JSON simulando cierres
+                    // para ver en qué letra exacta colapsa la estructura.
+                    for (let longitud = 10; longitud <= jsonTexto.length; longitud++) {
+                        let fragmentoPrueba = jsonTexto.substring(0, longitud);
+                        
+                        // Añadimos cierres ficticios para intentar validar la estructura hasta ese punto
+                        if (!fragmentoPrueba.endsWith('}')) {
+                            fragmentoPrueba += '"}'; 
+                        }
+                        try {
+                            // Intentamos ver si este pedazo genera error de sintaxis de caracteres ilegales
+                            JSON.parse(fragmentoPrueba + "}");
+                        } catch (e) {
+                            if (e.message.includes("Unexpected token") || e.message.includes("Expected") || e.message.includes("bad control character")) {
+                                posicionFallo = longitud - 1;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                // 3. ARMADO DEL REPORTE VISUAL CON CONTEXTO EN CADENA
+                let reporteContexto = "No se pudo mapear el entorno del error.";
+                if (posicionFallo !== -1) {
+                    let inicioCorte = Math.max(0, posicionFallo - 45);
+                    let finCorte = Math.min(jsonTexto.length, posicionFallo + 45);
+                    
+                    let antes = jsonTexto.substring(inicioCorte, posicionFallo);
+                    let caracterRoto = jsonTexto.charAt(posicionFallo);
+                    let despues = jsonTexto.substring(posicionFallo + 1, finCorte);
+
+                    // Si el carácter roto es un espacio en blanco, enter o pestaña, lo hacemos visible
+                    if (caracterRoto === "\n") caracterRoto = "[SALTO DE LÍNEA (ENTER)]";
+                    if (caracterRoto === "\r") caracterRoto = "[RETORNO DE CARRO]";
+                    if (caracterRoto === "\t") caracterRoto = "[TABULACIÓN]";
+                    if (caracterRoto === " ") caracterRoto = "[ESPACIO]";
+
+                    reporteContexto = 
+                        "--- TEXTO ANTES ---\n" + antes + "\n\n" +
+                        "👉 👉 👉 CARÁCTER CAUSANTE DEL FALLO:\n" + 
+                        "--> " + caracterRoto + " <--\n\n" +
+                        "--- TEXTO DESPUÉS ---\n" + despues;
+                } else {
+                    // Si todo falla, mostramos los últimos 150 caracteres procesados para inspección visual
+                    reporteContexto = "Inspección de cola de datos:\n..." + jsonTexto.substring(Math.max(0, jsonTexto.length - 150));
+                }
+
+                // Desplegar la súper alerta diagnóstica
+                alert(
+                    "🚨 RASTREADOR DE ERRORES ACTIVADO\n\n" +
+                    "Mensaje original: " + mensajeErrorNativo + "\n\n" +
+                    reporteContexto + "\n\n" +
+                    "💡 Copia esta alerta o sácale captura para ver qué carácter está molestando."
+                );
             }
         }
 
