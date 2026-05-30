@@ -570,10 +570,10 @@
             if (!jsonTexto) return; 
 
             try {
-                // 1. Limpieza estándar de caracteres molestos de portapapeles y chats
-                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Quitar espacios invisibles
-                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Convertir comillas curvas a rectas
-                jsonTexto = jsonTexto.replace(/""/g, '"'); // Quitar comillas dobles accidentales
+                // 1. Limpieza estándar de caracteres invisibles y comillas de chats (WhatsApp/Discord)
+                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Espacios invisibles
+                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Comillas curvas a rectas
+                jsonTexto = jsonTexto.replace(/""/g, '"'); // Quitar comillas dobles repetidas
                 jsonTexto = jsonTexto.trim();
                 
                 // Si el bloque completo viene envuelto en comillas externas por error, se las quitamos
@@ -581,11 +581,17 @@
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
 
-                // 🌟 ¡EL ESCUDO DEFINITIVO DE ESCAPES!
-                // Este filtro busca los saltos de línea escritos por la IA (\n) y se asegura de que 
-                // JavaScript los lea con la doble barra legítima (\\n) que exige JSON.parse,
-                // pero ignorando los saltos de línea físicos (Enters reales) del formato del JSON.
+                // 🌟 ¡EL PURIFICADOR ESTRUCTURAL DEFINITIVO!
+                // Primero: Protegemos los '\n' escritos por la IA duplicando su barra (\\n) 
+                // para que JSON.parse los interprete correctamente como texto.
                 jsonTexto = jsonTexto.replace(/\\n/g, '\\\\n').replace(/\\r/g, '\\\\r');
+
+                // Segundo: Eliminamos de golpe todos los Enters físicos (saltos de línea reales)
+                // que rompen la estructura de las llaves del dinero o de las propiedades anidadas.
+                jsonTexto = jsonTexto.replace(/\r?\n/g, ' ');
+
+                // Tercero: Limpiamos los espacios múltiples generados al aplanar el JSON
+                jsonTexto = jsonTexto.replace(/\s+/g, ' ');
 
                 // Convertimos el texto purificado en un objeto JavaScript real
                 const personaje = JSON.parse(jsonTexto);
@@ -617,13 +623,12 @@
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
                 }
 
-                // 3. Rellenar Textos narrativos
-                // Volvemos a convertir los escapes seguros en Enters visibles para los cuadros de texto del usuario
+                // 3. Rellenar Textos narrativos (reparando los saltos de línea para las cajas de texto)
                 if (personaje.historia_trasfondo) {
-                    document.getElementById('input-historia').value = personaje.historia_trasfondo;
+                    document.getElementById('input-historia').value = personaje.historia_trasfondo.replace(/\\n/g, '\n');
                 }
                 if (personaje.rasgos_rol_mesa) {
-                    document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
+                    document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa.replace(/\\n/g, '\n');
                 }
 
                 // Cargar dinero y notas si el JSON los incluye
