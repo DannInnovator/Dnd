@@ -563,12 +563,15 @@
 
             try {
                 // 1. Limpieza estándar de caracteres molestos de chats (WhatsApp/Discord)
+                alert("linea 566");
                 jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Quitar espacios invisibles
+                alert("linea 568");
                 jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Convertir comillas curvas a rectas
+                alert("linea 570");
                 jsonTexto = jsonTexto.replace(/""/g, '"'); // Quitar comillas dobles repetidas
-                
+                alert("linea 572");
                 jsonTexto = jsonTexto.trim();
-                alert("linea 571");
+                alert("linea 574");
                 // Si el bloque completo viene envuelto en comillas externas accidentales, se las quitamos
                 if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
@@ -580,7 +583,7 @@
                 jsonTexto = jsonTexto.replace(/\r?\n/g, ' '); 
                 // Reparamos posibles espacios múltiples generados por la unificación de líneas
                 jsonTexto = jsonTexto.replace(/\s+/g, ' ');
-                alert("linea 583");
+
                 // Convertimos el texto purificado en un objeto JavaScript real
                 const personaje = JSON.parse(jsonTexto);
 
