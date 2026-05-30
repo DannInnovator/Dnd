@@ -572,6 +572,14 @@
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
 
+                // --- 🌟 ¡NUEVA LÍNEA DE LIMPIEZA DE SEGURIDAD! ---
+                // Reseteamos el monedero y las notas antes de cargar el nuevo archivo
+                if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
+                if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
+                if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
+                if (document.getElementById('input-notas-diversas')) document.getElementById('input-notas-diversas').value = "";
+                // ------------------------------------------------
+
                 const personaje = JSON.parse(jsonTexto);
 
                 // 1. Rellenar entradas básicas
