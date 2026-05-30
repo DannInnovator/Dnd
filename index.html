@@ -565,14 +565,119 @@
             });
         }
 
-        // 1. Esta función ahora solo muestra el cuadro de texto limpio en la pantalla
         function importarIA() {
-            const contenedor = document.getElementById('contenedor-importador');
-            const textarea = document.getElementById('textarea-importar');
-            if (contenedor && textarea) {
-                textarea.value = ""; // Limpiar lo que hubiera antes
-                contenedor.classList.remove('hidden'); // Mostrar el cuadro
-                textarea.focus();
+            let jsonTexto = prompt("Pega aquí el código JSON de tu personaje exportado:");
+            if (!jsonTexto) return; 
+
+            try {
+                // 1. Limpieza estándar de caracteres molestos de portapapeles y chats
+                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Quitar espacios invisibles
+                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Convertir comillas curvas a rectas
+                jsonTexto = jsonTexto.replace(/""/g, '"'); // Quitar comillas dobles accidentales
+                jsonTexto = jsonTexto.trim();
+                
+                // Si el bloque completo viene envuelto en comillas externas por error, se las quitamos
+                if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
+                    jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
+                }
+
+                // 🌟 ¡EL ESCUDO DEFINITIVO DE ESCAPES!
+                // Este filtro busca los saltos de línea escritos por la IA (\n) y se asegura de que 
+                // JavaScript los lea con la doble barra legítima (\\n) que exige JSON.parse,
+                // pero ignorando los saltos de línea físicos (Enters reales) del formato del JSON.
+                jsonTexto = jsonTexto.replace(/\\n/g, '\\\\n').replace(/\\r/g, '\\\\r');
+
+                // Convertimos el texto purificado en un objeto JavaScript real
+                const personaje = JSON.parse(jsonTexto);
+
+                // --- 🌟 RESETEO SEGURO DE LA PANTALLA ANTERIOR ---
+                // Solo se ejecuta si el JSON.parse de arriba fue un éxito absoluto.
+                if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
+                if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
+                if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
+                if (document.getElementById('input-notas-diversas')) document.getElementById('input-notas-diversas').value = "";
+                if (document.getElementById('input-historia')) document.getElementById('input-historia').value = "";
+                if (document.getElementById('input-rasgos-rol')) document.getElementById('input-rasgos-rol').value = "";
+
+                // 1. Rellenar entradas básicas
+                if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
+                if (personaje.nivel) document.getElementById('nivel').value = personaje.nivel;
+                if (personaje.alineamiento) document.getElementById('alineamiento').value = personaje.alineamiento;
+                if (personaje.especie) document.getElementById('select-especie').value = personaje.especie;
+                if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
+                if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
+
+                // 2. Rellenar Atributos
+                if (personaje.stats) {
+                    if (personaje.stats.FUE) document.getElementById('score-str').value = personaje.stats.FUE;
+                    if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.DES;
+                    if (personaje.stats.CON) document.getElementById('score-con').value = personaje.stats.CON;
+                    if (personaje.stats.INT) document.getElementById('score-int').value = personaje.stats.INT;
+                    if (personaje.stats.SAB) document.getElementById('score-wis').value = personaje.stats.SAB;
+                    if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
+                }
+
+                // 3. Rellenar Textos narrativos
+                // Volvemos a convertir los escapes seguros en Enters visibles para los cuadros de texto del usuario
+                if (personaje.historia_trasfondo) {
+                    document.getElementById('input-historia').value = personaje.historia_trasfondo;
+                }
+                if (personaje.rasgos_rol_mesa) {
+                    document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
+                }
+
+                // Cargar dinero y notas si el JSON los incluye
+                if (personaje.dinero) {
+                    if (personaje.dinero.oro) document.getElementById('coin-gold').value = personaje.dinero.oro;
+                    if (personaje.dinero.plata) document.getElementById('coin-silver').value = personaje.dinero.plata;
+                    if (personaje.dinero.cobre) document.getElementById('coin-copper').value = personaje.dinero.cobre;
+                }
+                if (personaje.notas_diversas) {
+                    document.getElementById('input-notas-diversas').value = personaje.notas_diversas;
+                }
+
+                // 4. Forzar recálculo general de la aplicación
+                actualizar();
+
+                // 5. Forzar sobreescritura de datos calculados por IA
+                if (personaje.iniciativa) {
+                    document.getElementById('res-iniciativa').innerText = personaje.iniciativa;
+                }
+                
+                const bloqueEsp = document.getElementById('bloque-bardo-monje');
+                if (personaje.clase === 'bardo' && personaje.inspiraciones) {
+                    if (bloqueEsp) bloqueEsp.classList.remove('hidden');
+                    document.getElementById('res-especial').innerText = personaje.inspiraciones;
+                } else if (personaje.clase === 'monje' && personaje.puntos_ki) {
+                    if (bloqueEsp) bloqueEsp.classList.remove('hidden');
+                    document.getElementById('res-especial').innerText = personaje.puntos_ki;
+                } else if (personaje.clase === 'paladin' && personaje.salud_sagrada) {
+                    if (bloqueEsp) bloqueEsp.classList.remove('hidden');
+                    document.getElementById('res-especial').innerText = personaje.salud_sagrada;
+                }
+
+                // 6. Marcar Hechizos Preparados
+                if (personaje.hechizos_preparados && personaje.hechizos_preparados.length > 0) {
+                    setTimeout(() => {
+                        const checkboxes = document.querySelectorAll('#lista-hechizos div');
+                        checkboxes.forEach(div => {
+                            const nombreHechizo = div.querySelector('p').innerText.replace('RITUAL', '').trim();
+                            if (personaje.hechizos_preparados.includes(nombreHechizo)) {
+                                const cb = div.querySelector('input[type="checkbox"]');
+                                if (cb) cb.checked = true;
+                            }
+                        });
+                        if (typeof actualizarContador === "function") {
+                            actualizarContador();
+                        }
+                    }, 50);
+                }
+
+                alert("¡Personaje importado con éxito!");
+
+            } catch (error) {
+                console.error("Error de importación detallado:", error);
+                alert("¡Error al importar! El formato del texto sigue teniendo caracteres incompatibles.");
             }
         }
 
