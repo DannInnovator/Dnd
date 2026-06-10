@@ -87,6 +87,16 @@
                 <label class="block text-xs font-bold text-red-400 uppercase mb-2">Clase</label>
                 <select id="select-clase" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm" onchange="actualizar()"></select>
             </div>
+            <div id="contenedor-circulo" class="hidden">
+                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Círculo Druídico</label>
+                <select id="select-circulo" onchange="actualizar()" class="w-full border rounded p-1.5 text-sm bg-white text-slate-900 font-medium">
+                    <option value="tierra_montana">Círculo de la Tierra (Montaña)</option>
+                    <option value="tierra_infraoscuridad">Círculo de la Tierra (Infraoscuridad)</option>
+                    <option value="luna">Círculo de la Luna</option>
+                    <option value="pastor">Círculo del Pastor</option>
+                    <option value="esporas">Círculo de las Esporas</option>
+                </select>
+            </div>
             <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
                 <label class="block text-xs font-bold text-green-400 uppercase mb-2">Trasfondo</label>
                 <select id="select-trasfondo" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm" onchange="actualizar()"></select>
@@ -293,6 +303,14 @@
             const clId = document.getElementById('select-clase').value;
             const trId = document.getElementById('select-trasfondo').value;
             const nivel = parseInt(document.getElementById('nivel').value) || 1;
+
+            // 🌟 NUEVO: Mostrar selector de Círculo solo si es Druida
+            const contenedorCirculo = document.getElementById('contenedor-circulo');
+            if (clId === 'druida') {
+                contenedorCirculo.classList.remove('hidden');
+            } else {
+                contenedorCirculo.classList.add('hidden');
+            }
             
             // 🌟 NUEVO: SUMAR ESTADÍSTICA BASE + MODIFICADOR MÁGICO
             // Esto asegura que toda la app use el valor alterado por ítems mágicos
@@ -369,7 +387,12 @@
 
             // 8. LLENAR LA HOJA DE PERSONAJE (RESUMEN)
             document.getElementById('res-nombre').innerText = nombre;
-            document.getElementById('res-clase-esp').innerText = `${esp.nombre} ${cl.nombre} (Nivel ${nivel}) | ${alineamiento}`;
+            let textoClaseEsp = `${esp.nombre} ${cl.nombre}`;
+            if (clId === 'druida') {
+                const circuloSel = document.getElementById('select-circulo').options[document.getElementById('select-circulo').selectedIndex].text;
+                textoClaseEsp += ` [${circuloSel}]`;
+            }
+            document.getElementById('res-clase-esp').innerText = `${textoClaseEsp} (Nivel ${nivel}) | ${alineamiento}`;
             document.getElementById('res-hp').innerText = hpTotal;
             document.getElementById('res-especie-rasgo').innerText = "Rasgo racial: " + esp.rasgo;
             document.getElementById('res-trasfondo-desc').innerText = tr.desc;
@@ -559,6 +582,7 @@
                 nombre: document.getElementById('nombre').value || "Sin nombre",
                 nivel: document.getElementById('nivel').value,
                 clase: claseSeleccionada,
+                circulo_druidico: claseSeleccionada === 'druida' ? document.getElementById('select-circulo').value : "n/a", // 🌟 NUEVO
                 especie: document.getElementById('select-especie').value,
                 trasfondo: document.getElementById('select-trasfondo').value,
                 dote_trasfondo: document.getElementById('res-dote').innerText,
@@ -640,6 +664,14 @@
                 if (personaje.especie) document.getElementById('select-especie').value = personaje.especie;
                 if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
                 if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
+
+                // 🌟 NUEVO: Cargar el Círculo Druídico si el personaje es un Druida
+                if (personaje.clase === 'druida' && personaje.circulo_druidico) {
+                    const selectorCirculo = document.getElementById('select-circulo');
+                    if (selectorCirculo) {
+                        selectorCirculo.value = personaje.circulo_druidico;
+                    }
+                }
 
                 // 2. Rellenar Atributos y sus Modificadores Mágicos si existen en el JSON
                 if (personaje.stats) {
