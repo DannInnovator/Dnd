@@ -87,15 +87,10 @@
                 <label class="block text-xs font-bold text-red-400 uppercase mb-2">Clase</label>
                 <select id="select-clase" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm" onchange="actualizar()"></select>
             </div>
-            <div id="contenedor-circulo" class="hidden md:col-span-3 bg-slate-800 p-4 rounded-xl border border-slate-700 mt-2">
-                <label class="block text-xs font-bold text-green-400 uppercase mb-2">🌿 Especialización: Círculo Druídico</label>
-                <select id="select-circulo" onchange="actualizar()" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm text-white font-medium">
-                    <option value="tierra_montana">Círculo de la Tierra (Montaña)</option>
-                    <option value="tierra_infraoscuridad">Círculo de la Tierra (Infraoscuridad)</option>
-                    <option value="luna">Círculo de la Luna</option>
-                    <option value="pastor">Círculo del Pastor</option>
-                    <option value="esporas">Círculo de las Esporas</option>
-                </select>
+            <div id="contenedor-especializacion" class="hidden md:col-span-3 bg-slate-800 p-4 rounded-xl border border-slate-700 mt-2">
+                <label id="label-especializacion" class="block text-xs font-bold text-yellow-400 uppercase mb-2">Especialización de Clase</label>
+                <select id="select-especializacion" onchange="actualizar()" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm text-white font-medium">
+                    </select>
             </div>
             <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
                 <label class="block text-xs font-bold text-green-400 uppercase mb-2">Trasfondo</label>
@@ -304,12 +299,63 @@
             const trId = document.getElementById('select-trasfondo').value;
             const nivel = parseInt(document.getElementById('nivel').value) || 1;
 
-            // 🌿 Control de visualización del Círculo Druídico
-            const contenedorCirculo = document.getElementById('contenedor-circulo');
-            if (clId === 'druida') {
-                contenedorCirculo.classList.remove('hidden');
+            // 🌟 MOTOR DINÁMICO DE SUBCLASES PARA TODO EL GRUPO
+            const contenedorEsp = document.getElementById('contenedor-especializacion');
+            const labelEsp = document.getElementById('label-especializacion');
+            const selectEsp = document.getElementById('select-especializacion');
+            
+            // Guardamos la opción que el usuario ya tenía seleccionada para que no se borre al redibujar
+            const valorGuardado = selectEsp.value;
+
+            // Clases que requieren elegir especialización en tu campaña
+            const clasesConSubclase = ['druida', 'mago', 'paladin', 'bardo', 'monje'];
+
+            if (clasesConSubclases.includes(clId)) {
+                contenedorEsp.classList.remove('hidden');
+                
+                // Si cambió de clase, redibujamos las opciones correspondientes
+                if (selectEsp.getAttribute('data-clase-activa') !== clId) {
+                    selectEsp.setAttribute('data-clase-activa', clId);
+                    let opcionesHTML = "";
+
+                    if (clId === 'druida') {
+                        labelEsp.className = "block text-xs font-bold text-green-400 uppercase mb-2";
+                        labelEsp.innerText = "🌿 Especialización: Círculo Druídico";
+                        opcionesHTML = `<option value="tierra_montana">Círculo de la Tierra (Montaña)</option>
+                                        <option value="tierra_infraoscuridad">Círculo de la Tierra (Infraoscuridad)</option>
+                                        <option value="luna">Círculo de la Luna</option>`;
+                    } else if (clId === 'mago') {
+                        labelEsp.className = "block text-xs font-bold text-purple-400 uppercase mb-2";
+                        labelEsp.innerText = "🔮 Escuela de Magia (Tradición Arcana)";
+                        opcionesHTML = `<option value="evocacion">Escuela de Evocación (Destrucción Segura)</option>
+                                        <option value="abjuracion">Escuela de Abjuración (Escudo de Fuerza)</option>
+                                        <option value="ilusion">Escuela de Ilusión (Engaño Visual)</option>`;
+                    } else if (clId === 'paladin') {
+                        labelEsp.className = "block text-xs font-bold text-emerald-400 uppercase mb-2";
+                        labelEsp.innerText = "🛡️ Sagrado: Juramento de Paladín (Nivel 3+)";
+                        opcionesHTML = `<option value="devocion">Juramento de Devoción (Justicia Cristalina)</option>
+                                        <option value="venganza">Juramento de Venganza (Cazador del Mal)</option>`;
+                    } else if (clId === 'bardo') {
+                        labelEsp.className = "block text-xs font-bold text-pink-400 uppercase mb-2";
+                        labelEsp.innerText = "🎵 Colegio Bardístico (Nivel 3+)";
+                        opcionesHTML = `<option value="lore">Colegio de la Lore (Saber y Sabotaje)</option>
+                                        <option value="valor">Colegio del Valor (Inspiración de Combate)</option>`;
+                    } else if (clId === 'monje') {
+                        labelEsp.className = "block text-xs font-bold text-cyan-400 uppercase mb-2";
+                        labelEsp.innerText = "🧘‍♂️ Senda: Camino Monástico (Nivel 3+)";
+                        opcionesHTML = `<option value="mano_abierta">Camino de la Mano Abierta (Control Marcial)</option>
+                                        <option value="sombra">Camino de la Sombra (Sigilo y Teletransporte)</option>`;
+                    }
+                    selectEsp.innerHTML = opcionesHTML;
+                    // Intentamos reponer el valor si coincide
+                    if (Array.from(selectEsp.options).some(o => o.value === valorGuardado)) {
+                        selectEsp.value = valorGuardado;
+                    }
+                }
             } else {
-                contenedorCirculo.classList.add('hidden');
+                contenedorEsp.classList.add('hidden');
+                selectEsp.removeAttribute('data-clase-activa');
+                selectEsp.innerHTML = "";
             }
             
             // 🌟 NUEVO: SUMAR ESTADÍSTICA BASE + MODIFICADOR MÁGICO
@@ -388,10 +434,13 @@
             // 8. LLENAR LA HOJA DE PERSONAJE (RESUMEN)
             document.getElementById('res-nombre').innerText = nombre;
             let textoClaseEsp = `${esp.nombre} ${cl.nombre}`;
-            if (clId === 'druida') {
-                const circuloSel = document.getElementById('select-circulo').options[document.getElementById('select-circulo').selectedIndex].text;
-                textoClaseEsp += ` [${circuloSel}]`;
+            
+            // 🌟 CORRECCIÓN: Leer del nuevo selector universal de forma segura
+            if (clasesConSubclase.includes(clId) && selectEsp.selectedIndex !== -1) {
+                const subClaseTexto = selectEsp.options[selectEsp.selectedIndex].text.split('(')[0].trim();
+                textoClaseEsp += ` [${subClaseTexto}]`;
             }
+            
             document.getElementById('res-clase-esp').innerText = `${textoClaseEsp} (Nivel ${nivel}) | ${alineamiento}`;
             document.getElementById('res-hp').innerText = hpTotal;
             document.getElementById('res-especie-rasgo').innerText = "Rasgo racial: " + esp.rasgo;
@@ -416,20 +465,93 @@
             actualizarRasgos(clId, nivel);
             actualizarEquipamiento(clId);
             
-            if (clId === 'druida') {
+            // 🌟 POR ESTE BLOQUE MAESTRO CORREGIDO Y UNIFICADO:
+            if (clasesConSubclase.includes(clId)) {
                 const listaRasgos = document.getElementById('res-rasgos-lista');
-                let guiaForma = "";
-                if (nivel < 4) guiaForma = "🐾 Formas sugeridas: Lobo, Araña Gigante, Jabalí.";
-                else if (nivel < 8) guiaForma = "🐟 Formas sugeridas: Cocodrilo, Tiburón arrecife (puedes nadar).";
-                else guiaForma = "🦅 Formas sugeridas: Águila gigante, Búho (puedes volar).";
+                const subClaseId = selectEsp.value; // Lee el selector universal de forma correcta
+                
+                let colorClase = "bg-slate-50 border-slate-500 text-slate-900";
+                let textoHabilidad = "";
+                let textoSugerencia = "";
 
-                listaRasgos.innerHTML += `
-                    <div class="mt-2 p-2 bg-green-50 border-l-4 border-green-500 text-[10px] text-green-800 italic">
-                        ${guiaForma}
-                    </div>
-                `;
+                // --- 🌿 LÓGICA LOGRADA PARA DRUIDA ---
+                if (clId === 'druida') {
+                    colorClase = "bg-green-50 border-green-500 text-green-900";
+                    if (subClaseId === 'luna') {
+                        textoHabilidad = "<strong>🌙 Círculo de la Luna:</strong> Puedes usar tu Forma Salvaje como una <em>Acción Adicional</em> en tu turno. Además, puedes quemar espacios de conjuro para recuperar 1d8 de vida por nivel de espacio mientras estás transformado.";
+                        if (nivel < 6) {
+                            textoSugerencia = "🐾 Formas de Combate (CR 1): Oso Pardo (Fuerza bruta), León (Ataque en manada), Tigre o Hiena Gigante.";
+                        } else if (nivel < 9) {
+                            textoSugerencia = "🐟 Formas de Combate (CR 2): Oso Polar, Rinoceronte, Cocodrilo Gigante (puedes nadar).";
+                        } else {
+                            textoSugerencia = "🦅 Formas de Combate (CR 3+): Elementales (Tierra/Fuego/Agua/Aire), Anquilosaurio (puedes volar).";
+                        }
+                    } else if (subClaseId && subClaseId.startsWith('tierra')) {
+                        textoHabilidad = "<strong>🏔️ Círculo de la Tierra:</strong> Aprendes un truco de druida adicional. Obtienes <em>Recuperación Natural</em>: una vez al día tras un descanso corto, puedes recuperar espacios de conjuro gastados cuyo nivel sumado sea igual o menor a la mitad de tu nivel de druida.";
+                        if (nivel < 4) textoSugerencia = "🐾 Formas Utilitarias (CR 1/4 - Sin volar/nadar): Lobo (Rastreo), Araña Gigante (Trepar), Jabalí.";
+                        else if (nivel < 8) textoSugerencia = "🐟 Formas Utilitarias (CR 1/2): Cocodrilo, Sapo Gigante (puedes nadar).";
+                        else textoSugerencia = "🦅 Formas Utilitarias (CR 1): Águila Gigante, Búho Gigante (puedes volar).";
+                    }
+                } 
+                // --- 🔮 LÓGICA LOGRADA PARA MAGO (THIAMAEL) ---
+                else if (clId === 'mago' && nivel >= 2) {
+                    colorClase = "bg-purple-50 border-purple-500 text-purple-900";
+                    if (subClaseId === 'evocacion') {
+                        textoHabilidad = "<strong>🔮 Escuela de Evocación:</strong> Obtienes <em>Evocación Esculpida</em>. Al lanzar conjuros de evocación que afecten a un área, puedes elegir un número de aliados igual a 1 + el nivel del conjuro. Los aliados elegidos superan automáticamente sus tiradas de salvación y no sufren daño.";
+                        textoSugerencia = "🔥 ¡Lanza Onda de Choque o Manos Ardientes al centro del combate sin miedo a herir a tus compañeros!";
+                    } else if (subClaseId === 'abjuracion') {
+                        textoHabilidad = "<strong>🛡️ Escuela de Abjuración:</strong> Creas un <em>Espantajo Arcano</em> protector cada vez que lanzas un conjuro de abjuración de nivel 1 o superior. El escudo absorbe daño equivalente a (2 * tu nivel de mago) + tu modificador de Inteligencia.";
+                        textoSugerencia = "💎 Mantén activo tu escudo de fuerza lanzando Armadura de Mago o Escudo (Shield).";
+                    } else if (subClaseId === 'ilusion') {
+                        textoHabilidad = "<strong>🎭 Escuela de Ilusión:</strong> Obtienes <em>Ilusión Menor Mejorada</em>. Aprendes el truco Ilusión Menor de forma gratuita. Cuando lo lanzas, puedes crear un sonido e imagen simultáneamente en lugar de solo uno.";
+                        textoSugerencia = "👁️ Ideal para crear coberturas visuales falsas y confundir guardias.";
+                    }
+                } 
+                // --- 🛡️ LÓGICA LOGRADA PARA PALADÍN ---
+                else if (clId === 'paladin' && nivel >= 3) {
+                    colorClase = "bg-emerald-50 border-emerald-500 text-emerald-900";
+                    if (subClaseId === 'devocion') {
+                        textoHabilidad = "<strong>⚔️ Juramento de Devoción:</strong> Desbloqueas <em>Canalizar Divinidad: Arma Sagrada</em>. Como acción, imbuyes tu arma con energía sagrada. Durante 1 minuto, añades tu modificador de Carisma a tus tiradas de ataque y el arma emite luz brillante.";
+                        textoSugerencia = "☀️ Despliega golpes radiantes devastadores contra muertos vivientes y demonios.";
+                    } else if (subClaseId === 'venganza') {
+                        textoHabilidad = "<strong>⚖️ Juramento de Venganza:</strong> Desbloqueas <em>Canalizar Divinidad: Voto de Enmity</em>. Como acción adicional, eliges a una criatura que puedas ver a menos de 10 pies. Obtienes ventaja en todas las tiradas de ataque contra ella durante 1 minuto.";
+                        textoSugerencia = "🎯 Elige al jefe enemigo y asegúrate de no fallar ni un solo ataque contra él.";
+                    }
+                } 
+                // --- 🎵 LÓGICA LOGRADA PARA BARDO ---
+                else if (clId === 'bardo' && nivel >= 3) {
+                    colorClase = "bg-pink-50 border-pink-500 text-pink-900";
+                    if (subClaseId === 'lore') {
+                        textoHabilidad = "<strong>🎵 Colegio de la Lore:</strong> Desbloqueas <em>Palabras Cortantes</em>. Como reacción cuando una criatura realiza una tirada de ataque, daño o habilidad, puedes gastar un uso de Inspiración Bardística para restar el número del dado al total del enemigo.";
+                        textoSugerencia = "🤫 Úsalo justo cuando el monstruo crea que va a acertar un golpe crítico contra tu grupo.";
+                    } else if (subClaseId === 'valor') {
+                        textoHabilidad = "<strong>🛡️ Colegio del Valor:</strong> Tus aliados pueden usar tus dados de Inspiración Bardística para sumarlos a sus tiradas de daño con armas, o bien usar su reacción para sumarlo a su CA contra un ataque entrante.";
+                        textoSugerencia = "⚔️ Convierte a tus combatientes en tanques letales en la primera línea de combate.";
+                    }
+                } 
+                // --- 🧘‍♂️ LÓGICA LOGRADA PARA MONJE (ZELKHO) ---
+                else if (clId === 'monje' && nivel >= 3) {
+                    colorClase = "bg-cyan-50 border-cyan-500 text-cyan-900";
+                    if (subClaseId === 'mano_abierta') {
+                        textoHabilidad = "<strong>🥋 Senda de la Mano Abierta:</strong> Cada vez que golpeas a una criatura con los ataques de tu <em>Ráfaga de Golpes</em> (Ki), puedes aplicar uno de estos efectos: derribarlo (salvación de DES), empujarlo 15 pies (salvación de FUE) o quitarle sus reacciones.";
+                        textoSugerencia = "👊 Controla el mapa de combate y arroja enemigos por precipicios de forma táctica.";
+                    } else if (subClaseId === 'sombra') {
+                        textoHabilidad = "<strong>👥 Senda de la Sombra:</strong> Puedes gastar 2 puntos de Ki para lanzar de forma mística los conjuros de <em>Oscuridad, Pasar sin dejar rastro, Visión en la oscuridad</em> o <em>Silencio</em> sin componentes materiales.";
+                        textoSugerencia = "🥷 Conviértete en el espía y asesino definitivo infiltrándote en cualquier fortaleza.";
+                    }
+                }
+
+                // Inyectar el bloque informativo solo si se generó un texto válido según la subclase elegida
+                if (textoHabilidad !== "") {
+                    listaRasgos.innerHTML += `
+                        <div class="mt-2 p-2 rounded-lg border-l-4 ${colorClase} text-[10px] space-y-1 shadow-sm">
+                            <p class="not-italic text-slate-900">${textoHabilidad}</p>
+                            <p class="italic font-medium opacity-90">${textoSugerencia}</p>
+                        </div>
+                    `;
+                }
             }
-
+            
             // --- ACTUALIZACIÓN DE MONEDAS Y NOTAS ---
             const po = document.getElementById('coin-gold').value || "0";
             const pp = document.getElementById('coin-silver').value || "0";
@@ -578,22 +700,25 @@
         function exportarIA() {
             const claseSeleccionada = document.getElementById('select-clase').value;
             
+            const selectEsp = document.getElementById('select-especializacion');
+            const clasesConSubclase = ['druida', 'mago', 'paladin', 'bardo', 'monje'];
+
             const personaje = {
-                nombre: document.getElementById('nombre').value || "Sin nombre",
-                nivel: document.getElementById('nivel').value,
+                nombre: document.getElementById('nombre').value,
+                nivel: parseInt(document.getElementById('nivel').value) || 1,
+                alineamiento: document.getElementById('alineamiento').value,
                 clase: claseSeleccionada,
-                circulo_druidico: claseSeleccionada === 'druida' ? document.getElementById('select-circulo').value : "n/a", // 🌟 NUEVO
+                // Si la clase tiene subclase, exporta el valor del selector universal, si no, guarda "n/a"
+                circulo_druidico: clasesConSubclase.includes(claseSeleccionada) && selectEsp ? selectEsp.value : "n/a",
                 especie: document.getElementById('select-especie').value,
                 trasfondo: document.getElementById('select-trasfondo').value,
-                dote_trasfondo: document.getElementById('res-dote').innerText,
-                alineamiento: document.getElementById('alineamiento').value,
                 stats: {
-                    FUE: document.getElementById('score-str').value,
-                    DES: document.getElementById('score-dex').value,
-                    CON: document.getElementById('score-con').value,
-                    INT: document.getElementById('score-int').value,
-                    SAB: document.getElementById('score-wis').value,
-                    CAR: document.getElementById('score-cha').value
+                    FUE: parseInt(document.getElementById('score-str').value) || 10,
+                    DES: parseInt(document.getElementById('score-dex').value) || 10,
+                    CON: parseInt(document.getElementById('score-con').value) || 10,
+                    INT: parseInt(document.getElementById('score-int').value) || 10,
+                    SAB: parseInt(document.getElementById('score-wis').value) || 10,
+                    CAR: parseInt(document.getElementById('score-cha').value) || 10
                 },
 
                 // 🌟 NUEVO: Exportar los Modificadores Mágicos en el JSON
@@ -665,11 +790,12 @@
                 if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
                 if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
 
-                // 🌟 NUEVO: Cargar el Círculo Druídico si el personaje es un Druida
-                if (personaje.clase === 'druida' && personaje.circulo_druidico) {
-                    const selectorCirculo = document.getElementById('select-circulo');
-                    if (selectorCirculo) {
-                        selectorCirculo.value = personaje.circulo_druidico;
+                // 🌟 CORRECCIÓN: Cargar la especialización universal al importar desde la IA
+                if (personaje.circulo_druidico && personaje.circulo_druidico !== "n/a") {
+                    actualizar(); // Redibuja las opciones correctas de la clase cargada
+                    const selectorUniversal = document.getElementById('select-especializacion');
+                    if (selectorUniversal) {
+                        selectorUniversal.value = personaje.circulo_druidico;
                     }
                 }
 
