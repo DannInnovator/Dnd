@@ -679,17 +679,15 @@
         }
 
         function importarIA() {
-            // 🌟 RESTAURADO: Tu captura original nativa mediante Prompt
             let jsonTexto = prompt("Pega aquí el código JSON de tu personaje exportado:");
             if (!jsonTexto) return; 
 
             try {
-                // 1. Limpieza segura de caracteres de portapapeles y chats web
-                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Eliminar espacios invisibles
-                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Corregir comillas curvas
+                // 1. Limpieza de strings e invisibles del portapapeles
+                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); 
+                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); 
                 jsonTexto = jsonTexto.trim();
 
-                // Quitar comillas externas si el usuario las copió por error
                 if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
@@ -697,10 +695,10 @@
                 // Limpiar lista de hechizos previa para evitar duplicados
                 document.getElementById('lista-hechizos').innerHTML = "";
 
-                // 2. PARSEO DIRECTO NATIVO
+                // 2. Parsear el objeto JSON de forma segura
                 const personaje = JSON.parse(jsonTexto);
 
-                // --- RESETEO SEGURO DE LA PANTALLA ANTERIOR ---
+                // --- RESETEO DE CAMPOS FORMULARIO ---
                 if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
                 if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
                 if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
@@ -708,7 +706,7 @@
                 if (document.getElementById('input-historia')) document.getElementById('input-historia').value = "";
                 if (document.getElementById('input-rasgos-rol')) document.getElementById('input-rasgos-rol').value = "";
 
-                // 3. Rellenar entradas básicas en el DOM
+                // 3. Rellenar TEXTOS e IDENTIFICADORES básicos en el HTML
                 if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
                 if (personaje.nivel) document.getElementById('nivel').value = personaje.nivel;
                 if (personaje.alineamiento) document.getElementById('alineamiento').value = personaje.alineamiento;
@@ -716,19 +714,7 @@
                 if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
                 if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
 
-                // 🌟 PASO CRUCIAL 1: Forzar el primer renderizado para que el motor dibuje 
-                // el contenedor de especialización y cargue las opciones correspondientes en el DOM.
-                actualizar();
-
-                // 🌟 PASO CRUCIAL 2: Ahora que el selector universal existe y tiene sus options, asignamos el valor guardado
-                if (personaje.circulo_druidico && personaje.circulo_druidico !== "n/a") {
-                    const selectorUniversal = document.getElementById('select-especializacion');
-                    if (selectorUniversal) {
-                        selectorUniversal.value = personaje.circulo_druidico;
-                    }
-                }
-
-                // 4. Rellenar Atributos (Stats Base)
+                // 4. Rellenar ATRIBUTOS (Stats Base) ANTES de calcular cualquier cosa
                 if (personaje.stats) {
                     if (personaje.stats.FUE) document.getElementById('score-str').value = personaje.stats.FUE;
                     if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.DES;
@@ -738,7 +724,7 @@
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
                 }
 
-                // 🌟 NUEVO: Cargar los bonos mágicos desde el JSON al importar (si existen)
+                // 5. Rellenar MODIFICADORES MÁGICOS
                 if (personaje.modificadores_magicos) {
                     document.getElementById('mod-magic-str').value = personaje.modificadores_magicos.FUE || "0";
                     document.getElementById('mod-magic-dex').value = personaje.modificadores_magicos.DES || "0";
@@ -747,13 +733,12 @@
                     document.getElementById('mod-magic-wis').value = personaje.modificadores_magicos.SAB || "0";
                     document.getElementById('mod-magic-cha').value = personaje.modificadores_magicos.CAR || "0";
                 } else {
-                    // Resetear a 0 si es un JSON viejo sin ítems mágicos
                     ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(s => {
                         document.getElementById(`mod-magic-${s}`).value = "0";
                     });
                 }
 
-                // 5. Rellenar Textos narrativos, dinero y notas
+                // 6. Rellenar textos narrativos, dinero y notas
                 if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
                 if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
 
@@ -766,10 +751,54 @@
                     document.getElementById('input-notas-diversas').value = personaje.notas_diversas;
                 }
 
-                // 🌟 PASO CRUCIAL 3: Forzar el recálculo final (Modificadores, Vida, Cajas de Consejos y Hechizos)
+                // 🌟 INYECCIÓN FORZADA SÍNCRONA DE LA SUBCLASE
+                // Esto simula la creación del bloque de especialización en el DOM sin correr todo "actualizar()" antes de tiempo
+                const clId = personaje.clase;
+                const clasesConSubclase = ['druida', 'mago', 'paladin', 'bardo', 'monje'];
+                const contenedorEsp = document.getElementById('contenedor-especializacion');
+                const labelEsp = document.getElementById('label-especializacion');
+                const selectEsp = document.getElementById('select-especializacion');
+
+                if (clasesConSubclase.includes(clId) && contenedorEsp && selectEsp) {
+                    contenedorEsp.classList.remove('hidden');
+                    selectEsp.setAttribute('data-clase-activa', clId);
+                    let opcionesHTML = "";
+
+                    if (clId === 'druida') {
+                        labelEsp.innerText = "🌿 Especialización: Círculo Druídico";
+                        opcionesHTML = `<option value="tierra_montana">Círculo de la Tierra (Montaña)</option>
+                                        <option value="tierra_infraoscuridad">Círculo de la Tierra (Infraoscuridad)</option>
+                                        <option value="luna">Círculo de la Luna</option>`;
+                    } else if (clId === 'mago') {
+                        labelEsp.innerText = "🔮 Escuela de Magia (Tradición Arcana)";
+                        opcionesHTML = `<option value="evocacion">Escuela de Evocación (Destrucción Segura)</option>
+                                        <option value="abjuracion">Escuela de Abjuración (Escudo de Fuerza)</option>
+                                        <option value="ilusion">Escuela de Ilusión (Engaño Visual)</option>`;
+                    } else if (clId === 'paladin') {
+                        labelEsp.innerText = "🛡️ Sagrado: Juramento de Paladín (Nivel 3+)";
+                        opcionesHTML = `<option value="devocion">Juramento de Devoción (Justicia Cristalina)</option>
+                                        <option value="venganza">Juramento de Venganza (Cazador del Mal)</option>`;
+                    } else if (clId === 'bardo') {
+                        labelEsp.innerText = "🎵 Colegio Bardístico (Nivel 3+)";
+                        opcionesHTML = `<option value="lore">Colegio de la Lore (Saber y Sabotaje)</option>
+                                        <option value="valor">Colegio del Valor (Inspiración de Combate)</option>`;
+                    } else if (clId === 'monje') {
+                        labelEsp.innerText = "🧘‍♂️ Senda: Camino Monástico (Nivel 3+)";
+                        opcionesHTML = `<option value="mano_abierta">Camino de la Mano Abierta (Control Marcial)</option>
+                                        <option value="sombra">Camino de la Sombra (Sigilo y Teletransporte)</option>`;
+                    }
+                    selectEsp.innerHTML = opcionesHTML;
+                    
+                    // Asignamos el valor exacto de la subclase antes del renderizado
+                    if (personaje.circulo_druidico && personaje.circulo_druidico !== "n/a") {
+                        selectEsp.value = personaje.circulo_druidico;
+                    }
+                }
+
+                // 🌟 EL GRAN MOMENTO: Ejecutar un único recálculo con todos los datos cargados de forma segura
                 actualizar();
 
-                // 6. Auto-marcar hechizos guardados en el JSON
+                // 7. Auto-marcar hechizos guardados en el JSON
                 if (personaje.hechizos_preparados && Array.isArray(personaje.hechizos_preparados)) {
                     setTimeout(() => {
                         const checkboxes = document.querySelectorAll('#lista-hechizos input[type="checkbox"]');
@@ -782,7 +811,6 @@
                                 }
                             }
                         });
-                        // Si tienes una función de contador para los hechizos, la llamamos de forma segura
                         if (typeof actualizarContador === "function") {
                             actualizarContador();
                         }
@@ -793,7 +821,7 @@
 
             } catch (error) {
                 console.error("Error de importación detallado:", error);
-                alert("¡Error al importar! Asegúrate de estar pegando un código JSON válido.");
+                alert("¡Error al importar! El formato del texto sigue teniendo caracteres incompatibles o faltan elementos en el HTML.");
                 alert(error);
             }
         }
