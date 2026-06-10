@@ -346,7 +346,10 @@
 
                 const vidaTotal = cl.hp_base + mods.con + ((nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + mods.con));
                 if (document.getElementById('res-vida')) document.getElementById('res-vida').innerText = `${vidaTotal} HP`;
-                if (document.getElementById('res-dados-golpe')) document.getElementById('res-dados-golpe').innerText = `${nivel}${cl.dado_vida}`;
+                if (document.getElementById('res-dados-golpe')) {
+                    const dadoDeClase = cl.hp_base ? `d${cl.hp_base}` : 'd8';
+                    document.getElementById('res-dados-golpe').innerText = `${nivel}${dadoDeClase}`;
+                }
 
                 // 3. Salvaciones, Iniciativa y Percepción Pasiva
                 if (document.getElementById('res-iniciativa')) document.getElementById('res-iniciativa').innerText = (mods.dex >= 0 ? '+' : '') + mods.dex;
