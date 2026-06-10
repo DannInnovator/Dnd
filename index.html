@@ -305,67 +305,83 @@
         const getMod = (score) => Math.floor((score - 10) / 2);
 
         function actualizar() {
-            const nombre = document.getElementById('nombre').value || "Aventurero Misterioso";
-            const nivel = parseInt(document.getElementById('nivel').value) || 1;
-            const alineamiento = document.getElementById('alineamiento').value;
-            
+            if (!dndData) return;
+
             const espId = document.getElementById('select-especie').value;
             const clId = document.getElementById('select-clase').value;
             const trId = document.getElementById('select-trasfondo').value;
+            const nivel = parseInt(document.getElementById('nivel').value) || 1;
 
-            if (!dndData) return;
+            const esp = dndData.especies.find(e => e.id === espId);
+            const cl = dndData.clases.find(c => c.id === clId);
+            const tr = dndData.trasfondos.find(t => t.id === trId);
 
-            const esp = dndData.especies.find(e => e.id === espId) || { nombre: "", stats: {} };
-            const cl = dndData.clases.find(c => c.id === clId) || { nombre: "", hp_base: 8, rsg_vida: "1d8", rasgos: [] };
-            const tr = dndData.trasfondos.find(t => t.id === trId) || { nombre: "", rasgos: [] };
+            if (!esp || !cl || !tr) return;
 
-            // 🌟 MOTOR DINÁMICO DE SUBCLASES - CORREGIDO (Uso estricto de clasesConSubclase)
+            // 1. Calcular Atributos Reales (Base + Ítems Mágicos)
+            const stats = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+            const mods = {};
+
+            stats.forEach(s => {
+                const base = parseInt(document.getElementById(`score-${s}`).value) || 10;
+                const magic = parseInt(document.getElementById(`mod-magic-${s}`).value) || 0;
+                const total = base + magic;
+
+                document.getElementById(`total-${s}`).innerText = total;
+
+                const mod = Math.floor((total - 10) / 2);
+                mods[s] = mod;
+                document.getElementById(`mod-${s}`).innerText = (mod >= 0 ? '+' : '') + mod;
+            });
+
+            // 2. Bonus de Competencia y Vida Total (CORREGIDO: cl.dado_vida)
+            const prof = 2 + Math.floor((nivel - 1) / 4);
+            if (document.getElementById('res-prof')) document.getElementById('res-prof').innerText = `+${prof}`;
+
+            const vidaTotal = cl.hp_base + mods.con + ((nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + mods.con));
+            if (document.getElementById('res-vida')) document.getElementById('res-vida').innerText = `${vidaTotal} HP`;
+            if (document.getElementById('res-dados-golpe')) document.getElementById('res-dados-golpe').innerText = `${nivel}${cl.dado_vida}`;
+
+            // 3. Salvaciones, Iniciativa y Percepción Pasiva
+            if (document.getElementById('res-iniciativa')) document.getElementById('res-iniciativa').innerText = (mods.dex >= 0 ? '+' : '') + mods.dex;
+            if (document.getElementById('res-percepcion')) document.getElementById('res-percepcion').innerText = 10 + mods.wis;
+            if (document.getElementById('res-ca')) document.getElementById('res-ca').innerText = 10 + mods.dex;
+
+            // 4. Mostrar u ocultar bloque de especialización (Subclases)
+            const clasesConSubclase = ['druida', 'mago', 'paladin', 'bardo', 'monje'];
             const contenedorEsp = document.getElementById('contenedor-especializacion');
             const labelEsp = document.getElementById('label-especializacion');
             const selectEsp = document.getElementById('select-especializacion');
-            
-            const valorGuardado = selectEsp ? selectEsp.value : "";
-            const clasesConSubclase = ['druida', 'mago', 'paladin', 'bardo', 'monje'];
 
             if (clasesConSubclase.includes(clId)) {
                 contenedorEsp.classList.remove('hidden');
-                
                 if (selectEsp.getAttribute('data-clase-activa') !== clId) {
                     selectEsp.setAttribute('data-clase-activa', clId);
                     let opcionesHTML = "";
-
                     if (clId === 'druida') {
-                        labelEsp.className = "block text-xs font-bold text-green-400 uppercase mb-2";
                         labelEsp.innerText = "🌿 Especialización: Círculo Druídico";
                         opcionesHTML = `<option value="tierra_montana">Círculo de la Tierra (Montaña)</option>
                                         <option value="tierra_infraoscuridad">Círculo de la Tierra (Infraoscuridad)</option>
                                         <option value="luna">Círculo de la Luna</option>`;
                     } else if (clId === 'mago') {
-                        labelEsp.className = "block text-xs font-bold text-purple-400 uppercase mb-2";
                         labelEsp.innerText = "🔮 Escuela de Magia (Tradición Arcana)";
                         opcionesHTML = `<option value="evocacion">Escuela de Evocación (Destrucción Segura)</option>
                                         <option value="abjuracion">Escuela de Abjuración (Escudo de Fuerza)</option>
                                         <option value="ilusion">Escuela de Ilusión (Engaño Visual)</option>`;
                     } else if (clId === 'paladin') {
-                        labelEsp.className = "block text-xs font-bold text-emerald-400 uppercase mb-2";
                         labelEsp.innerText = "🛡️ Sagrado: Juramento de Paladín (Nivel 3+)";
                         opcionesHTML = `<option value="devocion">Juramento de Devoción (Justicia Cristalina)</option>
                                         <option value="venganza">Juramento de Venganza (Cazador del Mal)</option>`;
                     } else if (clId === 'bardo') {
-                        labelEsp.className = "block text-xs font-bold text-pink-400 uppercase mb-2";
                         labelEsp.innerText = "🎵 Colegio Bardístico (Nivel 3+)";
                         opcionesHTML = `<option value="lore">Colegio de la Lore (Saber y Sabotaje)</option>
                                         <option value="valor">Colegio del Valor (Inspiración de Combate)</option>`;
                     } else if (clId === 'monje') {
-                        labelEsp.className = "block text-xs font-bold text-cyan-400 uppercase mb-2";
                         labelEsp.innerText = "🧘‍♂️ Senda: Camino Monástico (Nivel 3+)";
                         opcionesHTML = `<option value="mano_abierta">Camino de la Mano Abierta (Control Marcial)</option>
                                         <option value="sombra">Camino de la Sombra (Sigilo y Teletransporte)</option>`;
                     }
                     selectEsp.innerHTML = opcionesHTML;
-                    if (Array.from(selectEsp.options).some(o => o.value === valorGuardado)) {
-                        selectEsp.value = valorGuardado;
-                    }
                 }
             } else {
                 contenedorEsp.classList.add('hidden');
@@ -373,155 +389,33 @@
                 selectEsp.innerHTML = "";
             }
 
-            // 1. Calcular Atributos y Modificadores
-            const statsIds = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
-            const mods = {};
-
-            statsIds.forEach(s => {
-                const base = parseInt(document.getElementById(`score-${s}`).value) || 10;
-                const magic = parseInt(document.getElementById(`mod-magic-${s}`).value) || 0;
-                const racial = esp.stats[s.toUpperCase()] || 0;
-                
-                const total = base + magic + racial;
-                const mod = Math.floor((total - 10) / 2);
-                mods[s] = mod;
-
-                document.getElementById(`mod-${s}`).innerText = (mod >= 0 ? '+' : '') + mod;
-            });
-
-            // 2. Bonus de Competencia y Vida Total (Blindado con ?.)
-            const prof = 2 + Math.floor((nivel - 1) / 4);
-            if (document.getElementById('res-prof')) document.getElementById('res-prof').innerText = `+${prof}`;
-
-            const vidaTotal = cl.hp_base + mods.con + ((nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + mods.con));
-            if (document.getElementById('res-vida')) document.getElementById('res-vida').innerText = `${vidaTotal} HP`;
-            if (document.getElementById('res-dados-golpe')) document.getElementById('res-dados-golpe').innerText = `${nivel}${cl.rsg_vida}`;
-
-            // 3. Salvaciones, Iniciativa y Percepción Pasiva (Blindado con ?.)
-            if (document.getElementById('res-iniciativa')) document.getElementById('res-iniciativa').innerText = (mods.dex >= 0 ? '+' : '') + mods.dex;
-            if (document.getElementById('res-percepcion')) document.getElementById('res-percepcion').innerText = 10 + mods.wis;
-            if (document.getElementById('res-ca')) document.getElementById('res-ca').innerText = 10 + mods.dex;
-
-            // 8. LLENAR LA HOJA DE PERSONAJE (RESUMEN)
-            document.getElementById('res-nombre').innerText = nombre;
-            let textoClaseEsp = `${esp.nombre} ${cl.nombre}`;
-            
-            if (clasesConSubclase.includes(clId) && selectEsp && selectEsp.selectedIndex !== -1) {
-                const subClaseTexto = selectEsp.options[selectEsp.selectedIndex].text.split('(')[0].trim();
-                textoClaseEsp += ` [${subClaseTexto}]`;
-            }
-            document.getElementById('res-clase-esp').innerText = `${textoClaseEsp} (Nivel ${nivel}) | ${alineamiento}`;
-
-            // Lista unificada de rasgos
-            const listaRasgos = document.getElementById('res-rasgos-lista');
-            listaRasgos.innerHTML = "";
-
-            if (esp.rasgos) esp.rasgos.forEach(r => listaRasgos.innerHTML += `<li><strong>${r.nombre}:</strong> ${r.desc}</li>`);
-            if (cl.rasgos) cl.rasgos.forEach(r => listaRasgos.innerHTML += `<li><strong>${r.nombre}:</strong> ${r.desc}</li>`);
-            if (tr.rasgos) tr.rasgos.forEach(r => listaRasgos.innerHTML += `<li><strong>${r.nombre}:</strong> ${r.desc}</li>`);
-
-            // Recursos de Clase específicos (Ki, Inspiración, Canales, etc.)
-            if (clId === 'monje') {
-                listaRasgos.innerHTML += `<li class="text-cyan-600 font-bold">🔋 Puntos de Ki disponibles: ${nivel} por descanso corto.</li>`;
-            } else if (clId === 'bardo') {
-                const usosInsp = Math.max(1, mods.cha);
-                listaRasgos.innerHTML += `<li class="text-pink-600 font-bold">🎵 Usos de Inspiración Bardística (d6): ${usosInsp} por descanso largo.</li>`;
-            } else if (clId === 'paladin') {
-                listaRasgos.innerHTML += `<li class="text-emerald-600 font-bold">🛡️ Imposición de Manos: Puedes sanar un total de ${nivel * 5} puntos de vida por descanso largo.</li>`;
+            // 5. Bloque de Bardo / Monje (Inspiración o Ki)
+            const bloqueBM = document.getElementById('bloque-bardo-monje');
+            if (clId === 'bardo') {
+                bloqueBM.classList.remove('hidden');
+                document.getElementById('titulo-especial').innerText = "Inspiración Bardística";
+                document.getElementById('res-especial').innerText = `d${nivel >= 15 ? 12 : nivel >= 10 ? 10 : nivel >= 5 ? 8 : 6} (${mods.cha} usos)`;
+            } else if (clId === 'monje') {
+                bloqueBM.classList.remove('hidden');
+                document.getElementById('titulo-especial').innerText = "Puntos de Ki";
+                document.getElementById('res-especial').innerText = nivel >= 2 ? nivel : 0;
+            } else {
+                if (bloqueBM) bloqueBM.classList.add('hidden');
             }
 
-            // 🌟 CUADRO INYECTOR DE CONSEJOS TÁCTICOS UNIVERSAL (CORREGIDO)
-            if (clasesConSubclase.includes(clId) && selectEsp) {
-                const subClaseId = selectEsp.value;
-                let colorClase = "bg-slate-50 border-slate-500 text-slate-900";
-                let textoHabilidad = "";
-                let textoSugerencia = "";
-
-                if (clId === 'druida') {
-                    colorClase = "bg-green-50 border-green-500 text-green-900";
-                    if (subClaseId === 'luna') {
-                        textoHabilidad = "<strong>🌙 Círculo de la Luna:</strong> Puedes usar tu Forma Salvaje como una <em>Acción Adicional</em> en tu turno. Además, puedes quemar espacios de conjuro para recuperar 1d8 de vida por nivel de espacio mientras estás transformado.";
-                        if (nivel < 6) {
-                            textoSugerencia = "🐾 Formas de Combate (CR 1): Oso Pardo (Fuerza bruta), León (Ataque en manada), Tigre o Hiena Gigante.";
-                        } else if (nivel < 9) {
-                            textoSugerencia = "🐟 Formas de Combate (CR 2): Oso Polar, Rinoceronte, Cocodrilo Gigante (puedes nadar).";
-                        } else {
-                            textoSugerencia = "🦅 Formas de Combate (CR 3+): Elementales (Tierra/Fuego/Agua/Aire), Anquilosaurio (puedes volar).";
-                        }
-                    } else if (subClaseId && subClaseId.startsWith('tierra')) {
-                        textoHabilidad = "<strong>🏔️ Círculo de la Tierra:</strong> Aprendes un truco de druida adicional. Obtienes <em>Recuperación Natural</em>: una vez al día tras un descanso corto, puedes recuperar espacios de conjuro gastados cuyo nivel sumado sea igual o menor a la mitad de tu nivel de druida.";
-                        if (nivel < 4) textoSugerencia = "🐾 Formas Utilitarias (CR 1/4 - Sin volar/nadar): Lobo (Rastreo), Araña Gigante (Trepar), Jabalí.";
-                        else if (nivel < 8) textoSugerencia = "🐟 Formas Utilitarias (CR 1/2): Cocodrilo, Sapo Gigante (puedes nadar).";
-                        else textoSugerencia = "🦅 Formas Utilitarias (CR 1): Águila Gigante, Búho Gigante (puedes volar).";
-                    }
-                } 
-                else if (clId === 'mago' && nivel >= 2) {
-                    colorClase = "bg-purple-50 border-purple-500 text-purple-900";
-                    if (subClaseId === 'evocacion') {
-                        textoHabilidad = "<strong>🔮 Escuela de Evocación:</strong> Obtienes <em>Evocación Esculpida</em>. Al lanzar conjuros de evocación que afecten a un área, puedes elegir un número de aliados igual a 1 + el nivel del conjuro. Los aliados elegidos superan automáticamente sus tiradas de salvación y no sufren daño.";
-                        textoSugerencia = "🔥 ¡Lanza Onda de Choque o Manos Ardientes al centro del combate sin miedo a herir a tus compañeros!";
-                    } else if (subClaseId === 'abjuracion') {
-                        textoHabilidad = "<strong>🛡️ Escuela de Abjuración:</strong> Creas un <em>Espantajo Arcano</em> protector cada vez que lanzas un conjuro de abjuración de nivel 1 o superior. El escudo absorbe daño equivalente a (2 * tu nivel de mago) + tu modificador de Inteligencia.";
-                        textoSugerencia = "💎 Mantén activo tu escudo de fuerza lanzando Armadura de Mago o Escudo (Shield).";
-                    } else if (subClaseId === 'ilusion') {
-                        textoHabilidad = "<strong>🎭 Escuela de Ilusión:</strong> Obtienes <em>Ilusión Menor Mejorada</em>. Aprendes el truco Ilusión Menor de forma gratuita. Cuando lo lanzas, puedes crear un sonido e imagen simultáneamente en lugar de solo uno.";
-                        textoSugerencia = "👁️ Ideal para crear coberturas visuales falsas y confundir guardias.";
-                    }
-                } 
-                else if (clId === 'paladin' && nivel >= 3) {
-                    colorClase = "bg-emerald-50 border-emerald-500 text-emerald-900";
-                    if (subClaseId === 'devocion') {
-                        textoHabilidad = "<strong>⚔️ Juramento de Devoción:</strong> Desbloqueas <em>Canalizar Divinidad: Arma Sagrada</em>. Como acción, imbuyes tu arma con energía sagrada. Durante 1 minuto, añades tu modificador de Carisma a tus tiradas de ataque y el arma emite luz brillante.";
-                        textoSugerencia = "☀️ Despliega golpes radiantes devastadores contra muertos vivientes y demonios.";
-                    } else if (subClaseId === 'venganza') {
-                        textoHabilidad = "<strong>⚖️ Juramento de Venganza:</strong> Desbloqueas <em>Canalizar Divinidad: Voto de Enmity</em>. Como acción adicional, eliges a una criatura que puedas ver a menos de 10 pies. Obtienes ventaja en todas las tiradas de ataque contra ella durante 1 minuto.";
-                        textoSugerencia = "🎯 Elige al jefe enemigo y asegúrate de no fallar ni un solo ataque contra él.";
-                    }
-                } 
-                else if (clId === 'bardo' && nivel >= 3) {
-                    colorClase = "bg-pink-50 border-pink-500 text-pink-900";
-                    if (subClaseId === 'lore') {
-                        textoHabilidad = "<strong>🎵 Colegio de la Lore:</strong> Desbloqueas <em>Palabras Cortantes</em>. Como reacción cuando una criatura realiza una tirada de ataque, daño o habilidad, puedes gastar un uso de Inspiración Bardística para restar el número del dado al total del enemigo.";
-                        textoSugerencia = "🤫 Úsalo justo cuando el monstruo crea que va a acertar un golpe crítico contra tu grupo.";
-                    } else if (subClaseId === 'valor') {
-                        textoHabilidad = "<strong>🛡️ Colegio del Valor:</strong> Tus aliados pueden usar tus dados de Inspiración Bardística para sumarlos a sus tiradas de daño con armas, o bien usar su reacción para sumarlo a su CA contra un ataque entrante.";
-                        textoSugerencia = "⚔️ Convierte a tus combatientes en tanques letales en la primera línea de combate.";
-                    }
-                } 
-                else if (clId === 'monje' && nivel >= 3) {
-                    colorClase = "bg-cyan-50 border-cyan-500 text-cyan-900";
-                    if (subClaseId === 'mano_abierta') {
-                        textoHabilidad = "<strong>🥋 Senda de la Mano Abierta:</strong> Cada vez que golpeas a una criatura con los ataques de tu <em>Ráfaga de Golpes</em> (Ki), puedes aplicar uno de estos efectos: derribarlo (salvación de DES), empujarlo 15 pies (salvación de FUE) o quitarle sus reacciones.";
-                        textoSugerencia = "👊 Controla el mapa de combate y arroja enemigos por precipicios de forma táctica.";
-                    } else if (subClaseId === 'sombra') {
-                        textoHabilidad = "<strong>👥 Senda de la Sombra:</strong> Puedes gastar 2 puntos de Ki para lanzar de forma mística los conjuros de <em>Oscuridad, Pasar sin dejar rastro, Visión en la oscuridad</em> o <em>Silencio</em> sin componentes materiales.";
-                        textoSugerencia = "🥷 Conviértete en el espía y asesino definitivo infiltrándote en cualquier fortaleza.";
-                    }
-                }
-
-                if (textoHabilidad !== "") {
-                    listaRasgos.innerHTML += `
-                        <div class="mt-2 p-2 rounded-lg border-l-4 ${colorClase} text-[10px] space-y-1 shadow-sm">
-                            <p class="not-italic text-slate-900">${textoHabilidad}</p>
-                            <p class="italic font-medium opacity-90">${textoSugerencia}</p>
-                        </div>
-                    `;
-                }
-            }
-
-            // 🌟 COMPROBACIÓN SEGURA MÁGICA (Línea 239 en adelante)
+            // 6. Sección de Magia y Renderizado de Hechizos Seguros
             const seccionMagia = document.getElementById('seccion-magia');
             if (cl.tiene_magia) {
                 seccionMagia.classList.remove('hidden');
-                
                 const elSatq = document.getElementById('res-satq');
                 const elScav = document.getElementById('res-scav');
-                
                 if (elSatq) elSatq.innerText = (mods[cl.stat_magia] + prof >= 0 ? '+' : '') + (mods[cl.stat_magia] + prof);
                 if (elScav) elScav.innerText = 8 + mods[cl.stat_magia] + prof;
-                
+
+                // REFUERZO: Limpiamos y repoblamos siempre para asegurar sincronía con la importación
                 const contenedorHechizos = document.getElementById('lista-hechizos');
-                if (contenedorHechizos.children.length === 0 && dndData.hechizos) {
+                if (contenedorHechizos && dndData.hechizos) {
+                    contenedorHechizos.innerHTML = ""; // Forzar refresco limpio
                     const filtrados = dndData.hechizos.filter(h => h.clase === clId);
                     filtrados.forEach(h => {
                         contenedorHechizos.innerHTML += `
@@ -536,7 +430,30 @@
                     });
                 }
             } else {
-                seccionMagia.classList.add('hidden');
+                if (seccionMagia) seccionMagia.classList.add('hidden');
+            }
+
+            // 7. Llenar la Hoja de Personaje (Resumen Narrativo y Dotes)
+            document.getElementById('res-nombre').innerText = document.getElementById('nombre').value || "Sin Nombre";
+            document.getElementById('res-raza').innerText = esp.nombre;
+            document.getElementById('res-clase').innerText = `${cl.nombre} (Nivel ${nivel})`;
+            document.getElementById('res-trasfondo').innerText = tr.nombre;
+
+            // Cargar dotes narrativos
+            document.getElementById('res-raza-dote').innerText = esp.rasgo;
+            document.getElementById('res-trasfondo-dote').innerText = tr.rasgo;
+
+            // Manejo dinámico de Subclase / Especialización
+            let textoClaseEsp = cl.rasgo; 
+            const subClId = selectEsp.value;
+            if (cluesConSubclase.includes(clId) && subClId && dndData.subclases && dndData.subclases[clId]) {
+                const subCl = dndData.subclases[clId].find(s => s.id === subClId);
+                if (subCl) {
+                    textoClaseEsp += `\n\n🔹 [${subCl.nombre}]: ${subCl.beneficio}`;
+                }
+            }
+            if (document.getElementById('res-clase-esp')) {
+                document.getElementById('res-clase-esp').innerText = textoClaseEsp;
             }
         }
 
@@ -715,9 +632,6 @@
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
 
-                // Limpiar lista de hechizos previa para evitar duplicados
-                document.getElementById('lista-hechizos').innerHTML = "";
-
                 // 2. Parsear el objeto JSON de forma segura
                 const personaje = JSON.parse(jsonTexto);
 
@@ -737,7 +651,7 @@
                 if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
                 if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
 
-                // 4. Rellenar ATRIBUTOS (Stats Base) ANTES de calcular cualquier cosa
+                // 4. Rellenar ATRIBUTOS (Stats Base)
                 if (personaje.stats) {
                     if (personaje.stats.FUE) document.getElementById('score-str').value = personaje.stats.FUE;
                     if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.DES;
@@ -757,7 +671,7 @@
                     document.getElementById('mod-magic-cha').value = personaje.modificadores_magicos.CAR || "0";
                 } else {
                     ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(s => {
-                        document.getElementById(`mod-magic-${s}`).value = "0";
+                        if (document.getElementById(`mod-magic-${s}`)) document.getElementById(`mod-magic-${s}`).value = "0";
                     });
                 }
 
@@ -775,7 +689,6 @@
                 }
 
                 // 🌟 INYECCIÓN FORZADA SÍNCRONA DE LA SUBCLASE
-                // Esto simula la creación del bloque de especialización en el DOM sin correr todo "actualizar()" antes de tiempo
                 const clId = personaje.clase;
                 const clasesConSubclase = ['druida', 'mago', 'paladin', 'bardo', 'monje'];
                 const contenedorEsp = document.getElementById('contenedor-especializacion');
@@ -812,16 +725,23 @@
                     }
                     selectEsp.innerHTML = opcionesHTML;
                     
-                    // Asignamos el valor exacto de la subclase antes del renderizado
                     if (personaje.circulo_druidico && personaje.circulo_druidico !== "n/a") {
                         selectEsp.value = personaje.circulo_druidico;
                     }
                 }
 
-                // 🌟 EL GRAN MOMENTO: Ejecutar un único recálculo con todos los datos cargados de forma segura
+                // 🌟 EJECUTAR RECALCULO GENERAL Y CONSTRUCCIÓN DE HECHIZOS NATIVOS
                 actualizar();
 
-                // 7. Auto-marcar hechizos guardados en el JSON
+                // 🌟 ASIGNACIÓN EXTRA: Forzar el volcado de las notas de texto en la hoja de impresión del resumen
+                if (personaje.historia_trasfondo && document.getElementById('res-historia-texto')) {
+                    document.getElementById('res-historia-texto').innerText = personaje.historia_trasfondo;
+                }
+                if (personaje.rasgos_rol_mesa && document.getElementById('res-rasgos-texto')) {
+                    document.getElementById('res-rasgos-texto').innerText = personaje.rasgos_rol_mesa;
+                }
+
+                // 7. Auto-marcar hechizos guardados en el JSON (Margen ampliado a 150ms para seguridad)
                 if (personaje.hechizos_preparados && Array.isArray(personaje.hechizos_preparados)) {
                     setTimeout(() => {
                         const checkboxes = document.querySelectorAll('#lista-hechizos input[type="checkbox"]');
@@ -837,15 +757,14 @@
                         if (typeof actualizarContador === "function") {
                             actualizarContador();
                         }
-                    }, 50);
+                    }, 150);
                 }
 
                 alert("¡Personaje importado con éxito!");
 
             } catch (error) {
                 console.error("Error de importación detallado:", error);
-                alert("¡Error al importar! El formato del texto sigue teniendo caracteres incompatibles o faltan elementos en el HTML.");
-                alert(error);
+                alert("¡Error al importar! El formato del texto sigue teniendo caracteres incompatibles.");
             }
         }
 
