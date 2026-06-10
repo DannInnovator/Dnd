@@ -282,13 +282,14 @@
             const hpAdicional = (nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + modCon);
             const hpTotal = hpNivel1 + hpAdicional;
 
+            // --- ACTUALIZACIÓN DE CA PARA DRUIDA ---
             let caBase = 10 + modDex;
             if (clId === 'monje') {
                 caBase = 10 + modDex + modWis; 
             } else if (clId === 'guerrero' || clId === 'paladin' || clId === 'clerigo') {
                 caBase = 16; 
-            } else if (clId === 'picaro' || clId === 'bardo' || clId === 'explorador') {
-                caBase += 2; 
+            } else if (clId === 'picaro' || clId === 'bardo' || clId === 'explorador' || clId === 'druida') {
+                caBase += 3; // Cuero (11 + DES) + Escudo de madera (+2) = +3 total sobre la base
             }
 
             const resCa = document.getElementById('res-ca');
@@ -404,6 +405,12 @@
                 bloqueEspecial.className = "p-2 rounded border bg-emerald-50 border-emerald-200 text-emerald-700";
                 tituloEspecial.innerText = "Salud Sagrada";
                 resEspecial.innerText = nivel * 5; 
+            } else if (clId === 'druida') {
+                // 🐾 NUEVO: Rastreador de formas para Xano
+                bloqueEspecial.classList.remove('hidden'); 
+                bloqueEspecial.className = "p-2 rounded border bg-green-50 border-green-200 text-green-700";
+                tituloEspecial.innerText = "Formas Salvajes";
+                resEspecial.innerText = "2"; // Los druidas tienen 2 usos por descanso corto
             } else {
                 // Ocultar para las demás clases (Guerrero, Mago, Pícaro, etc.)
                 bloqueEspecial.classList.add('hidden');
