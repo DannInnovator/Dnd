@@ -466,7 +466,25 @@
 
             } catch (error) {
                 console.error("🔴 Error detectado en la función actualizar():", error);
-                // Esto evitará que la aplicación muera y te avisará exactamente cuál propiedad falló.
+                
+                // 🌟 NUEVO: Rastrear la línea exacta del fallo mediante el Stack Trace
+                let lineaFallo = "Desconocida";
+                if (error.stack) {
+                    // Extrae las líneas del stack trace
+                    const lineasStack = error.stack.split("\n");
+                    // Por lo general, la segunda línea indica dónde ocurrió el error original
+                    if (lineasStack.length > 1) {
+                        lineaFallo = lineasStack[1].trim();
+                    }
+                }
+
+                // Lanzar la alerta interactiva en pantalla
+                alert(
+                    "⚠️ ¡Error en el motor de actualización!\n\n" +
+                    "Detalle: " + error.message + "\n" +
+                    "Ubicación: " + lineaFallo + "\n\n" +
+                    "Abre la consola (F12) para inspeccionar el DOM completo."
+                );
             }
         }
 
