@@ -679,32 +679,27 @@
         }
 
         function importarIA() {
-            let jsonTexto = prompt("Pega aquí el código JSON de tu personaje exportado:");
-            if (!jsonTexto) return; 
+            const blockText = document.getElementById('ia-import-block').value.trim();
+            if (!blockText) {
+                alert("Por favor, pega el bloque de texto o JSON generado por la IA.");
+                return;
+            }
 
             try {
-                // 1. Limpieza segura de caracteres de portapapeles y chats web
-                jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); // Eliminar espacios invisibles
-                jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); // Corregir comillas curvas a rectas
-                jsonTexto = jsonTexto.trim();
+                // Limpiar lista de hechizos para evitar duplicación
+                document.getElementById('lista-hechizos').innerHTML = "";
 
-                // Si por error de copiado el bloque viene envuelto en comillas externas gigantes, se las quitamos
-                if (jsonTexto.startsWith('"') && jsonTexto.endsWith('"')) {
-                    jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
+                // Procesar el texto plano o JSON de la IA
+                let personaje;
+                if (blockText.startsWith('{')) {
+                    personaje = JSON.parse(blockText);
+                } else {
+                    personaje = parseTextToCharacter(blockText);
                 }
 
-                // 2. PARSEO DIRECTO NATIVO (Sin expresiones regulares destructivas)
-                const personaje = JSON.parse(jsonTexto);
+                if (!personaje) throw new Error("No se pudo parsear el personaje");
 
-                // --- 🌟 RESETEO SEGURO DE LA PANTALLA ANTERIOR ---
-                if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
-                if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
-                if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
-                if (document.getElementById('input-notas-diversas')) document.getElementById('input-notas-diversas').value = "";
-                if (document.getElementById('input-historia')) document.getElementById('input-historia').value = "";
-                if (document.getElementById('input-rasgos-rol')) document.getElementById('input-rasgos-rol').value = "";
-
-                // 1. Rellenar entradas básicas
+                // 1. Rellenar entradas básicas en el DOM
                 if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
                 if (personaje.nivel) document.getElementById('nivel').value = personaje.nivel;
                 if (personaje.alineamiento) document.getElementById('alineamiento').value = personaje.alineamiento;
@@ -712,16 +707,19 @@
                 if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
                 if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
 
-                // 🌟 CORRECCIÓN: Cargar la especialización universal al importar desde la IA
+                // 🌟 PASO CRUCIAL 1: Forzar el primer renderizado para que aparezca el contenedor de especialización
+                // y se inyecten las opciones correctas de la clase antes de intentar asignarle un valor.
+                actualizar();
+
+                // 🌟 PASO CRUCIAL 2: Ahora que el selector universal existe en el DOM con sus opciones listas, asignamos la subclase
                 if (personaje.circulo_druidico && personaje.circulo_druidico !== "n/a") {
-                    actualizar(); // Redibuja las opciones correctas de la clase cargada
                     const selectorUniversal = document.getElementById('select-especializacion');
                     if (selectorUniversal) {
                         selectorUniversal.value = personaje.circulo_druidico;
                     }
                 }
 
-                // 2. Rellenar Atributos y sus Modificadores Mágicos si existen en el JSON
+                // 2. Rellenar Atributos (Stats)
                 if (personaje.stats) {
                     if (personaje.stats.FUE) document.getElementById('score-str').value = personaje.stats.FUE;
                     if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.DES;
@@ -730,73 +728,20 @@
                     if (personaje.stats.SAB) document.getElementById('score-wis').value = personaje.stats.SAB;
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
                 }
-                
-                // 🌟 NUEVO: Cargar los bonos mágicos desde el JSON (si la IA los define, si no, quedan en 0)
-                if (personaje.modificadores_magicos) {
-                    document.getElementById('mod-magic-str').value = personaje.modificadores_magicos.FUE || "0";
-                    document.getElementById('mod-magic-dex').value = personaje.modificadores_magicos.DES || "0";
-                    document.getElementById('mod-magic-con').value = personaje.modificadores_magicos.CON || "0";
-                    document.getElementById('mod-magic-int').value = personaje.modificadores_magicos.INT || "0";
-                    document.getElementById('mod-magic-wis').value = personaje.modificadores_magicos.SAB || "0";
-                    document.getElementById('mod-magic-cha').value = personaje.modificadores_magicos.CAR || "0";
-                } else {
-                    // Resetear a 0 si es un personaje nuevo sin ítems
-                    document.getElementById('mod-magic-str').value = "0";
-                    document.getElementById('mod-magic-dex').value = "0";
-                    document.getElementById('mod-magic-con').value = "0";
-                    document.getElementById('mod-magic-int').value = "0";
-                    document.getElementById('mod-magic-wis').value = "0";
-                    document.getElementById('mod-magic-cha').value = "0";
-                }
 
-                // 3. Rellenar Textos narrativos
-                if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
-                if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
-
-                // Cargar dinero y notas al importar
-                if (personaje.dinero) {
-                    if (personaje.dinero.oro) document.getElementById('coin-gold').value = personaje.dinero.oro;
-                    if (personaje.dinero.plata) document.getElementById('coin-silver').value = personaje.dinero.plata;
-                    if (personaje.dinero.cobre) document.getElementById('coin-copper').value = personaje.dinero.cobre;
-                }
-                if (personaje.notas_diversas) {
-                    document.getElementById('input-notas-diversas').value = personaje.notas_diversas;
-                }
-
-                // 4. Forzar recálculo del sistema
+                // 3. Forzar el recálculo final del sistema (Modificadores, Vida, Hechizos y Consejos de Subclase)
                 actualizar();
 
-                // 5. Forzar sobreescritura de datos calculados por IA
-                if (personaje.iniciativa) {
-                    document.getElementById('res-iniciativa').innerText = personaje.iniciativa;
-                }
-                
-                const bloqueEsp = document.getElementById('bloque-bardo-monje');
-                if (personaje.clase === 'bardo' && personaje.inspiraciones) {
-                    if (bloqueEsp) bloqueEsp.classList.remove('hidden');
-                    document.getElementById('res-especial').innerText = personaje.inspiraciones;
-                } else if (personaje.clase === 'monje' && personaje.puntos_ki) {
-                    if (bloqueEsp) bloqueEsp.classList.remove('hidden');
-                    document.getElementById('res-especial').innerText = personaje.puntos_ki;
-                } else if (personaje.clase === 'paladin' && personaje.salud_sagrada) {
-                    if (bloqueEsp) bloqueEsp.classList.remove('hidden');
-                    document.getElementById('res-especial').innerText = personaje.salud_sagrada;
-                }
-
-                // 6. Cargar Hechizos Seleccionados
-                if (personaje.hechizos_preparados && personaje.hechizos_preparados.length > 0) {
+                // 5. Auto-marcar hechizos si vienen en el JSON
+                if (personaje.hechizos_preparados && Array.isArray(personaje.hechizos_preparados)) {
                     setTimeout(() => {
-                        const checkboxes = document.querySelectorAll('#lista-hechizos div');
-                        checkboxes.forEach(div => {
-                            const nombreHechizo = div.querySelector('p').innerText.replace('RITUAL', '').trim();
-                            if (personaje.hechizos_preparados.includes(nombreHechizo)) {
-                                const cb = div.querySelector('input[type="checkbox"]');
-                                if (cb) cb.checked = true;
+                        const checkboxes = document.querySelectorAll('#lista-hechizos input[type="checkbox"]');
+                        checkboxes.forEach(cb => {
+                            const nombreHechizo = cb.nextElementSibling.querySelector('p').innerText.split('(')[0].trim().toLowerCase();
+                            if (personaje.hechizos_preparados.some(h => h.toLowerCase() === nombreHechizo)) {
+                                cb.checked = true;
                             }
                         });
-                        if (typeof actualizarContador === "function") {
-                            actualizarContador();
-                        }
                     }, 50);
                 }
 
@@ -804,7 +749,7 @@
 
             } catch (error) {
                 console.error("Error de importación detallado:", error);
-                alert("¡Error al importar! El formato del texto sigue teniendo caracteres incompatibles.");
+                alert("¡Error al importar! Revisa la consola para ver los detalles técnicos.");
             }
         }
 
