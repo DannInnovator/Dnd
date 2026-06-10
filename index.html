@@ -95,37 +95,62 @@
 
         <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
             <h2 class="text-center text-yellow-500 font-bold mb-4 uppercase">Estadísticas Principales</h2>
-            <div class="grid grid-cols-3 md:grid-cols-6 gap-4">
-                <div class="text-center">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase">FUE</span>
-                    <input type="number" id="score-str" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
-                    <div id="mod-str" class="text-yellow-500 font-bold text-lg">+0</div>
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-2 mb-4">
+                
+                <div class="bg-gray-50 p-2 rounded border text-center">
+                    <p class="text-xs font-bold text-gray-500">FUE</p>
+                    <div class="flex items-center justify-center gap-1 my-1">
+                        <input type="number" id="score-str" value="10" onchange="actualizar()" class="w-12 text-center font-bold border rounded p-1 text-sm">
+                        <input type="number" id="mod-magic-str" value="0" onchange="actualizar()" class="w-10 text-center font-bold border border-blue-200 bg-blue-50 text-blue-600 rounded p-1 text-xs" title="Modificador por Ítem Mágico / Estado">
+                    </div>
+                    <p id="mod-str" class="text-xl font-extrabold text-gray-800">+0</p>
                 </div>
-                <div class="text-center">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase">DES</span>
-                    <input type="number" id="score-dex" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
-                    <div id="mod-dex" class="text-yellow-500 font-bold text-lg">+0</div>
+
+                <div class="bg-gray-50 p-2 rounded border text-center">
+                    <p class="text-xs font-bold text-gray-500">DES</p>
+                    <div class="flex items-center justify-center gap-1 my-1">
+                        <input type="number" id="score-get-dex" id="score-dex" value="10" onchange="actualizar()" class="w-12 text-center font-bold border rounded p-1 text-sm">
+                        <input type="number" id="mod-magic-dex" value="0" onchange="actualizar()" class="w-10 text-center font-bold border border-blue-200 bg-blue-50 text-blue-600 rounded p-1 text-xs" title="Modificador por Ítem Mágico / Estado">
+                    </div>
+                    <p id="mod-dex" class="text-xl font-extrabold text-gray-800">+0</p>
                 </div>
-                <div class="text-center">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase">CON</span>
-                    <input type="number" id="score-con" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
-                    <div id="mod-con" class="text-yellow-500 font-bold text-lg">+0</div>
+
+                <div class="bg-gray-50 p-2 rounded border text-center">
+                    <p class="text-xs font-bold text-gray-500">CON</p>
+                    <div class="flex items-center justify-center gap-1 my-1">
+                        <input type="number" id="score-con" value="10" onchange="actualizar()" class="w-12 text-center font-bold border rounded p-1 text-sm">
+                        <input type="number" id="mod-magic-con" value="0" onchange="actualizar()" class="w-10 text-center font-bold border border-blue-200 bg-blue-50 text-blue-600 rounded p-1 text-xs" title="Modificador por Ítem Mágico / Estado">
+                    </div>
+                    <p id="mod-con" class="text-xl font-extrabold text-gray-800">+0</p>
                 </div>
-                <div class="text-center">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase">INT</span>
-                    <input type="number" id="score-int" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
-                    <div id="mod-int" class="text-yellow-500 font-bold text-lg">+0</div>
+
+                <div class="bg-gray-50 p-2 rounded border text-center">
+                    <p class="text-xs font-bold text-gray-500">INT</p>
+                    <div class="flex items-center justify-center gap-1 my-1">
+                        <input type="number" id="score-int" value="10" onchange="actualizar()" class="w-12 text-center font-bold border rounded p-1 text-sm">
+                        <input type="number" id="mod-magic-int" value="0" onchange="actualizar()" class="w-10 text-center font-bold border border-blue-200 bg-blue-50 text-blue-600 rounded p-1 text-xs" title="Modificador por Ítem Mágico / Estado">
+                    </div>
+                    <p id="mod-int" class="text-xl font-extrabold text-gray-800">+0</p>
                 </div>
-                <div class="text-center">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase">SAB</span>
-                    <input type="number" id="score-wis" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
-                    <div id="mod-wis" class="text-yellow-500 font-bold text-lg">+0</div>
+
+                <div class="bg-gray-50 p-2 rounded border text-center">
+                    <p class="text-xs font-bold text-gray-500">SAB</p>
+                    <div class="flex items-center justify-center gap-1 my-1">
+                        <input type="number" id="score-wis" value="10" onchange="actualizar()" class="w-12 text-center font-bold border rounded p-1 text-sm">
+                        <input type="number" id="mod-magic-wis" value="0" onchange="actualizar()" class="w-10 text-center font-bold border border-blue-200 bg-blue-50 text-blue-600 rounded p-1 text-xs" title="Modificador por Ítem Mágico / Estado">
+                    </div>
+                    <p id="mod-wis" class="text-xl font-extrabold text-gray-800">+0</p>
                 </div>
-                <div class="text-center">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase">CAR</span>
-                    <input type="number" id="score-cha" value="10" class="w-full bg-slate-900 text-center text-xl font-bold p-2 rounded-lg border border-slate-700" oninput="actualizar()">
-                    <div id="mod-cha" class="text-yellow-500 font-bold text-lg">+0</div>
+
+                <div class="bg-gray-50 p-2 rounded border text-center">
+                    <p class="text-xs font-bold text-gray-500">CAR</p>
+                    <div class="flex items-center justify-center gap-1 my-1">
+                        <input type="number" id="score-cha" value="10" onchange="actualizar()" class="w-12 text-center font-bold border rounded p-1 text-sm">
+                        <input type="number" id="mod-magic-cha" value="0" onchange="actualizar()" class="w-10 text-center font-bold border border-blue-200 bg-blue-50 text-blue-600 rounded p-1 text-xs" title="Modificador por Ítem Mágico / Estado">
+                    </div>
+                    <p id="mod-cha" class="text-xl font-extrabold text-gray-800">+0</p>
                 </div>
+
             </div>
         </section>
 
@@ -269,20 +294,30 @@
             const trId = document.getElementById('select-trasfondo').value;
             const nivel = parseInt(document.getElementById('nivel').value) || 1;
             
-            // 2. BUSCAR DATOS EN EL JSON
+            // 🌟 NUEVO: SUMAR ESTADÍSTICA BASE + MODIFICADOR MÁGICO
+            // Esto asegura que toda la app use el valor alterado por ítems mágicos
+            const totalStr = parseInt(document.getElementById('score-str').value || 0) + parseInt(document.getElementById('mod-magic-str').value || 0);
+            const totalDex = parseInt(document.getElementById('score-dex').value || 0) + parseInt(document.getElementById('mod-magic-dex').value || 0);
+            const totalCon = parseInt(document.getElementById('score-con').value || 0) + parseInt(document.getElementById('mod-magic-con').value || 0);
+            const totalInt = parseInt(document.getElementById('score-int').value || 0) + parseInt(document.getElementById('mod-magic-int').value || 0);
+            const totalWis = parseInt(document.getElementById('score-wis').value || 0) + parseInt(document.getElementById('mod-magic-wis').value || 0);
+            const totalCha = parseInt(document.getElementById('score-cha').value || 0) + parseInt(document.getElementById('mod-magic-cha').value || 0);
+
+            // 2. BUSCAR DATOS EN EL JSON Y CALCULAR MODIFICADORES OFICIALES
             const esp = dndData.especies.find(e => e.id === espId);
             const cl = dndData.clases.find(c => c.id === clId);
             const tr = dndData.trasfondos.find(t => t.id === trId);
-            const modCon = getMod(document.getElementById('score-con').value);
-            const modDex = getMod(document.getElementById('score-dex').value);
-            const modWis = getMod(document.getElementById('score-wis').value);
+            
+            const modCon = getMod(totalCon);
+            const modDex = getMod(totalDex);
+            const modWis = getMod(totalWis);
 
             // 3. LÓGICA DE HP Y CA
             const hpNivel1 = cl.hp_base + modCon;
             const hpAdicional = (nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + modCon);
             const hpTotal = hpNivel1 + hpAdicional;
 
-            // --- ACTUALIZACIÓN DE CA PARA DRUIDA ---
+            // --- ACTUALIZACIÓN DE CA PARA DRUIDA Y DEMÁS ---
             let caBase = 10 + modDex;
             if (clId === 'monje') {
                 caBase = 10 + modDex + modWis; 
@@ -303,7 +338,7 @@
                 resDoteElement.innerText = tr.dote;
             }
 
-            // 5. CÁLCULO DE INICIATIVA (Ahora lee el texto asignado de forma segura)
+            // 5. CÁLCULO DE INICIATIVA
             let iniciativa = modDex; 
             const doteTexto = resDoteElement.innerText;
             if (doteTexto.includes("Alerta") || espId === 'humano') {
@@ -312,15 +347,15 @@
             const signoIniciativa = iniciativa >= 0 ? "+" : "";
             document.getElementById('res-iniciativa').innerText = signoIniciativa + iniciativa;
 
-            // 6. ACTUALIZAR MODIFICADORES DE ATRIBUTOS
-            ['str', 'dex', 'con', 'int', 'wis', 'cha'].forEach(stat => {
-                const s = document.getElementById(`score-${stat}`).value;
-                const mod = getMod(s);
-                document.getElementById(`mod-${stat}`).innerText = (mod >= 0 ? "+" : "") + mod;
-            });
+            // 6. ACTUALIZAR MODIFICADORES DE ATRIBUTOS (Calculado con el total mágico)
+            document.getElementById('mod-str').innerText = (getMod(totalStr) >= 0 ? "+" : "") + getMod(totalStr);
+            document.getElementById('mod-dex').innerText = (getMod(totalDex) >= 0 ? "+" : "") + getMod(totalDex);
+            document.getElementById('mod-con').innerText = (getMod(totalCon) >= 0 ? "+" : "") + getMod(totalCon);
+            document.getElementById('mod-int').innerText = (getMod(totalInt) >= 0 ? "+" : "") + getMod(totalInt);
+            document.getElementById('mod-wis').innerText = (getMod(totalWis) >= 0 ? "+" : "") + getMod(totalWis);
+            document.getElementById('mod-cha').innerText = (getMod(totalCha) >= 0 ? "+" : "") + getMod(totalCha);
 
             // 7. LÓGICA DE MAGIA
-            // Cambia la condición original por esta:
             const tieneMagiaPorClase = cl.usa_magia && (clId !== 'paladin' && clId !== 'explorador' || nivel >= 2);
 
             if (tieneMagiaPorClase || trId.includes("acolito") || trId.includes("sabio") || trId.includes("guia")) {
@@ -383,36 +418,34 @@
             document.getElementById('res-copper').innerText = pc;
             document.getElementById('res-notas-diversas').innerText = notasTxt;
 
-            // --- LÓGICA DE RECURSOS ESPECIALES (INSPIRACIÓN / KI / IMPOSICIÓN DE MANOS) ---
+            // --- LÓGICA DE RECURSOS ESPECIALES ---
             const bloqueEspecial = document.getElementById('bloque-bardo-monje');
             const tituloEspecial = document.getElementById('titulo-especial');
             const resEspecial = document.getElementById('res-especial');
 
             if (clId === 'bardo') {
-                bloqueEspecial.classList.remove('hidden'); // Asegura encendido
+                bloqueEspecial.classList.remove('hidden');
                 bloqueEspecial.className = "p-2 rounded border bg-purple-50 border-purple-200 text-purple-700";
                 tituloEspecial.innerText = "Inspiraciones";
-                const modCha = getMod(document.getElementById('score-cha').value);
+                // Modificado para que use el Carisma total con bonos mágicos
+                const modCha = getMod(totalCha);
                 resEspecial.innerText = Math.max(1, modCha);
             } else if (clId === 'monje') {
-                bloqueEspecial.classList.remove('hidden'); // Asegura encendido
+                bloqueEspecial.classList.remove('hidden');
                 bloqueEspecial.className = "p-2 rounded border bg-cyan-50 border-cyan-200 text-cyan-700";
                 tituloEspecial.innerText = "Puntos de Ki";
                 resEspecial.innerText = nivel >= 2 ? nivel : 0; 
             } else if (clId === 'paladin') {
-                // ¡CORRECCIÓN AQUÍ! Añadimos de forma explícita que remueva la propiedad "hidden"
                 bloqueEspecial.classList.remove('hidden'); 
                 bloqueEspecial.className = "p-2 rounded border bg-emerald-50 border-emerald-200 text-emerald-700";
                 tituloEspecial.innerText = "Salud Sagrada";
                 resEspecial.innerText = nivel * 5; 
             } else if (clId === 'druida') {
-                // 🐾 NUEVO: Rastreador de formas para Xano
                 bloqueEspecial.classList.remove('hidden'); 
                 bloqueEspecial.className = "p-2 rounded border bg-green-50 border-green-200 text-green-700";
                 tituloEspecial.innerText = "Formas Salvajes";
-                resEspecial.innerText = "2"; // Los druidas tienen 2 usos por descanso corto
+                resEspecial.innerText = "2"; 
             } else {
-                // Ocultar para las demás clases (Guerrero, Mago, Pícaro, etc.)
                 bloqueEspecial.classList.add('hidden');
             }
         }
@@ -538,6 +571,16 @@
                     SAB: document.getElementById('score-wis').value,
                     CAR: document.getElementById('score-cha').value
                 },
+
+                // 🌟 NUEVO: Exportar los Modificadores Mágicos en el JSON
+                modificadores_magicos: {
+                    FUE: document.getElementById('mod-magic-str').value,
+                    DES: document.getElementById('mod-magic-dex').value,
+                    CON: document.getElementById('mod-magic-con').value,
+                    INT: document.getElementById('mod-magic-int').value,
+                    SAB: document.getElementById('mod-magic-wis').value,
+                    CAR: document.getElementById('mod-magic-cha').value
+                },
                 hp: document.getElementById('res-hp').innerText,
                 ca: document.getElementById('res-ca').innerText,
                 iniciativa: document.getElementById('res-iniciativa').innerText, 
@@ -598,7 +641,7 @@
                 if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
                 if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
 
-                // 2. Rellenar Atributos
+                // 2. Rellenar Atributos y sus Modificadores Mágicos si existen en el JSON
                 if (personaje.stats) {
                     if (personaje.stats.FUE) document.getElementById('score-str').value = personaje.stats.FUE;
                     if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.DES;
@@ -606,6 +649,24 @@
                     if (personaje.stats.INT) document.getElementById('score-int').value = personaje.stats.INT;
                     if (personaje.stats.SAB) document.getElementById('score-wis').value = personaje.stats.SAB;
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
+                }
+                
+                // 🌟 NUEVO: Cargar los bonos mágicos desde el JSON (si la IA los define, si no, quedan en 0)
+                if (personaje.modificadores_magicos) {
+                    document.getElementById('mod-magic-str').value = personaje.modificadores_magicos.FUE || "0";
+                    document.getElementById('mod-magic-dex').value = personaje.modificadores_magicos.DES || "0";
+                    document.getElementById('mod-magic-con').value = personaje.modificadores_magicos.CON || "0";
+                    document.getElementById('mod-magic-int').value = personaje.modificadores_magicos.INT || "0";
+                    document.getElementById('mod-magic-wis').value = personaje.modificadores_magicos.SAB || "0";
+                    document.getElementById('mod-magic-cha').value = personaje.modificadores_magicos.CAR || "0";
+                } else {
+                    // Resetear a 0 si es un personaje nuevo sin ítems
+                    document.getElementById('mod-magic-str').value = "0";
+                    document.getElementById('mod-magic-dex').value = "0";
+                    document.getElementById('mod-magic-con').value = "0";
+                    document.getElementById('mod-magic-int').value = "0";
+                    document.getElementById('mod-magic-wis').value = "0";
+                    document.getElementById('mod-magic-cha').value = "0";
                 }
 
                 // 3. Rellenar Textos narrativos
