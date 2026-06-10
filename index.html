@@ -192,7 +192,7 @@
                     <h2 id="res-nombre" class="text-3xl font-black uppercase italic">NOMBRE</h2>
                     <p id="res-clase-esp" class="text-slate-600 font-bold"></p>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-6 gap-2 text-center">
+                <div class="grid grid-cols-2 md:grid-cols-7 gap-2 text-center">
                     <div class="bg-red-50 p-2 rounded border border-red-200">
                         <p class="text-xs font-bold text-red-700 uppercase">Vida (HP)</p>
                         <p id="res-vida" class="text-2xl font-black text-red-600">0</p>
@@ -205,6 +205,14 @@
                         <p class="text-xs font-bold text-amber-700 uppercase">Iniciativa</p>
                         <p id="res-iniciativa" class="text-2xl font-black text-amber-600">+0</p>
                     </div>
+                    <div class="bg-indigo-50 p-2 rounded border border-indigo-200">
+                        <p class="text-xs font-bold text-indigo-700 uppercase">Competencia</p>
+                        <p id="res-prof" class="text-2xl font-black text-indigo-600">+2</p>
+                    </div>
+                    <div class="bg-orange-50 p-2 rounded border border-orange-200">
+                        <p class="text-xs font-bold text-orange-700 uppercase">Dados Golpe</p>
+                        <p id="res-dados-golpe" class="text-xl font-black text-orange-600">1d8</p>
+                    </div>
                     <div class="bg-purple-50 p-2 rounded border border-purple-200">
                         <p class="text-xs font-bold text-purple-700 uppercase">Atq Mágico</p>
                         <p id="res-satq" class="text-2xl font-black text-purple-600">+0</p>
@@ -212,10 +220,6 @@
                     <div class="bg-purple-50 p-2 rounded border border-purple-200">
                         <p class="text-xs font-bold text-purple-700 uppercase">CD Conjuro</p>
                         <p id="res-scav" class="text-2xl font-black text-purple-600">8</p>
-                    </div>
-                    <div id="bloque-bardo-monje" class="p-2 rounded border hidden">
-                        <p id="titulo-especial" class="text-xs font-bold uppercase">Especial</p>
-                        <p id="res-especial" class="text-2xl font-black">0</p>
                     </div>
                 </div>
             </div>
@@ -498,7 +502,7 @@
                 }
             }
 
-            // 🌟 CORRECCIÓN: Agregar escudo de verificación para evitar caídas por nulos
+            // 🌟 COMPROBACIÓN SEGURA MÁGICA (Línea 239 en adelante)
             const seccionMagia = document.getElementById('seccion-magia');
             if (cl.tiene_magia) {
                 seccionMagia.classList.remove('hidden');
