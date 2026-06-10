@@ -87,9 +87,9 @@
                 <label class="block text-xs font-bold text-red-400 uppercase mb-2">Clase</label>
                 <select id="select-clase" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm" onchange="actualizar()"></select>
             </div>
-            <div id="contenedor-circulo" class="hidden">
-                <label class="block text-xs font-bold text-gray-700 uppercase mb-1">Círculo Druídico</label>
-                <select id="select-circulo" onchange="actualizar()" class="w-full border rounded p-1.5 text-sm bg-white text-slate-900 font-medium">
+            <div id="contenedor-circulo" class="hidden md:col-span-3 bg-slate-800 p-4 rounded-xl border border-slate-700 mt-2">
+                <label class="block text-xs font-bold text-green-400 uppercase mb-2">🌿 Especialización: Círculo Druídico</label>
+                <select id="select-circulo" onchange="actualizar()" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm text-white font-medium">
                     <option value="tierra_montana">Círculo de la Tierra (Montaña)</option>
                     <option value="tierra_infraoscuridad">Círculo de la Tierra (Infraoscuridad)</option>
                     <option value="luna">Círculo de la Luna</option>
@@ -304,7 +304,7 @@
             const trId = document.getElementById('select-trasfondo').value;
             const nivel = parseInt(document.getElementById('nivel').value) || 1;
 
-            // 🌟 NUEVO: Mostrar selector de Círculo solo si es Druida
+            // 🌿 Control de visualización del Círculo Druídico
             const contenedorCirculo = document.getElementById('contenedor-circulo');
             if (clId === 'druida') {
                 contenedorCirculo.classList.remove('hidden');
