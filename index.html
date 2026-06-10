@@ -43,13 +43,13 @@
 
     <header class="max-w-3xl mx-auto text-center my-6">
         <h1 class="text-4xl font-black text-red-600 drop-shadow-lg">⚔️ D&D Creador de personaje</h1>
-        <p class="text-slate-400 uppercase tracking-tighter text-sm">Forja tu destino en español</p>
+        <p class="text-slate-400 uppercase tracking-tighter text-sm">Forja tu destiny en español</p>
     </header>
+    
     <div class="max-w-3xl mx-auto mb-4 flex justify-end gap-2 no-print">
         <button onclick="importarIA()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all">
             <span>📥 Importar desde IA</span>
         </button>
-        
         <button onclick="exportarIA()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg shadow-lg flex items-center gap-2 transition-all">
             <span>🤖 Copiar para IA</span>
         </button>
@@ -57,44 +57,45 @@
             <span>📄 Descargar Ficha (PDF)</span>
         </button>
     </div>
+
     <main class="max-w-3xl mx-auto space-y-6 pb-20">
         
         <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-                <label class="block text-xs font-bold text-red-500 uppercase mb-1">Nombre del Héroe</label>
-                <input type="text" id="nombre" placeholder="Ej: Arathorn" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:border-red-500 outline-none" oninput="actualizar()">
+                <label for="nombre" class="block text-xs font-bold text-red-500 uppercase mb-1">Nombre del Héroe</label>
+                <input type="text" id="nombre" placeholder="Ej: Arathorn" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:border-red-500 outline-none text-white" oninput="actualizar()">
             </div>
             <div>
-                <label class="block text-xs font-bold text-red-500 uppercase mb-1">Alineamiento</label>
-                <select id="alineamiento" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg outline-none" onchange="actualizar()">
+                <label for="alineamiento" class="block text-xs font-bold text-red-500 uppercase mb-1">Alineamiento</label>
+                <select id="alineamiento" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg outline-none text-white" onchange="actualizar()">
                     <option>Legal Bueno</option><option>Neutral Bueno</option><option>Caótico Bueno</option>
                     <option>Legal Neutral</option><option>Neutral Auténtico</option><option>Caótico Neutral</option>
                     <option>Legal Malvado</option><option>Neutral Malvado</option><option>Caótico Malvado</option>
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-bold text-red-500 uppercase mb-1">Nivel</label>
-                <input type="number" id="nivel" value="1" min="1" max="20" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:border-red-500 outline-none" oninput="actualizar()">
+                <label for="nivel" class="block text-xs font-bold text-red-500 uppercase mb-1">Nivel</label>
+                <input type="number" id="nivel" value="1" min="1" max="20" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:border-red-500 outline-none text-white" oninput="actualizar()">
             </div>
         </section>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
                 <label for="select-especie" class="block text-xs font-bold text-blue-400 uppercase mb-2">Especie</label>
-                <select id="select-especie" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm" onchange="actualizar()"></select>
+                <select id="select-especie" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm text-white" onchange="actualizar()"></select>
             </div>
             <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
                 <label for="select-clase" class="block text-xs font-bold text-red-400 uppercase mb-2">Clase</label>
-                <select id="select-clase" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm" onchange="actualizar()"></select>
+                <select id="select-clase" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm text-white" onchange="actualizar()"></select>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                <label for="select-trasfondo" class="block text-xs font-bold text-green-400 uppercase mb-2">Trasfondo</label>
+                <select id="select-trasfondo" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm text-white" onchange="actualizar()"></select>
             </div>
             <div id="contenedor-especializacion" class="hidden md:col-span-3 bg-slate-800 p-4 rounded-xl border border-slate-700 mt-2">
                 <label id="label-especializacion" for="select-especializacion" class="block text-xs font-bold text-yellow-400 uppercase mb-2">Especialización de Clase</label>
                 <select id="select-especializacion" onchange="actualizar()" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm text-white font-medium">
-                    </select>
-            </div>
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700">
-                <label for="select-trasfondo" class="block text-xs font-bold text-green-400 uppercase mb-2">Trasfondo</label>
-                <select id="select-trasfondo" class="w-full bg-slate-700 p-2 rounded-lg outline-none text-sm" onchange="actualizar()"></select>
+                </select>
             </div>
         </div>
 
@@ -162,11 +163,11 @@
         <section class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl space-y-4 no-print">
             <h2 class="text-lg font-bold text-blue-400 uppercase border-b border-slate-700 pb-2">Narrativa y Rol Personalizado</h2>
             <div>
-                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Historia del Trasfondo (Biografía)</label>
+                <label for="input-historia" class="block text-xs font-bold text-slate-300 uppercase mb-1">Historia del Trasfondo (Biografía)</label>
                 <textarea id="input-historia" rows="5" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:border-blue-500 outline-none text-sm text-slate-200" placeholder="Escribe aquí la crónica de tu personaje..." oninput="actualizar()"></textarea>
             </div>
             <div>
-                <label class="block text-xs font-bold text-slate-300 uppercase mb-1">Rasgos de Rol en la Mesa (Interpretación)</label>
+                <label for="input-rasgos-rol" class="block text-xs font-bold text-slate-300 uppercase mb-1">Rasgos de Rol en la Mesa (Interpretación)</label>
                 <textarea id="input-rasgos-rol" rows="4" class="w-full bg-slate-900 border border-slate-600 p-3 rounded-lg focus:border-blue-500 outline-none text-sm text-slate-200" placeholder="Ej: Manías, principios de interpretación..." oninput="actualizar()"></textarea>
             </div>
         </section>
@@ -190,7 +191,7 @@
             <div class="flex justify-between items-start border-b-2 border-slate-200 pb-4">
                 <div>
                     <h2 id="res-nombre" class="text-3xl font-black uppercase italic">NOMBRE</h2>
-                    <p id="res-clase-esp" class="text-slate-600 font-bold"></p>
+                    <p id="res-clase-esp" class="text-slate-600 font-bold whitespace-pre-line"></p>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                     <div class="bg-red-50 p-3 rounded-lg border border-red-200 shadow-sm">
@@ -234,59 +235,62 @@
                 <div class="space-y-4">
                     <div>
                         <h4 class="font-black text-xs border-b border-slate-300 mb-2 uppercase tracking-widest text-red-600">Rasgos y Habilidades de Clase</h4>
-                        <div id="res-rasgos-lista" class="space-y-2"></div>
+                        <div id="res-rasgos-lista" class="space-y-2 text-xs text-slate-800"></div>
                         <p id="res-especie-rasgo" class="text-sm italic text-slate-600 mt-2 border-t pt-2"></p>
+                        <p id="res-dote" class="text-sm italic text-slate-600 mt-1 hidden"></p> 
                     </div>
 
-                    <div id="bloque-res-historia" class="hidden border-t border-slate-200 pt-3">
+                    <div id="bloque-res-historia" class="border-t border-slate-200 pt-3">
                         <h4 class="font-black text-xs mb-1 uppercase tracking-widest text-amber-600">Historia y Trasfondo</h4>
-                        <p id="res-historia" class="text-xs text-slate-700 whitespace-pre-line leading-relaxed italic bg-slate-50 p-2 rounded"></p>
+                        <p id="res-historia" class="text-xs text-slate-700 whitespace-pre-line leading-relaxed italic bg-slate-50 p-2 rounded">Sin historia registrada.</p>
                     </div>
                 </div>
                 
                 <div class="space-y-4">
                     <div class="bg-slate-100 p-4 rounded-lg">
                         <h4 class="font-black text-xs uppercase mb-1 text-slate-500">Dote de Trasfondo</h4>
-                        <p id="res-dote" class="text-lg font-bold text-blue-800"></p>
-                        <p id="res-trasfondo-desc" class="text-xs italic text-slate-600"></p>
+                        <p id="res-trasfondo" class="text-lg font-bold text-blue-800">Sin Trasfondo</p>
+                        <p id="res-trasfondo-desc" class="text-xs italic text-slate-600">Ninguno</p>
                     </div>
 
-                    <div id="bloque-res-rol" class="hidden bg-amber-50 p-4 rounded-lg border-l-4 border-amber-500">
+                    <div id="bloque-res-rol" class="bg-amber-50 p-4 rounded-lg border-l-4 border-amber-500">
                         <h4 class="font-black text-xs uppercase mb-1 text-amber-800">Rasgos de Rol en la Mesa</h4>
-                        <p id="res-rasgos-rol" class="text-xs text-slate-800 whitespace-pre-line leading-relaxed font-medium"></p>
+                        <p id="res-rasgos-rol" class="text-xs text-slate-800 whitespace-pre-line leading-relaxed font-medium">Sin rasgos de personalidad.</p>
                     </div>
                 </div>
             </div>
 
             <div class="mt-6 border-t-2 border-slate-200 pt-4">
                 <h4 class="font-black text-xs mb-2 uppercase tracking-widest text-blue-600">Equipamiento e Inventario</h4>
-                <div id="res-inventario" class="grid grid-cols-2 gap-x-4 gap-y-1">
-                    </div>
+                <div id="res-inventario" class="text-xs text-slate-800 whitespace-pre-line bg-slate-50 p-2 rounded">
+                    Inventario vacío.
+                </div>
                 <div class="mt-2 border-t border-dashed border-slate-300 pt-2 h-16 text-[10px] text-slate-400 italic">
                     Notas de equipo adicional: __________________________________________________________________
                 </div>
             </div>
+            
             <div class="mt-4 p-4 bg-white rounded-lg shadow border border-slate-200 no-print">
                 <h3 class="text-sm font-bold text-slate-700 uppercase mb-2">💰 Monedas y Notas de Campaña</h3>
                 
                 <div class="grid grid-cols-3 gap-2 mb-3">
                     <div>
-                        <label class="text-[10px] font-bold text-amber-600 block">Oro (PO)</label>
-                        <input type="number" id="coin-gold" value="0" class="w-full p-1 border rounded text-center text-sm font-bold" oninput="actualizar()">
+                        <label for="coin-gold" class="text-[10px] font-bold text-amber-600 block">Oro (PO)</label>
+                        <input type="number" id="coin-gold" value="0" class="w-full p-1 border rounded text-center text-sm font-bold bg-white text-slate-900" oninput="actualizar()">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-500 block">Plata (PP)</label>
-                        <input type="number" id="coin-silver" value="0" class="w-full p-1 border rounded text-center text-sm" oninput="actualizar()">
+                        <label for="coin-silver" class="text-[10px] font-bold text-slate-500 block">Plata (PP)</label>
+                        <input type="number" id="coin-silver" value="0" class="w-full p-1 border rounded text-center text-sm bg-white text-slate-900" oninput="actualizar()">
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-amber-700 block">Cobre (PC)</label>
-                        <input type="number" id="coin-copper" value="0" class="w-full p-1 border rounded text-center text-sm" oninput="actualizar()">
+                        <label for="coin-copper" class="text-[10px] font-bold text-amber-700 block">Cobre (PC)</label>
+                        <input type="number" id="coin-copper" value="0" class="w-full p-1 border rounded text-center text-sm bg-white text-slate-900" oninput="actualizar()">
                     </div>
                 </div>
 
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 block mb-1">Notas del Diario / Estado Temporal</label>
-                    <textarea id="input-notas-diversas" rows="4" class="w-full p-2 border rounded text-xs text-slate-700" placeholder="Ej: Buscando pistas del culto de Monkeybone. Envenenado por 2 turnos..." oninput="actualizar()"></textarea>
+                    <label for="input-notas-diversas" class="text-[10px] font-bold text-slate-500 block mb-1">Notas del Diario / Estado Temporal</label>
+                    <textarea id="input-notas-diversas" rows="4" class="w-full p-2 border rounded text-xs text-slate-700 bg-white" placeholder="Ej: Buscando pistas del culto... Envenenado..." oninput="actualizar()"></textarea>
                 </div>
             </div>
 
@@ -306,7 +310,7 @@
 
         function actualizar() {
             try {
-                if (!dndData) return;
+                if (!dndData || !dndData.especies) return;
 
                 const espId = document.getElementById('select-especie').value;
                 const clId = document.getElementById('select-clase').value;
@@ -328,10 +332,6 @@
                     const magic = parseInt(document.getElementById(`mod-magic-${s}`).value) || 0;
                     const total = base + magic;
 
-                    if (document.getElementById(`total-${s}`)) {
-                        document.getElementById(`total-${s}`).innerText = total;
-                    }
-
                     const mod = Math.floor((total - 10) / 2);
                     mods[s] = mod;
                     
@@ -346,7 +346,7 @@
 
                 const vidaTotal = cl.hp_base + mods.con + ((nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + mods.con));
                 if (document.getElementById('res-vida')) document.getElementById('res-vida').innerText = `${vidaTotal} HP`;
-                if (document.getElementById('res-dados-golpe')) document.getElementById('res-dados-golpe').innerText = `${nivel}${cl.hp_base}`;
+                if (document.getElementById('res-dados-golpe')) document.getElementById('res-dados-golpe').innerText = `${nivel}${cl.dado_vida}`;
 
                 // 3. Salvaciones, Iniciativa y Percepción Pasiva
                 if (document.getElementById('res-iniciativa')) document.getElementById('res-iniciativa').innerText = (mods.dex >= 0 ? '+' : '') + mods.dex;
@@ -419,117 +419,134 @@
                     const elScav = document.getElementById('res-scav');
                     if (elSatq) elSatq.innerText = (mods[cl.stat_magia] + prof >= 0 ? '+' : '') + (mods[cl.stat_magia] + prof);
                     if (elScav) elScav.innerText = 8 + mods[cl.stat_magia] + prof;
-
-                    // Refresco síncrono del contenedor de hechizos
-                    const contenedorHechizos = document.getElementById('lista-hechizos');
-                    if (contenedorHechizos && dndData.hechizos) {
-                        contenedorHechizos.innerHTML = ""; 
-                        const filtrados = dndData.hechizos.filter(h => h.clase === clId);
-                        filtrados.forEach(h => {
-                            contenedorHechizos.innerHTML += `
-                                <div class="flex items-center gap-2 p-1.5 bg-slate-700 rounded border border-slate-600">
-                                    <input type="checkbox" class="w-4 h-4 rounded accent-purple-500">
-                                    <div class="text-xs">
-                                        <p class="font-bold text-purple-300">${h.nombre} <span class="text-[10px] text-slate-400 font-normal">(${h.tipo})</span></p>
-                                        <p class="text-[10px] text-slate-300">${h.desc}</p>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    }
                 } else {
                     if (seccionMagia) seccionMagia.classList.add('hidden');
                 }
 
-                // 7. Llenar la Hoja de Personaje (Resumen Narrativo y Dotes)
-                if (document.getElementById('res-nombre')) document.getElementById('res-nombre').innerText = document.getElementById('nombre').value || "Sin Nombre";
-                if (document.getElementById('res-raza')) document.getElementById('res-raza').innerText = esp.nombre;
-                if (document.getElementById('res-clase')) document.getElementById('res-clase').innerText = `${cl.nombre} (Nivel ${nivel})`;
-                if (document.getElementById('res-trasfondo')) document.getElementById('res-trasfondo').innerText = tr.nombre;
+                // 🌟 NUEVO: Invocar los renderizadores modulares nativos para sincronizar listas y dotes
+                if (typeof renderizarHechizos === "function" && cl.tiene_magia) {
+                    renderizarHechizos(clId, nivel, espId, trId);
+                }
+                if (typeof actualizarRasgos === "function") {
+                    actualizarRasgos(clId, nivel);
+                }
+                if (typeof actualizarEquipamiento === "function") {
+                    actualizarEquipamiento(clId);
+                }
 
-                // Cargar dotes narrativos en el resumen
-                if (document.getElementById('res-raza-dote')) document.getElementById('res-raza-dote').innerText = esp.rasgo;
-                if (document.getElementById('res-trasfondo-dote')) document.getElementById('res-trasfondo-dote').innerText = tr.rasgo;
+                // =================================================================
+                // 7. LLENAR LA HOJA DE PERSONAJE (RESUMEN REAL SINCRONIZADO)
+                // =================================================================
+                if (document.getElementById('res-nombre')) {
+                    document.getElementById('res-nombre').innerText = document.getElementById('nombre').value || "Sin Nombre";
+                }
+                if (document.getElementById('res-raza')) {
+                    document.getElementById('res-raza').innerText = esp.nombre || "Desconocida";
+                }
+                if (document.getElementById('res-clase')) {
+                    document.getElementById('res-clase').innerText = `${cl.nombre || "Clase"} (Nivel ${nivel})`;
+                }
+                if (document.getElementById('res-trasfondo')) {
+                    document.getElementById('res-trasfondo').innerText = tr.nombre || "Sin Trasfondo";
+                }
 
-                // Manejo dinámico de Subclase / Especialización
-                let textoClaseEsp = cl.rasgo; 
+                // 🌟 POBLAR DOTES Y RASGOS DE ESPECIE Y TRASFONDO
+                if (document.getElementById('res-especie-rasgo')) {
+                    document.getElementById('res-especie-rasgo').innerText = esp.rasgo || "Ninguno";
+                }
+                if (document.getElementById('res-dote')) {
+                    document.getElementById('res-dote').innerText = esp.rasgo || "Ninguno";
+                }
+                if (document.getElementById('res-trasfondo-desc')) {
+                    document.getElementById('res-trasfondo-desc').innerText = tr.rasgo || "Ninguno";
+                }
+
+                // 🌟 POBLAR HISTORIA Y RASGOS DE ROL DESDE LOS TEXTAREA
+                if (document.getElementById('res-historia')) {
+                    document.getElementById('res-historia').innerText = document.getElementById('input-historia').value || "Sin historia registrada.";
+                }
+                if (document.getElementById('res-rasgos-rol')) {
+                    document.getElementById('res-rasgos-rol').innerText = document.getElementById('input-rasgos-rol').value || "Sin rasgos de personalidad.";
+                }
+                if (document.getElementById('res-inventario')) {
+                    document.getElementById('res-inventario').innerText = document.getElementById('input-notas-diversas').value || "Inventario vacío.";
+                }
+
+                // 🌟 Sincronizar el bloque flotante del PDF de Monedas
+                if (document.getElementById('res-gold')) document.getElementById('res-gold').innerText = document.getElementById('coin-gold').value || "0";
+                if (document.getElementById('res-silver')) document.getElementById('res-silver').innerText = document.getElementById('coin-silver').value || "0";
+                if (document.getElementById('res-copper')) document.getElementById('res-copper').innerText = document.getElementById('coin-copper').value || "0";
+                if (document.getElementById('res-notas-diversas')) document.getElementById('res-notas-diversas').innerText = document.getElementById('input-notas-diversas').value || "";
+
+                // 🌟 MANEJO DINÁMICO DE SUBCLASE / ESPECIALIZACIÓN (res-clase-esp)
+                let textoClaseEsp = cl.rasgo || ""; 
                 const subClId = selectEsp ? selectEsp.value : null;
+                
+                // 🌟 CORRECCIÓN: Nombre de variable corregido a clasesConSubclase (sin la 'u')
                 if (clasesConSubclase.includes(clId) && subClId && dndData.subclases && dndData.subclases[clId]) {
                     const subCl = dndData.subclases[clId].find(s => s.id === subClId);
                     if (subCl) {
                         textoClaseEsp += `\n\n🔹 [${subCl.nombre}]: ${subCl.beneficio}`;
                     }
                 }
+                
                 if (document.getElementById('res-clase-esp')) {
                     document.getElementById('res-clase-esp').innerText = textoClaseEsp;
                 }
 
             } catch (error) {
                 console.error("🔴 Error detectado en la función actualizar():", error);
-                
-                // 🌟 NUEVO: Rastrear la línea exacta del fallo mediante el Stack Trace
                 let lineaFallo = "Desconocida";
                 if (error.stack) {
-                    // Extrae las líneas del stack trace
                     const lineasStack = error.stack.split("\n");
-                    // Por lo general, la segunda línea indica dónde ocurrió el error original
-                    if (lineasStack.length > 1) {
-                        lineaFallo = lineasStack[1].trim();
-                    }
+                    if (lineasStack.length > 1) lineaFallo = lineasStack[1].trim();
                 }
-
-                // Lanzar la alerta interactiva en pantalla
-                alert(
-                    "⚠️ ¡Error en el motor de actualización!\n\n" +
-                    "Detalle: " + error.message + "\n" +
-                    "Ubicación: " + lineaFallo + "\n\n" +
-                    "Abre la consola (F12) para inspeccionar el DOM completo."
-                );
+                alert("⚠️ Error en actualización:\n" + error.message + "\nEn: " + lineaFallo);
             }
         }
 
         function renderizarHechizos(claseId, nivelPersonaje, especieId, trasfondoId) {
             const contenedor = document.getElementById('lista-hechizos');
             const tituloMagia = document.querySelector('#seccion-magia h2');
-            if (!dndData.hechizos) return;
+            if (!dndData.hechizos || !contenedor) return;
 
             contenedor.innerHTML = ""; 
-            tituloMagia.innerText = (claseId === 'monje') ? "🧘 Técnicas de Disciplina (Ki)" : "✨ Libro de Hechizos";
+            if (tituloMagia) tituloMagia.innerHTML = `<span>${claseId === 'monje' ? '🧘 Técnicas de Disciplina (Ki)' : '✨ Libro de Hechizos'}</span><span id="contador-hechizos" class="text-xs bg-purple-900 px-2 py-1 rounded text-white">0 Seleccionados</span>`;
 
             const tr = dndData.trasfondos.find(t => t.id === trasfondoId);
             const tieneMagiaExtra = tr && tr.dote && tr.dote.includes("Iniciado en la Magia");
             
             const hechizosFiltrados = dndData.hechizos.filter(h => {
-                const porClase = h.clases.includes(claseId);
-                const porTrasfondo = tieneMagiaExtra && tr.dote.includes(h.clases[0]); 
+                const porClase = h.clases && h.clases.includes(claseId);
+                const porTrasfondo = tieneMagiaExtra && h.clases && h.clases.includes(tr.dote.split(' ')[0]); 
                 const nivelApto = (h.nivel === 0) || (h.nivel <= Math.max(1, Math.ceil(nivelPersonaje / 2)));
                 return (porClase || porTrasfondo) && nivelApto;
             });
 
             if (hechizosFiltrados.length === 0) {
-                contenedor.innerHTML = "<p class='text-slate-500 italic text-sm'>No hay hechizos disponibles.</p>";
+                contenedor.innerHTML = "<p class='text-slate-500 italic text-sm p-2'>No hay hechizos disponibles para este nivel.</p>";
                 return;
             }
 
             hechizosFiltrados.forEach(h => {
-                const ritualTag = h.ritual ? '<span class="bg-blue-600 text-[8px] px-1 rounded ml-1">RITUAL</span>' : '';
-                const componentesFormateados = h.componentes.split(',').map(c => {
+                const ritualTag = h.ritual ? '<span class="bg-blue-600 text-[8px] px-1 rounded ml-1 text-white">RITUAL</span>' : '';
+                const componentesFormateados = h.componentes ? h.componentes.split(',').map(c => {
                     let titulo = "";
                     if(c.trim() === 'V') titulo = "Verbal (Requiere hablar)";
                     if(c.trim() === 'S') titulo = "Somático (Requiere mover las manos)";
                     if(c.trim() === 'M') titulo = "Material (Requiere objetos o foco)";
-                    return `<span title="${titulo}" class="cursor-help hover:text-purple-300">${c.trim()}</span>`;
-                }).join(', ');
+                    return `<span title="${titulo}" class="cursor-help hover:text-purple-300 font-bold">${c.trim()}</span>`;
+                }).join(', ') : '';
 
                 contenedor.innerHTML += `
                     <div class="flex items-start gap-2 p-2 bg-slate-900 rounded border border-slate-700">
-                        <input type="checkbox" class="mt-1 accent-purple-500" onclick="actualizarContador()">
+                        <input type="checkbox" class="mt-1 accent-purple-500 w-4 h-4 rounded" onclick="actualizarContador()">
                         <div class="flex-1">
                             <div class="flex justify-between items-center">
                                 <p class="font-bold text-sm text-purple-300">${h.nombre} ${ritualTag}</p>
                                 <span class="text-[9px] font-mono text-slate-500">${componentesFormateados}</span>
                             </div>
-                            <p class="text-[10px] text-slate-400 leading-tight">${h.desc}</p>
+                            <p class="text-[10px] text-slate-400 leading-tight mt-0.5">${h.desc}</p>
                         </div>
                     </div>
                 `;
@@ -546,7 +563,7 @@
 
         function actualizarRasgos(claseId, nivelPersonaje) {
             const contenedor = document.getElementById('res-rasgos-lista');
-            if (!dndData.rasgos) return;
+            if (!dndData.rasgos || !contenedor) return;
 
             contenedor.innerHTML = "";
             const rasgosVisibles = dndData.rasgos.filter(r => 
@@ -560,8 +577,8 @@
 
             rasgosVisibles.forEach(r => {
                 contenedor.innerHTML += `
-                    <div class="mb-2">
-                        <span class="text-[10px] font-bold bg-red-100 text-red-700 px-1 rounded">Nivel ${r.nivel}</span>
+                    <div class="mb-2 border-b border-slate-100 pb-1">
+                        <span class="text-[9px] font-bold bg-red-100 text-red-700 px-1 rounded">Nivel ${r.nivel}</span>
                         <p class="text-sm font-black text-slate-800">${r.nombre}</p>
                         <p class="text-xs text-slate-600 leading-tight">${r.desc}</p>
                     </div>
@@ -571,8 +588,15 @@
 
         function actualizarEquipamiento(claseId) {
             const contenedor = document.getElementById('res-inventario');
-            const equipo = dndData.equipamiento_inicial[claseId] || [];
+            if (!contenedor) return;
+            const equipo = (dndData.equipamiento_inicial && dndData.equipamiento_inicial[claseId]) || [];
             contenedor.innerHTML = "";
+            
+            if(equipo.length === 0) {
+                contenedor.innerText = "Inventario vacío.";
+                return;
+            }
+
             equipo.forEach(item => {
                 contenedor.innerHTML += `
                     <div class="text-xs border-b border-slate-100 py-1 flex items-center">
@@ -592,7 +616,6 @@
 
         function exportarIA() {
             const claseSeleccionada = document.getElementById('select-clase').value;
-            
             const selectEsp = document.getElementById('select-especializacion');
             const clasesConSubclase = ['druida', 'mago', 'paladin', 'bardo', 'monje'];
 
@@ -601,7 +624,6 @@
                 nivel: parseInt(document.getElementById('nivel').value) || 1,
                 alineamiento: document.getElementById('alineamiento').value,
                 clase: claseSeleccionada,
-                // Si la clase tiene subclase, exporta el valor del selector universal, si no, guarda "n/a"
                 circulo_druidico: clasesConSubclase.includes(claseSeleccionada) && selectEsp ? selectEsp.value : "n/a",
                 especie: document.getElementById('select-especie').value,
                 trasfondo: document.getElementById('select-trasfondo').value,
@@ -613,8 +635,6 @@
                     SAB: parseInt(document.getElementById('score-wis').value) || 10,
                     CAR: parseInt(document.getElementById('score-cha').value) || 10
                 },
-
-                // 🌟 NUEVO: Exportar los Modificadores Mágicos en el JSON
                 modificadores_magicos: {
                     FUE: document.getElementById('mod-magic-str').value,
                     DES: document.getElementById('mod-magic-dex').value,
@@ -623,15 +643,8 @@
                     SAB: document.getElementById('mod-magic-wis').value,
                     CAR: document.getElementById('mod-magic-cha').value
                 },
-                hp: document.getElementById('res-hp').innerText,
-                ca: document.getElementById('res-ca').innerText,
-                iniciativa: document.getElementById('res-iniciativa').innerText, 
-                inspiraciones: claseSeleccionada === 'bardo' ? document.getElementById('res-especial').innerText : "0",
-                puntos_ki: claseSeleccionada === 'monje' ? document.getElementById('res-especial').innerText : "0", 
-                salud_sagrada: claseSeleccionada === 'paladin' ? document.getElementById('res-especial').innerText : "0", // <-- NUEVA LÍNEA
                 historia_trasfondo: document.getElementById('input-historia').value,
                 rasgos_rol_mesa: document.getElementById('input-rasgos-rol').value,
-                // Dentro del objeto personaje en exportarIA():
                 dinero: {
                     oro: document.getElementById('coin-gold').value,
                     plata: document.getElementById('coin-silver').value,
@@ -654,7 +667,6 @@
             if (!jsonTexto) return; 
 
             try {
-                // 1. Limpieza de strings e invisibles del portapapeles
                 jsonTexto = jsonTexto.replace(/\u00a0/g, ' '); 
                 jsonTexto = jsonTexto.replace(/[\u201C\u201D\u201E\u201F“”]/g, '"'); 
                 jsonTexto = jsonTexto.trim();
@@ -663,10 +675,8 @@
                     jsonTexto = jsonTexto.substring(1, jsonTexto.length - 1);
                 }
 
-                // 2. Parsear el objeto JSON de forma segura
                 const personaje = JSON.parse(jsonTexto);
 
-                // --- RESETEO DE CAMPOS FORMULARIO ---
                 if (document.getElementById('coin-gold')) document.getElementById('coin-gold').value = "0";
                 if (document.getElementById('coin-silver')) document.getElementById('coin-silver').value = "0";
                 if (document.getElementById('coin-copper')) document.getElementById('coin-copper').value = "0";
@@ -674,7 +684,6 @@
                 if (document.getElementById('input-historia')) document.getElementById('input-historia').value = "";
                 if (document.getElementById('input-rasgos-rol')) document.getElementById('input-rasgos-rol').value = "";
 
-                // 3. Rellenar TEXTOS e IDENTIFICADORES básicos en el HTML
                 if (personaje.nombre) document.getElementById('nombre').value = personaje.nombre;
                 if (personaje.nivel) document.getElementById('nivel').value = personaje.nivel;
                 if (personaje.alineamiento) document.getElementById('alineamiento').value = personaje.alineamiento;
@@ -682,7 +691,6 @@
                 if (personaje.clase) document.getElementById('select-clase').value = personaje.clase;
                 if (personaje.trasfondo) document.getElementById('select-trasfondo').value = personaje.trasfondo;
 
-                // 4. Rellenar ATRIBUTOS (Stats Base)
                 if (personaje.stats) {
                     if (personaje.stats.FUE) document.getElementById('score-str').value = personaje.stats.FUE;
                     if (personaje.stats.DES) document.getElementById('score-dex').value = personaje.stats.DES;
@@ -692,7 +700,6 @@
                     if (personaje.stats.CAR) document.getElementById('score-cha').value = personaje.stats.CAR;
                 }
 
-                // 5. Rellenar MODIFICADORES MÁGICOS
                 if (personaje.modificadores_magicos) {
                     document.getElementById('mod-magic-str').value = personaje.modificadores_magicos.FUE || "0";
                     document.getElementById('mod-magic-dex').value = personaje.modificadores_magicos.DES || "0";
@@ -706,7 +713,6 @@
                     });
                 }
 
-                // 6. Rellenar textos narrativos, dinero y notas
                 if (personaje.historia_trasfondo) document.getElementById('input-historia').value = personaje.historia_trasfondo;
                 if (personaje.rasgos_rol_mesa) document.getElementById('input-rasgos-rol').value = personaje.rasgos_rol_mesa;
 
@@ -719,7 +725,7 @@
                     document.getElementById('input-notas-diversas').value = personaje.notas_diversas;
                 }
 
-                // 🌟 INYECCIÓN FORZADA SÍNCRONA DE LA SUBCLASE
+                // INYECCIÓN FORZADA SÍNCRONA DE LA SUBCLASE
                 const clId = personaje.clase;
                 const clasesConSubclase = ['druida', 'mago', 'paladin', 'bardo', 'monje'];
                 const contenedorEsp = document.getElementById('contenedor-especializacion');
@@ -761,18 +767,8 @@
                     }
                 }
 
-                // 🌟 EJECUTAR RECALCULO GENERAL Y CONSTRUCCIÓN DE HECHIZOS NATIVOS
                 actualizar();
 
-                // 🌟 ASIGNACIÓN EXTRA: Forzar el volcado de las notas de texto en la hoja de impresión del resumen
-                if (personaje.historia_trasfondo && document.getElementById('res-historia-texto')) {
-                    document.getElementById('res-historia-texto').innerText = personaje.historia_trasfondo;
-                }
-                if (personaje.rasgos_rol_mesa && document.getElementById('res-rasgos-texto')) {
-                    document.getElementById('res-rasgos-texto').innerText = personaje.rasgos_rol_mesa;
-                }
-
-                // 7. Auto-marcar hechizos guardados en el JSON (Margen ampliado a 150ms para seguridad)
                 if (personaje.hechizos_preparados && Array.isArray(personaje.hechizos_preparados)) {
                     setTimeout(() => {
                         const checkboxes = document.querySelectorAll('#lista-hechizos input[type="checkbox"]');
@@ -788,7 +784,7 @@
                         if (typeof actualizarContador === "function") {
                             actualizarContador();
                         }
-                    }, 150);
+                    }, 200); // Se amplió ligeramente para asegurar la inyección del DOM de hechizos
                 }
 
                 alert("¡Personaje importado con éxito!");
@@ -811,17 +807,23 @@
                 const selCl = document.getElementById('select-clase');
                 const selTr = document.getElementById('select-trasfondo');
 
-                data.especies.forEach(e => {
-                    selEsp.innerHTML += `<option value="${e.id}">${e.nombre}</option>`;
-                });
+                if (selEsp && data.especies) {
+                    data.especies.forEach(e => {
+                        selEsp.innerHTML += `<option value="${e.id}">${e.nombre}</option>`;
+                    });
+                }
 
-                data.clases.forEach(c => {
-                    selCl.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
-                });
+                if (selCl && data.clases) {
+                    data.clases.forEach(c => {
+                        selCl.innerHTML += `<option value="${c.id}">${c.nombre}</option>`;
+                    });
+                }
 
-                data.trasfondos.forEach(t => {
-                    selTr.innerHTML += `<option value="${t.id}">${t.nombre}</option>`;
-                });
+                if (selTr && data.trasfondos) {
+                    data.trasfondos.forEach(t => {
+                        selTr.innerHTML += `<option value="${t.id}">${t.nombre}</option>`;
+                    });
+                }
 
                 actualizar();
             })
