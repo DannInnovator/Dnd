@@ -679,11 +679,8 @@
         }
 
         function importarIA() {
-            const blockText = document.getElementById('ia-import-block').value.trim();
-            if (!blockText) {
-                alert("Por favor, pega el bloque de texto o JSON generado por la IA.");
-                return;
-            }
+            let jsonTexto = prompt("Pega aquí el código JSON de tu personaje exportado:");
+            if (!jsonTexto) return; 
 
             try {
                 // Limpiar lista de hechizos para evitar duplicación
