@@ -305,155 +305,168 @@
         const getMod = (score) => Math.floor((score - 10) / 2);
 
         function actualizar() {
-            if (!dndData) return;
+            try {
+                if (!dndData) return;
 
-            const espId = document.getElementById('select-especie').value;
-            const clId = document.getElementById('select-clase').value;
-            const trId = document.getElementById('select-trasfondo').value;
-            const nivel = parseInt(document.getElementById('nivel').value) || 1;
+                const espId = document.getElementById('select-especie').value;
+                const clId = document.getElementById('select-clase').value;
+                const trId = document.getElementById('select-trasfondo').value;
+                const nivel = parseInt(document.getElementById('nivel').value) || 1;
 
-            const esp = dndData.especies.find(e => e.id === espId);
-            const cl = dndData.clases.find(c => c.id === clId);
-            const tr = dndData.trasfondos.find(t => t.id === trId);
+                const esp = dndData.especies.find(e => e.id === espId);
+                const cl = dndData.clases.find(c => c.id === clId);
+                const tr = dndData.trasfondos.find(t => t.id === trId);
 
-            if (!esp || !cl || !tr) return;
+                if (!esp || !cl || !tr) return;
 
-            // 1. Calcular Atributos Reales (Base + Ítems Mágicos)
-            const stats = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
-            const mods = {};
+                // 1. Calcular Atributos Reales (Base + Ítems Mágicos)
+                const stats = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
+                const mods = {};
 
-            stats.forEach(s => {
-                const base = parseInt(document.getElementById(`score-${s}`).value) || 10;
-                const magic = parseInt(document.getElementById(`mod-magic-${s}`).value) || 0;
-                const total = base + magic;
+                stats.forEach(s => {
+                    const base = parseInt(document.getElementById(`score-${s}`).value) || 10;
+                    const magic = parseInt(document.getElementById(`mod-magic-${s}`).value) || 0;
+                    const total = base + magic;
 
-                document.getElementById(`total-${s}`).innerText = total;
-
-                const mod = Math.floor((total - 10) / 2);
-                mods[s] = mod;
-                document.getElementById(`mod-${s}`).innerText = (mod >= 0 ? '+' : '') + mod;
-            });
-
-            // 2. Bonus de Competencia y Vida Total (CORREGIDO: cl.dado_vida)
-            const prof = 2 + Math.floor((nivel - 1) / 4);
-            if (document.getElementById('res-prof')) document.getElementById('res-prof').innerText = `+${prof}`;
-
-            const vidaTotal = cl.hp_base + mods.con + ((nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + mods.con));
-            if (document.getElementById('res-vida')) document.getElementById('res-vida').innerText = `${vidaTotal} HP`;
-            if (document.getElementById('res-dados-golpe')) document.getElementById('res-dados-golpe').innerText = `${nivel}${cl.dado_vida}`;
-
-            // 3. Salvaciones, Iniciativa y Percepción Pasiva
-            if (document.getElementById('res-iniciativa')) document.getElementById('res-iniciativa').innerText = (mods.dex >= 0 ? '+' : '') + mods.dex;
-            if (document.getElementById('res-percepcion')) document.getElementById('res-percepcion').innerText = 10 + mods.wis;
-            if (document.getElementById('res-ca')) document.getElementById('res-ca').innerText = 10 + mods.dex;
-
-            // 4. Mostrar u ocultar bloque de especialización (Subclases)
-            const clasesConSubclase = ['druida', 'mago', 'paladin', 'bardo', 'monje'];
-            const contenedorEsp = document.getElementById('contenedor-especializacion');
-            const labelEsp = document.getElementById('label-especializacion');
-            const selectEsp = document.getElementById('select-especializacion');
-
-            if (clasesConSubclase.includes(clId)) {
-                contenedorEsp.classList.remove('hidden');
-                if (selectEsp.getAttribute('data-clase-activa') !== clId) {
-                    selectEsp.setAttribute('data-clase-activa', clId);
-                    let opcionesHTML = "";
-                    if (clId === 'druida') {
-                        labelEsp.innerText = "🌿 Especialización: Círculo Druídico";
-                        opcionesHTML = `<option value="tierra_montana">Círculo de la Tierra (Montaña)</option>
-                                        <option value="tierra_infraoscuridad">Círculo de la Tierra (Infraoscuridad)</option>
-                                        <option value="luna">Círculo de la Luna</option>`;
-                    } else if (clId === 'mago') {
-                        labelEsp.innerText = "🔮 Escuela de Magia (Tradición Arcana)";
-                        opcionesHTML = `<option value="evocacion">Escuela de Evocación (Destrucción Segura)</option>
-                                        <option value="abjuracion">Escuela de Abjuración (Escudo de Fuerza)</option>
-                                        <option value="ilusion">Escuela de Ilusión (Engaño Visual)</option>`;
-                    } else if (clId === 'paladin') {
-                        labelEsp.innerText = "🛡️ Sagrado: Juramento de Paladín (Nivel 3+)";
-                        opcionesHTML = `<option value="devocion">Juramento de Devoción (Justicia Cristalina)</option>
-                                        <option value="venganza">Juramento de Venganza (Cazador del Mal)</option>`;
-                    } else if (clId === 'bardo') {
-                        labelEsp.innerText = "🎵 Colegio Bardístico (Nivel 3+)";
-                        opcionesHTML = `<option value="lore">Colegio de la Lore (Saber y Sabotaje)</option>
-                                        <option value="valor">Colegio del Valor (Inspiración de Combate)</option>`;
-                    } else if (clId === 'monje') {
-                        labelEsp.innerText = "🧘‍♂️ Senda: Camino Monástico (Nivel 3+)";
-                        opcionesHTML = `<option value="mano_abierta">Camino de la Mano Abierta (Control Marcial)</option>
-                                        <option value="sombra">Camino de la Sombra (Sigilo y Teletransporte)</option>`;
+                    if (document.getElementById(`total-${s}`)) {
+                        document.getElementById(`total-${s}`).innerText = total;
                     }
-                    selectEsp.innerHTML = opcionesHTML;
+
+                    const mod = Math.floor((total - 10) / 2);
+                    mods[s] = mod;
+                    
+                    if (document.getElementById(`mod-${s}`)) {
+                        document.getElementById(`mod-${s}`).innerText = (mod >= 0 ? '+' : '') + mod;
+                    }
+                });
+
+                // 2. Bonus de Competencia y Vida Total (CORREGIDO: cl.dado_vida)
+                const prof = 2 + Math.floor((nivel - 1) / 4);
+                if (document.getElementById('res-prof')) document.getElementById('res-prof').innerText = `+${prof}`;
+
+                const vidaTotal = cl.hp_base + mods.con + ((nivel - 1) * (Math.floor(cl.hp_base / 2) + 1 + mods.con));
+                if (document.getElementById('res-vida')) document.getElementById('res-vida').innerText = `${vidaTotal} HP`;
+                if (document.getElementById('res-dados-golpe')) document.getElementById('res-dados-golpe').innerText = `${nivel}${cl.dado_vida}`;
+
+                // 3. Salvaciones, Iniciativa y Percepción Pasiva
+                if (document.getElementById('res-iniciativa')) document.getElementById('res-iniciativa').innerText = (mods.dex >= 0 ? '+' : '') + mods.dex;
+                if (document.getElementById('res-percepcion')) document.getElementById('res-percepcion').innerText = 10 + mods.wis;
+                if (document.getElementById('res-ca')) document.getElementById('res-ca').innerText = 10 + mods.dex;
+
+                // 4. Mostrar u ocultar bloque de especialización (Subclases)
+                const clasesConSubclase = ['druida', 'mago', 'paladin', 'bardo', 'monje'];
+                const contenedorEsp = document.getElementById('contenedor-especializacion');
+                const labelEsp = document.getElementById('label-especializacion');
+                const selectEsp = document.getElementById('select-especializacion');
+
+                if (clasesConSubclase.includes(clId)) {
+                    if (contenedorEsp) contenedorEsp.classList.remove('hidden');
+                    if (selectEsp && selectEsp.getAttribute('data-clase-activa') !== clId) {
+                        selectEsp.setAttribute('data-clase-activa', clId);
+                        let opcionesHTML = "";
+                        if (clId === 'druida') {
+                            if (labelEsp) labelEsp.innerText = "🌿 Especialización: Círculo Druídico";
+                            opcionesHTML = `<option value="tierra_montana">Círculo de la Tierra (Montaña)</option>
+                                            <option value="tierra_infraoscuridad">Círculo de la Tierra (Infraoscuridad)</option>
+                                            <option value="luna">Círculo de la Luna</option>`;
+                        } else if (clId === 'mago') {
+                            if (labelEsp) labelEsp.innerText = "🔮 Escuela de Magia (Tradición Arcana)";
+                            opcionesHTML = `<option value="evocacion">Escuela de Evocación (Destrucción Segura)</option>
+                                            <option value="abjuracion">Escuela de Abjuración (Escudo de Fuerza)</option>
+                                            <option value="ilusion">Escuela de Ilusión (Engaño Visual)</option>`;
+                        } else if (clId === 'paladin') {
+                            if (labelEsp) labelEsp.innerText = "🛡️ Sagrado: Juramento de Paladín (Nivel 3+)";
+                            opcionesHTML = `<option value="devocion">Juramento de Devoción (Justicia Cristalina)</option>
+                                            <option value="venganza">Juramento de Venganza (Cazador del Mal)</option>`;
+                        } else if (clId === 'bardo') {
+                            if (labelEsp) labelEsp.innerText = "🎵 Colegio Bardístico (Nivel 3+)";
+                            opcionesHTML = `<option value="lore">Colegio de la Lore (Saber y Sabotaje)</option>
+                                            <option value="valor">Colegio del Valor (Inspiración de Combate)</option>`;
+                        } else if (clId === 'monje') {
+                            if (labelEsp) labelEsp.innerText = "🧘‍♂️ Senda: Camino Monástico (Nivel 3+)";
+                            opcionesHTML = `<option value="mano_abierta">Camino de la Mano Abierta (Control Marcial)</option>
+                                            <option value="sombra">Camino de la Sombra (Sigilo y Teletransporte)</option>`;
+                        }
+                        selectEsp.innerHTML = opcionesHTML;
+                    }
+                } else {
+                    if (contenedorEsp) contenedorEsp.classList.add('hidden');
+                    if (selectEsp) {
+                        selectEsp.removeAttribute('data-clase-activa');
+                        selectEsp.innerHTML = "";
+                    }
                 }
-            } else {
-                contenedorEsp.classList.add('hidden');
-                selectEsp.removeAttribute('data-clase-activa');
-                selectEsp.innerHTML = "";
-            }
 
-            // 5. Bloque de Bardo / Monje (Inspiración o Ki)
-            const bloqueBM = document.getElementById('bloque-bardo-monje');
-            if (clId === 'bardo') {
-                bloqueBM.classList.remove('hidden');
-                document.getElementById('titulo-especial').innerText = "Inspiración Bardística";
-                document.getElementById('res-especial').innerText = `d${nivel >= 15 ? 12 : nivel >= 10 ? 10 : nivel >= 5 ? 8 : 6} (${mods.cha} usos)`;
-            } else if (clId === 'monje') {
-                bloqueBM.classList.remove('hidden');
-                document.getElementById('titulo-especial').innerText = "Puntos de Ki";
-                document.getElementById('res-especial').innerText = nivel >= 2 ? nivel : 0;
-            } else {
-                if (bloqueBM) bloqueBM.classList.add('hidden');
-            }
+                // 5. Bloque de Bardo / Monje (Inspiración o Ki)
+                const bloqueBM = document.getElementById('bloque-bardo-monje');
+                if (clId === 'bardo') {
+                    if (bloqueBM) bloqueBM.classList.remove('hidden');
+                    if (document.getElementById('titulo-especial')) document.getElementById('titulo-especial').innerText = "Inspiración Bardística";
+                    if (document.getElementById('res-especial')) document.getElementById('res-especial').innerText = `d${nivel >= 15 ? 12 : nivel >= 10 ? 10 : nivel >= 5 ? 8 : 6} (${mods.cha} usos)`;
+                } else if (clId === 'monje') {
+                    if (bloqueBM) bloqueBM.classList.remove('hidden');
+                    if (document.getElementById('titulo-especial')) document.getElementById('titulo-especial').innerText = "Puntos de Ki";
+                    if (document.getElementById('res-especial')) document.getElementById('res-especial').innerText = nivel >= 2 ? nivel : 0;
+                } else {
+                    if (bloqueBM) bloqueBM.classList.add('hidden');
+                }
 
-            // 6. Sección de Magia y Renderizado de Hechizos Seguros
-            const seccionMagia = document.getElementById('seccion-magia');
-            if (cl.tiene_magia) {
-                seccionMagia.classList.remove('hidden');
-                const elSatq = document.getElementById('res-satq');
-                const elScav = document.getElementById('res-scav');
-                if (elSatq) elSatq.innerText = (mods[cl.stat_magia] + prof >= 0 ? '+' : '') + (mods[cl.stat_magia] + prof);
-                if (elScav) elScav.innerText = 8 + mods[cl.stat_magia] + prof;
+                // 6. Sección de Magia y Renderizado de Hechizos Seguros
+                const seccionMagia = document.getElementById('seccion-magia');
+                if (cl.tiene_magia) {
+                    if (seccionMagia) seccionMagia.classList.remove('hidden');
+                    const elSatq = document.getElementById('res-satq');
+                    const elScav = document.getElementById('res-scav');
+                    if (elSatq) elSatq.innerText = (mods[cl.stat_magia] + prof >= 0 ? '+' : '') + (mods[cl.stat_magia] + prof);
+                    if (elScav) elScav.innerText = 8 + mods[cl.stat_magia] + prof;
 
-                // REFUERZO: Limpiamos y repoblamos siempre para asegurar sincronía con la importación
-                const contenedorHechizos = document.getElementById('lista-hechizos');
-                if (contenedorHechizos && dndData.hechizos) {
-                    contenedorHechizos.innerHTML = ""; // Forzar refresco limpio
-                    const filtrados = dndData.hechizos.filter(h => h.clase === clId);
-                    filtrados.forEach(h => {
-                        contenedorHechizos.innerHTML += `
-                            <div class="flex items-center gap-2 p-1.5 bg-slate-700 rounded border border-slate-600">
-                                <input type="checkbox" class="w-4 h-4 rounded accent-purple-500">
-                                <div class="text-xs">
-                                    <p class="font-bold text-purple-300">${h.nombre} <span class="text-[10px] text-slate-400 font-normal">(${h.tipo})</span></p>
-                                    <p class="text-[10px] text-slate-300">${h.desc}</p>
+                    // Refresco síncrono del contenedor de hechizos
+                    const contenedorHechizos = document.getElementById('lista-hechizos');
+                    if (contenedorHechizos && dndData.hechizos) {
+                        contenedorHechizos.innerHTML = ""; 
+                        const filtrados = dndData.hechizos.filter(h => h.clase === clId);
+                        filtrados.forEach(h => {
+                            contenedorHechizos.innerHTML += `
+                                <div class="flex items-center gap-2 p-1.5 bg-slate-700 rounded border border-slate-600">
+                                    <input type="checkbox" class="w-4 h-4 rounded accent-purple-500">
+                                    <div class="text-xs">
+                                        <p class="font-bold text-purple-300">${h.nombre} <span class="text-[10px] text-slate-400 font-normal">(${h.tipo})</span></p>
+                                        <p class="text-[10px] text-slate-300">${h.desc}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        `;
-                    });
+                            `;
+                        });
+                    }
+                } else {
+                    if (seccionMagia) seccionMagia.classList.add('hidden');
                 }
-            } else {
-                if (seccionMagia) seccionMagia.classList.add('hidden');
-            }
 
-            // 7. Llenar la Hoja de Personaje (Resumen Narrativo y Dotes)
-            document.getElementById('res-nombre').innerText = document.getElementById('nombre').value || "Sin Nombre";
-            document.getElementById('res-raza').innerText = esp.nombre;
-            document.getElementById('res-clase').innerText = `${cl.nombre} (Nivel ${nivel})`;
-            document.getElementById('res-trasfondo').innerText = tr.nombre;
+                // 7. Llenar la Hoja de Personaje (Resumen Narrativo y Dotes)
+                if (document.getElementById('res-nombre')) document.getElementById('res-nombre').innerText = document.getElementById('nombre').value || "Sin Nombre";
+                if (document.getElementById('res-raza')) document.getElementById('res-raza').innerText = esp.nombre;
+                if (document.getElementById('res-clase')) document.getElementById('res-clase').innerText = `${cl.nombre} (Nivel ${nivel})`;
+                if (document.getElementById('res-trasfondo')) document.getElementById('res-trasfondo').innerText = tr.nombre;
 
-            // Cargar dotes narrativos
-            document.getElementById('res-raza-dote').innerText = esp.rasgo;
-            document.getElementById('res-trasfondo-dote').innerText = tr.rasgo;
+                // Cargar dotes narrativos en el resumen
+                if (document.getElementById('res-raza-dote')) document.getElementById('res-raza-dote').innerText = esp.rasgo;
+                if (document.getElementById('res-trasfondo-dote')) document.getElementById('res-trasfondo-dote').innerText = tr.rasgo;
 
-            // Manejo dinámico de Subclase / Especialización
-            let textoClaseEsp = cl.rasgo; 
-            const subClId = selectEsp.value;
-            if (cluesConSubclase.includes(clId) && subClId && dndData.subclases && dndData.subclases[clId]) {
-                const subCl = dndData.subclases[clId].find(s => s.id === subClId);
-                if (subCl) {
-                    textoClaseEsp += `\n\n🔹 [${subCl.nombre}]: ${subCl.beneficio}`;
+                // Manejo dinámico de Subclase / Especialización
+                let textoClaseEsp = cl.rasgo; 
+                const subClId = selectEsp ? selectEsp.value : null;
+                if (clasesConSubclase.includes(clId) && subClId && dndData.subclases && dndData.subclases[clId]) {
+                    const subCl = dndData.subclases[clId].find(s => s.id === subClId);
+                    if (subCl) {
+                        textoClaseEsp += `\n\n🔹 [${subCl.nombre}]: ${subCl.beneficio}`;
+                    }
                 }
-            }
-            if (document.getElementById('res-clase-esp')) {
-                document.getElementById('res-clase-esp').innerText = textoClaseEsp;
+                if (document.getElementById('res-clase-esp')) {
+                    document.getElementById('res-clase-esp').innerText = textoClaseEsp;
+                }
+
+            } catch (error) {
+                console.error("🔴 Error detectado en la función actualizar():", error);
+                // Esto evitará que la aplicación muera y te avisará exactamente cuál propiedad falló.
             }
         }
 
